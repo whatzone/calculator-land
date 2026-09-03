@@ -1,0 +1,87 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { CF_ANALYTICS_TOKEN, GA4_MEASUREMENT_ID, CMP_PROVIDER } from '../config/analytics.ts';
+import { ADS_ENABLED } from '../config/monetisation.ts';
+import { manifestEntry } from '../lib/seo/pages.ts';
+const path = '/cookies/';
+const entry = manifestEntry(path);
+---
+
+<BaseLayout
+  title={entry?.title ?? ''}
+  description={entry?.description ?? ''}
+  path={path}
+  indexable={entry?.indexable ?? false}
+  crumbs={[
+    { name: 'Home', path: '/' },
+    { name: 'Cookies', path },
+  ]}
+>
+  <h1>Cookies</h1>
+  <p class="lede">This site sets no cookies of its own.</p>
+
+  <h2>Current state of this deployment</h2>
+  <div
+    class="table-scroll"
+    tabindex="0"
+    role="region"
+    aria-label="Cookies and similar technologies, scrollable"
+  >
+    <table class="data">
+      <thead
+        ><tr
+          ><th scope="col">Technology</th><th scope="col">Purpose</th><th scope="col">State</th></tr
+        ></thead
+      >
+      <tbody>
+        <tr>
+          <th scope="row">First-party cookies</th>
+          <td style="text-align:left;"
+            >None. There are no accounts, sessions, or preferences to store.</td
+          >
+          <td style="text-align:left;">Never set</td>
+        </tr>
+        <tr>
+          <th scope="row">Cloudflare Web Analytics</th>
+          <td style="text-align:left;"
+            >Page and referrer counts. Does not use cookies for tracking.</td
+          >
+          <td style="text-align:left;">{CF_ANALYTICS_TOKEN ? 'Enabled' : 'Not enabled'}</td>
+        </tr>
+        <tr>
+          <th scope="row">Google Analytics 4</th>
+          <td style="text-align:left;">Product analytics and campaign attribution. Uses cookies.</td
+          >
+          <td style="text-align:left;"
+            >{GA4_MEASUREMENT_ID ? 'Configured, consent-gated' : 'Not configured'}</td
+          >
+        </tr>
+        <tr>
+          <th scope="row">Advertising</th>
+          <td style="text-align:left;"
+            >Ad delivery and measurement. Would use third-party cookies.</td
+          >
+          <td style="text-align:left;">{ADS_ENABLED ? 'Enabled' : 'Not enabled'}</td>
+        </tr>
+        <tr>
+          <th scope="row">Consent platform</th>
+          <td style="text-align:left;">Recording your choice about the above.</td>
+          <td style="text-align:left;">{CMP_PROVIDER || 'Not configured'}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Why there is no consent banner</h2>
+  <p>
+    Because there is currently nothing to consent to. Nothing that requires consent is loaded. If
+    analytics that use cookies, or advertising, are switched on, a consent banner will appear before
+    they load, and this page will be updated to list exactly what is set and for how long.
+  </p>
+
+  <h2>What you type is never stored</h2>
+  <p>
+    Calculator inputs are held in the page while you use it and are gone when you close the tab.
+    They are not written to a cookie, to local storage, or to any server.
+  </p>
+</BaseLayout>

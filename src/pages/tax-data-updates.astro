@@ -1,0 +1,123 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { ALL_RULESETS } from '../data/jurisdictions/index.ts';
+import { withheldPages, summariseManifest } from '../lib/seo/manifest.ts';
+import { manifestEntry } from '../lib/seo/pages.ts';
+import { formatDate } from '../lib/formatting/index.ts';
+
+const path = '/tax-data-updates/';
+const entry = manifestEntry(path);
+const summary = summariseManifest();
+
+// Group withheld pages by reason so the list is a diagnosis, not a wall of URLs.
+const reasons = new Map<string, number>();
+for (const page of withheldPages()) {
+  for (const blocker of page.blockers) {
+    reasons.set(blocker, (reasons.get(blocker) ?? 0) + 1);
+  }
+}
+const sortedReasons = [...reasons.entries()].sort((a, b) => b[1] - a[1]);
+---
+
+<BaseLayout
+  title={entry?.title ?? ''}
+  description={entry?.description ?? ''}
+  path={path}
+  indexable={entry?.indexable ?? false}
+  crumbs={[
+    { name: 'Home', path: '/' },
+    { name: 'Tax data updates', path },
+  ]}
+>
+  <div>
+    <h1>Tax data update log</h1>
+    <p class="lede">
+      A dated record of every change to the rules behind these calculators, and of everything
+      currently being held back.
+    </p>
+  </div>
+
+  <section aria-labelledby="current-heading">
+    <h2 id="current-heading">Current state</h2>
+    <p>
+      {summary.indexable} of {summary.total} pages currently pass the quality gate.
+      {summary.withheld} are held back and are excluded from the sitemap and from search results.
+    </p>
+    <div
+      class="table-scroll"
+      tabindex="0"
+      role="region"
+      aria-label="Why pages are being held back, scrollable"
+    >
+      <table class="data">
+        <caption>Why pages are being held back</caption>
+        <thead><tr><th scope="col">Reason</th><th scope="col">Pages affected</th></tr></thead>
+        <tbody>
+          {
+            sortedReasons.map(([reason, count]) => (
+              <tr>
+                <>
+                  <th scope="row">{reason}</th>
+                  <td>{count}</td>
+                </>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section aria-labelledby="rulesets-heading">
+    <h2 id="rulesets-heading">Rulesets</h2>
+    <div class="table-scroll" tabindex="0" role="region" aria-label="Rulesets, scrollable">
+      <table class="data">
+        <thead>
+          <tr>
+            <th scope="col">Ruleset</th>
+            <th scope="col">Period</th>
+            <th scope="col">Status</th>
+            <th scope="col">Checked</th>
+            <th scope="col">Expires</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            ALL_RULESETS.map((ruleset) => (
+              <tr>
+                <th scope="row">{ruleset.id}</th>
+                <td style="text-align:left;">{ruleset.taxPeriod.label}</td>
+                <td style="text-align:left;">
+                  {ruleset.status} / {ruleset.provenance.dataStatus}
+                </td>
+                <td style="text-align:left;">
+                  {ruleset.provenance.checkedOn
+                    ? formatDate(ruleset.provenance.checkedOn)
+                    : 'never'}
+                </td>
+                <td style="text-align:left;">{formatDate(ruleset.expiresOn)}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section aria-labelledby="log-heading">
+    <h2 id="log-heading">Change log</h2>
+    <h3>3 September 2026 — initial build</h3>
+    <p>
+      The calculation engines, tests, page templates, and quality gate were built and verified for
+      all five launch markets. Rate tables were left empty: the build environment could not reach
+      any tax authority's website, and filling them in from memory or from third-party summaries is
+      not something this project will do.
+    </p>
+    <p>
+      The consequence is deliberate. Every salary and tax page is held out of the index until a
+      person has opened each official source, entered the figures, added worked-example tests, and
+      published the ruleset. Nothing needs to be rebuilt for that to happen — the pages generate
+      themselves once the data is there.
+    </p>
+  </section>
+</BaseLayout>

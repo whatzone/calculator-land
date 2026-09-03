@@ -1,0 +1,135 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import DataStatusNotice from '../../components/content/DataStatusNotice.astro';
+import Sources from '../../components/content/Sources.astro';
+import AdSlot from '../../components/monetisation/AdSlot.astro';
+import { JURISDICTIONS, findRuleset, rulesetsFor } from '../../data/jurisdictions/index.ts';
+import {
+  calculatorPath,
+  calculatorsForJurisdiction,
+  isCalculatorIndexable,
+} from '../../lib/registry/index.ts';
+import { manifestEntry } from '../../lib/seo/pages.ts';
+import { salaryPageEntries } from '../../data/salary-amounts.ts';
+import { formatAmountForTitle, formatDate } from '../../lib/formatting/index.ts';
+import type { JurisdictionCode, CurrencyCode } from '../../lib/calculations/common/types.ts';
+
+export function getStaticPaths() {
+  return JURISDICTIONS.map((meta) => ({ params: { jurisdiction: meta.slug }, props: { meta } }));
+}
+
+const { meta } = Astro.props as { meta: (typeof JURISDICTIONS)[number] };
+const path = `/${meta.slug}/`;
+const entry = manifestEntry(path);
+
+const ruleset = findRuleset(meta.code as JurisdictionCode);
+const calculators = calculatorsForJurisdiction(meta.code as JurisdictionCode);
+const allSources = rulesetsFor(meta.code as JurisdictionCode).flatMap((item) => item.sources);
+const uniqueSources = [...new Map(allSources.map((source) => [source.url, source])).values()];
+
+const salaryExamples = salaryPageEntries().filter((item) => item.jurisdiction === meta.code);
+const currency = meta.currency as CurrencyCode;
+const crumbs = [
+  { name: 'Home', path: '/' },
+  { name: `${meta.adjective} calculators`, path },
+];
+---
+
+<BaseLayout
+  title={`${meta.adjective} Salary & Tax Calculators ${ruleset?.taxPeriod.label ?? ''} | ClearFigures`}
+  description={entry?.description ?? ''}
+  path={path}
+  indexable={entry?.indexable ?? false}
+  crumbs={crumbs}
+  locale={meta.locale}
+  withRail
+>
+  <div>
+    <h1>{meta.adjective} salary and tax calculators</h1>
+    <p class="lede">
+      Take-home pay, net-to-gross, bonus, and pay-rise calculators for {meta.name}, for the{' '}
+      {ruleset?.taxPeriod.label} tax period.
+    </p>
+    {
+      ruleset && (
+        <p class="meta-line">
+          Tax period {ruleset.taxPeriod.label} runs {formatDate(ruleset.taxPeriod.startDate)} to{' '}
+          {formatDate(ruleset.taxPeriod.endDate)}.
+        </p>
+      )
+    }
+  </div>
+
+  {ruleset && <DataStatusNotice ruleset={ruleset} jurisdictionName={meta.name} />}
+
+  <section aria-labelledby="tools-heading">
+    <h2 id="tools-heading">Calculators for {meta.name}</h2>
+    <ul class="card-grid">
+      {
+        calculators.map((calculator) => {
+          const live = isCalculatorIndexable(calculator);
+          return (
+            <li>
+              <a
+                class={`tool-card ${live ? '' : 'tool-card--disabled'}`}
+                href={calculatorPath(calculator)}
+              >
+                <strong>{calculator.shortTitle}</strong>
+                <p>{calculator.description}</p>
+                {!live && <span class="pill pill--pending">Awaiting official source</span>}
+              </a>
+            </li>
+          );
+        })
+      }
+    </ul>
+  </section>
+
+  {
+    meta.regions.length > 0 && (
+      <section aria-labelledby="regions-heading">
+        <h2 id="regions-heading">Why the region matters here</h2>
+        <p>
+          {meta.code === 'uk'
+            ? 'Scotland sets its own income tax rates and bands on earnings, and has more bands than the rest of the UK. National Insurance is set UK-wide and is the same everywhere. That is why Scottish figures are kept as a separate set of rules rather than an adjustment to the others.'
+            : 'Each province and territory sets its own income tax rates and credits on top of federal tax, and Quebec additionally collects its own provincial tax, runs QPP in place of CPP, and adds QPIP. Provincial tax is determined by where you live on 31 December, not where you earned the money.'}
+        </p>
+        <ul>
+          {meta.regions.map((region) => (
+            <li>{region.label}</li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+
+  <AdSlot slot="guide-mid-content" />
+
+  {
+    salaryExamples.length > 0 && (
+      <section aria-labelledby="examples-heading">
+        <h2 id="examples-heading">Worked salary examples</h2>
+        <p>
+          Each of these pages works through one salary in detail: the deductions, the thresholds it
+          crosses, and how much of the next pay rise you would keep.
+        </p>
+        <ul class="card-grid">
+          {salaryExamples.slice(0, 12).map((example) => (
+            <li>
+              <a class="tool-card" href={example.path}>
+                <strong>{formatAmountForTitle(example.amount, currency)}</strong>
+                <p>after tax in {example.regionLabel ?? meta.name}</p>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+
+  <Sources sources={uniqueSources} />
+
+  <div slot="rail" class="no-print">
+    <AdSlot slot="result-rail" hideOnMobile />
+  </div>
+</BaseLayout>

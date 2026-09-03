@@ -1,0 +1,113 @@
+---
+/**
+ * The shared calculator page body.
+ *
+ * Every calculator route renders this, so form layout, result ordering, ad
+ * placement, assumptions, sources, and related links are defined once. Adding a
+ * calculator needs no edit here.
+ */
+import CalculatorForm from './CalculatorForm.astro';
+import ResultPanel from './ResultPanel.astro';
+import Assumptions from '../content/Assumptions.astro';
+import Sources from '../content/Sources.astro';
+import DataStatusNotice from '../content/DataStatusNotice.astro';
+import AdSlot from '../monetisation/AdSlot.astro';
+import { calculatorPath, getCalculator } from '../../lib/registry/index.ts';
+import type { AnyCalculatorDefinition, ResultViewModel } from '../../lib/registry/types.ts';
+import type { Ruleset } from '../../lib/validation/ruleset-schema.ts';
+import type { CalculationContext } from '../../lib/calculations/common/types.ts';
+
+interface Props {
+  calculator: AnyCalculatorDefinition;
+  view: ResultViewModel;
+  context: CalculationContext;
+  values: Record<string, string | number | boolean>;
+  rulesets: Record<string, Ruleset>;
+  primaryRuleset?: Ruleset | null;
+  jurisdictionName?: string;
+  isPrefilled?: boolean;
+}
+
+const {
+  calculator,
+  view,
+  context,
+  values,
+  rulesets,
+  primaryRuleset = null,
+  jurisdictionName = '',
+  isPrefilled = false,
+} = Astro.props;
+
+const path = calculatorPath(calculator);
+const assumptionTexts = calculator.assumptions.map((assumption) => assumption.text);
+const related = calculator.relatedCalculatorIds
+  .map((id) => getCalculator(id))
+  .filter((item): item is AnyCalculatorDefinition => item !== undefined);
+
+// When the ruleset is unpopulated, DataStatusNotice carries the full
+// explanation, so the engine's shorter version is suppressed above it.
+const awaitingSource =
+  primaryRuleset !== null && primaryRuleset.provenance.dataStatus !== 'populated';
+
+const clientConfig = {
+  calculatorId: calculator.id,
+  family: calculator.family,
+  jurisdiction: (calculator.jurisdictions as readonly string[])[0] ?? 'global',
+  context,
+  isPrefilled,
+  rulesets,
+};
+---
+
+<CalculatorForm calculator={calculator} values={values} actionPath={path} />
+
+<ResultPanel view={view} suppressUnsupportedNotices={awaitingSource} />
+
+{
+  primaryRuleset && (
+    <DataStatusNotice ruleset={primaryRuleset} jurisdictionName={jurisdictionName} />
+  )
+}
+
+<AdSlot slot="post-result" />
+
+<Assumptions assumptions={assumptionTexts} limitations={calculator.limitations} />
+
+<Sources sources={calculator.sources} />
+
+<div class="no-print">
+  <button class="btn btn--quiet" type="button" data-print>Print or save this result</button>
+  <p class="small muted" style="margin-top:0.5rem;">
+    Sharing the page address includes the figures you entered. It always points at this calculator,
+    never at a separate copy of the page.
+  </p>
+</div>
+
+{
+  related.length > 0 && (
+    <section aria-labelledby="related-heading">
+      <h2 id="related-heading">Related calculators</h2>
+      <ul class="card-grid">
+        {related.map((item) => (
+          <li>
+            <a class="tool-card" href={calculatorPath(item)}>
+              <strong>{item.shortTitle}</strong>
+              <p>{item.description}</p>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )
+}
+
+<script
+  id="calculator-config"
+  type="application/json"
+  set:html={JSON.stringify(clientConfig)}
+  is:inline
+/>
+<script>
+  import '../../scripts/calculator-client.ts';
+</script>

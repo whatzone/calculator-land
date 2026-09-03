@@ -1,0 +1,52 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE } from '../config/site.ts';
+import { manifestEntry } from '../lib/seo/pages.ts';
+const path = '/contact/';
+const entry = manifestEntry(path);
+---
+
+<BaseLayout
+  title={entry?.title ?? ''}
+  description={entry?.description ?? ''}
+  path={path}
+  indexable={entry?.indexable ?? false}
+  crumbs={[
+    { name: 'Home', path: '/' },
+    { name: 'Contact', path },
+  ]}
+>
+  <h1>Contact</h1>
+  <p class="lede">
+    Email <a href={`mailto:${SITE.contactEmail}`}>{SITE.contactEmail}</a>.
+  </p>
+
+  {
+    SITE.isPlaceholderContact && (
+      <div class="notice notice--warning" data-config-disclosure>
+        <p class="notice__title">This address is a placeholder</p>
+        <p style="margin-bottom:0;">
+          A working contact address has not been configured for this deployment. It must be set
+          before launch, in <code>src/config/site.ts</code> or via the{' '}
+          <code>SITE_CONTACT_EMAIL</code> environment variable.
+        </p>
+      </div>
+    )
+  }
+
+  <h2>Please include</h2>
+  <ul>
+    <li>
+      For a wrong figure: the page, your inputs, and the official source you are comparing against.
+      See <a href="/corrections/">corrections</a>.
+    </li>
+    <li>For a country request: which country, and roughly why.</li>
+    <li>For press or data enquiries: what you are looking for and your deadline.</li>
+  </ul>
+
+  <h2>What we cannot do</h2>
+  <p>
+    We cannot give tax advice, tell you what to put on a return, or comment on your individual
+    circumstances. For that you need a qualified adviser or your tax authority directly.
+  </p>
+</BaseLayout>

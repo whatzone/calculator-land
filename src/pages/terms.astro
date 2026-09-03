@@ -1,0 +1,65 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE } from '../config/site.ts';
+import { manifestEntry } from '../lib/seo/pages.ts';
+const path = '/terms/';
+const entry = manifestEntry(path);
+---
+
+<BaseLayout
+  title={entry?.title ?? ''}
+  description={entry?.description ?? ''}
+  path={path}
+  indexable={entry?.indexable ?? false}
+  crumbs={[
+    { name: 'Home', path: '/' },
+    { name: 'Terms', path },
+  ]}
+>
+  <h1>Terms of use</h1>
+  <p class="lede">Plain terms for a free, static, information-only website.</p>
+
+  <h2>What this site is</h2>
+  <p>
+    A free set of calculators and explanatory material. There is no account, no contract for
+    services, and nothing to buy.
+  </p>
+
+  <h2>Estimates, not advice</h2>
+  <p>
+    Everything produced here is an estimate based on stated assumptions. It is not tax, legal,
+    mortgage, or financial advice, and must not be relied on for a financial decision, a tax return,
+    a loan application, or an employment negotiation without checking your own circumstances against
+    the official source or taking professional advice.
+  </p>
+
+  <h2>Accuracy</h2>
+  <p>
+    We take accuracy seriously and describe our process in the{' '}
+    <a href="/editorial-policy/">editorial policy</a>. Tax rules change, and pages can be out of
+    date between an announcement and our update. Where we are not confident, we withhold the figure
+    rather than estimate it. To the extent permitted by law, the site is provided without warranty,
+    and we are not liable for loss arising from reliance on it. Nothing here limits liability for
+    fraud, or for anything that cannot lawfully be limited.
+  </p>
+
+  <h2>Using our material</h2>
+  <p>
+    You may link to any page freely. You may quote a figure with attribution and a link. You may not
+    copy the calculators, the rulesets, or substantial parts of the text to republish as your own.
+    Official tax authority material linked from here belongs to those authorities and is subject to
+    their own terms.
+  </p>
+
+  <h2>Changes</h2>
+  <p>
+    These terms may change; the current version is always the one on this page. Governed by the laws
+    of England and Wales.
+  </p>
+
+  <p class="muted small">
+    Written to be clear rather than exhaustive. It is not legal advice and should be reviewed by a
+    lawyer before commercial launch. Contact:{' '}
+    <a href={`mailto:${SITE.contactEmail}`}>{SITE.contactEmail}</a>.
+  </p>
+</BaseLayout>

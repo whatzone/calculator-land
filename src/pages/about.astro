@@ -1,0 +1,73 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE } from '../config/site.ts';
+import { manifestEntry } from '../lib/seo/pages.ts';
+const path = '/about/';
+const entry = manifestEntry(path);
+---
+
+<BaseLayout
+  title={entry?.title ?? ''}
+  description={entry?.description ?? ''}
+  path={path}
+  indexable={entry?.indexable ?? false}
+  crumbs={[
+    { name: 'Home', path: '/' },
+    { name: 'About', path },
+  ]}
+>
+  <div>
+    <h1>About {SITE.name}</h1>
+    <p class="lede">{SITE.valueProposition}</p>
+  </div>
+
+  <section aria-labelledby="why">
+    <h2 id="why">Why this exists</h2>
+    <p>
+      Most salary calculators give you a number and nothing else. You cannot see which rules were
+      applied, which year they came from, what was assumed about your situation, or where the
+      figures were sourced. When the answer looks wrong there is no way to find out why.
+    </p>
+    <p>
+      This site takes the opposite approach. Every deduction is itemised, every rule is linked to
+      the authority that publishes it, every assumption is stated next to the result rather than
+      buried in a legal page, and anything we cannot answer confidently is refused rather than
+      estimated.
+    </p>
+  </section>
+
+  <section aria-labelledby="markets">
+    <h2 id="markets">Where it covers</h2>
+    <p>
+      Five markets at launch: the United Kingdom (with Scotland held separately), Ireland,
+      Australia, New Zealand, and Canada (with provincial selection and separate treatment of
+      Quebec). More countries are added only when there is evidence of demand and the capacity to
+      maintain them accurately — not to fill out a list.
+    </p>
+  </section>
+
+  <section aria-labelledby="funding">
+    <h2 id="funding">How it is paid for</h2>
+    <p>
+      Display advertising, in fixed and labelled positions that cannot be confused with results. No
+      ads are enabled at present. There is no paywall, no account, no newsletter capture, and
+      nothing you enter is stored or sent anywhere.
+    </p>
+  </section>
+
+  <section aria-labelledby="who">
+    <h2 id="who">Who builds it</h2>
+    <p>
+      A small independent team. No tax professional has reviewed this site; see the{' '}
+      <a href="/editorial-policy/">editorial policy</a> for exactly what our review does and does not
+      cover.
+    </p>
+    {
+      SITE.isPlaceholderBrand && (
+        <p class="muted small" data-config-disclosure>
+          “{SITE.name}” is a working name pending the owner's final brand.
+        </p>
+      )
+    }
+  </section>
+</BaseLayout>

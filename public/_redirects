@@ -1,0 +1,24 @@
+# Cloudflare Pages redirects.
+#
+# The build emits directory-style URLs with a trailing slash and Pages handles
+# the non-trailing-slash form itself, so there is no need to enumerate those.
+# What is listed here is the canonical-host redirect and a small set of guesses
+# a reader might type.
+
+# Common alternative spellings of the tool paths.
+/uk/salary          /uk/salary-calculator/          301
+/ireland/salary     /ireland/salary-calculator/     301
+/australia/salary   /australia/salary-calculator/   301
+/new-zealand/salary /new-zealand/salary-calculator/ 301
+/canada/salary      /canada/salary-calculator/      301
+
+# Aliases people reach for.
+/mortgage           /mortgage-calculators/          301
+/salary             /salary-tax-calculators/        301
+/tools              /calculators/                   301
+/sources.html       /sources/                       301
+
+# The www-to-apex redirect (or the reverse) is configured in the Cloudflare
+# dashboard against the real domain, not here — see docs/DEPLOYMENT.md. Adding a
+# guessed hostname to this file would create a redirect loop on a domain that
+# does not exist yet.

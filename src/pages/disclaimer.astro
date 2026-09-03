@@ -1,0 +1,70 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { manifestEntry } from '../lib/seo/pages.ts';
+const path = '/disclaimer/';
+const entry = manifestEntry(path);
+---
+
+<BaseLayout
+  title={entry?.title ?? ''}
+  description={entry?.description ?? ''}
+  path={path}
+  indexable={entry?.indexable ?? false}
+  crumbs={[
+    { name: 'Home', path: '/' },
+    { name: 'Disclaimer', path },
+  ]}
+>
+  <h1>Disclaimer</h1>
+
+  <div class="notice notice--warning">
+    <p class="notice__title">These are estimates, not advice</p>
+    <p style="margin-bottom:0;">
+      Nothing on this site is tax, legal, mortgage, or financial advice. No tax professional has
+      reviewed it.
+    </p>
+  </div>
+
+  <h2>What the figures assume</h2>
+  <p>
+    Every result assumes one ordinary employment profile held for a whole tax year, with a standard
+    tax code and no unusual circumstances. The full list of assumptions appears next to every
+    result, and it is worth reading — most differences between our figure and your payslip come from
+    one of them.
+  </p>
+
+  <h2>Why your payslip may differ</h2>
+  <ul>
+    <li>
+      Payroll withholds period by period; we annualise. A mid-year start or salary change produces
+      different monthly figures.
+    </li>
+    <li>
+      Your tax code may not be the standard one. Codes are issued individually and we do not model
+      them.
+    </li>
+    <li>
+      Benefits in kind, salary sacrifice arrangements, multiple jobs, and other income are not
+      included.
+    </li>
+    <li>
+      Some contributions stop mid-year once an annual maximum is reached, changing individual pay
+      periods.
+    </li>
+    <li>Your circumstances may fall outside the supported profile entirely.</li>
+  </ul>
+
+  <h2>Mortgage figures</h2>
+  <p>
+    The mortgage tools are arithmetic. They do not assess affordability, do not indicate whether any
+    lender would lend to you, and exclude fees, insurance, and early repayment charges. They assume
+    one fixed rate for the whole term, which is not how most mortgages work.
+  </p>
+
+  <h2>If a figure looks wrong</h2>
+  <p>
+    Check the assumptions on the page, then the official source linked beneath it. If you still
+    think it is wrong, please <a href="/corrections/">tell us</a> — we would rather fix it than have it
+    stand.
+  </p>
+</BaseLayout>

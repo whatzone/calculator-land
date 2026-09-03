@@ -1,0 +1,119 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import {
+  CALCULATORS,
+  calculatorPath,
+  isCalculatorIndexable,
+  indexabilityBlockers,
+} from '../../lib/registry/index.ts';
+import { FAMILY_LABELS, CALCULATOR_FAMILIES } from '../../lib/registry/types.ts';
+import { manifestEntry } from '../../lib/seo/pages.ts';
+import { summariseManifest } from '../../lib/seo/manifest.ts';
+
+const path = '/calculators/';
+const entry = manifestEntry(path);
+const summary = summariseManifest();
+const families = CALCULATOR_FAMILIES.filter((family) =>
+  CALCULATORS.some((calculator) => calculator.family === family),
+);
+---
+
+<BaseLayout
+  title={entry?.title ?? ''}
+  description={entry?.description ?? ''}
+  path={path}
+  indexable={entry?.indexable ?? false}
+  crumbs={[
+    { name: 'Home', path: '/' },
+    { name: 'All calculators', path },
+  ]}
+>
+  <div>
+    <h1>Every calculator on this site</h1>
+    <p class="lede">
+      {CALCULATORS.length} calculators, grouped by what they do. Anything marked as awaiting an official
+      source is built and tested but will not show a figure until its rules have been read from the tax
+      authority and checked by a person.
+    </p>
+  </div>
+
+  {
+    families.map((family) => (
+      <section aria-labelledby={`family-${family}`}>
+        <h2 id={`family-${family}`}>{FAMILY_LABELS[family]}</h2>
+        <div
+          class="table-scroll"
+          tabindex="0"
+          role="region"
+          aria-label={`${FAMILY_LABELS[family]} calculators, scrollable`}
+        >
+          <table class="data">
+            <thead>
+              <tr>
+                <th scope="col">Calculator</th>
+                <th scope="col">Applies to</th>
+                <th scope="col">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {CALCULATORS.filter((calculator) => calculator.family === family).map(
+                (calculator) => {
+                  const live = isCalculatorIndexable(calculator);
+                  const blockers = indexabilityBlockers(calculator);
+                  return (
+                    <tr>
+                      <th scope="row">
+                        <a href={calculatorPath(calculator)}>{calculator.title}</a>
+                        <span class="detail">{calculator.description}</span>
+                      </th>
+                      <td style="text-align:left;">
+                        {(calculator.jurisdictions as readonly string[]).join(', ')}
+                      </td>
+                      <td style="text-align:left;">
+                        {live ? (
+                          'Live'
+                        ) : (
+                          <span class="pill pill--pending">{blockers[0] ?? 'Not published'}</span>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                },
+              )}
+            </tbody>
+          </table>
+        </div>
+      </section>
+    ))
+  }
+
+  <section class="card" aria-labelledby="inventory-heading">
+    <h2 id="inventory-heading" style="margin-top:0;">Page inventory</h2>
+    <p>
+      This site builds {summary.total} pages. {summary.indexable} currently pass the quality gate and
+      {summary.withheld} are held back — almost all of them because they depend on tax rules that have
+      not yet been verified against an official source.
+    </p>
+    <div class="table-scroll" tabindex="0" role="region" aria-label="Page inventory, scrollable">
+      <table class="data">
+        <thead>
+          <tr
+            ><th scope="col">Template</th><th scope="col">Built</th><th scope="col">Indexable</th
+            ></tr
+          >
+        </thead>
+        <tbody>
+          {
+            Object.entries(summary.byTemplate).map(([template, counts]) => (
+              <tr>
+                <th scope="row">{template}</th>
+                <td>{counts.total}</td>
+                <td>{counts.indexable}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+</BaseLayout>

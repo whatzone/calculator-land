@@ -1,0 +1,68 @@
+---
+import { SITE } from '../../config/site.ts';
+import { JURISDICTIONS } from '../../data/jurisdictions/index.ts';
+
+const year = new Date().getUTCFullYear();
+---
+
+<footer class="site-footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <h2>Countries</h2>
+        <ul>
+          {
+            JURISDICTIONS.map((meta) => (
+              <li>
+                <a href={`/${meta.slug}/`}>{meta.adjective} calculators</a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+      <div>
+        <h2>Calculators</h2>
+        <ul>
+          <li><a href="/salary-tax-calculators/">Salary &amp; tax</a></li>
+          <li><a href="/mortgage-calculators/">Mortgage</a></li>
+          <li><a href="/calculators/hourly-to-salary/">Hourly to salary</a></li>
+          <li><a href="/calculators/">Full directory</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Transparency</h2>
+        <ul>
+          <li><a href="/methodology/">How these work</a></li>
+          <li><a href="/sources/">Official sources</a></li>
+          <li><a href="/tax-data-updates/">Tax data updates</a></li>
+          <li><a href="/editorial-policy/">Editorial policy</a></li>
+          <li><a href="/corrections/">Report an error</a></li>
+        </ul>
+      </div>
+      <div>
+        <h2>Site</h2>
+        <ul>
+          <li><a href="/about/">About</a></li>
+          <li><a href="/contact/">Contact</a></li>
+          <li><a href="/privacy/">Privacy</a></li>
+          <li><a href="/cookies/">Cookies</a></li>
+          <li><a href="/terms/">Terms</a></li>
+          <li><a href="/disclaimer/">Disclaimer</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="site-footer__legal">
+      <p>
+        <strong>These calculators produce estimates, not advice.</strong> Nothing here is tax, legal,
+        mortgage, or financial advice, and no tax professional has reviewed this site. Figures are annualised
+        and assume a single, standard employment profile. Always check your own circumstances against
+        the official source linked on each page, or take professional advice.
+      </p>
+      <p>
+        © {year}
+        {SITE.name}. Published from the United Kingdom for an international readership.
+      </p>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,40 @@
+---
+/**
+ * Assumptions and limitations, rendered beside the result rather than buried in
+ * a legal page. A take-home figure without its assumptions is not a smaller
+ * answer, it is a misleading one.
+ */
+interface Props {
+  assumptions: readonly string[];
+  limitations: readonly string[];
+}
+const { assumptions, limitations } = Astro.props;
+---
+
+<section class="card stack" aria-labelledby="assumptions-heading">
+  <h2 id="assumptions-heading" style="margin-top:0;">What this assumes</h2>
+  {
+    assumptions.length > 0 ? (
+      <ul>
+        {assumptions.map((item) => (
+          <li>{item}</li>
+        ))}
+      </ul>
+    ) : (
+      <p class="muted">No assumptions are recorded for this calculator.</p>
+    )
+  }
+
+  {
+    limitations.length > 0 && (
+      <>
+        <h3>What it does not cover</h3>
+        <ul>
+          {limitations.map((item) => (
+            <li>{item}</li>
+          ))}
+        </ul>
+      </>
+    )
+  }
+</section>

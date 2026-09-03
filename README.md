@@ -1,0 +1,112 @@
+# ClearFigures
+
+Transparent salary, tax, and mortgage calculators. Every deduction itemised,
+every rule linked to the authority that publishes it, and every assumption shown
+next to the result rather than buried in a legal page.
+
+> **Read this first.** All five tax jurisdictions currently ship with **empty
+> rate tables**. The environment this was built in could not reach any tax
+> authority's website, and populating the tables from memory or from third-party
+> summaries would have meant publishing confident wrong numbers about people's
+> pay. The engines are complete and tested; the data is not. 127 of 146 pages
+> are held out of the index as a result — automatically, by the quality gate.
+> See `docs/DECISIONS.md` (D-001) and `docs/TAX-DATA-UPDATE-RUNBOOK.md`.
+
+## Quick start
+
+```bash
+npm ci
+npm run dev          # http://localhost:4321
+npm run gate         # the full release gate
+```
+
+## What works today
+
+| Live                                   | Held back                                                |
+| -------------------------------------- | -------------------------------------------------------- |
+| Mortgage payment and amortisation      | UK salary, net-to-gross, bonus, pay rise                 |
+| Mortgage overpayment comparison        | Ireland, Australia, New Zealand, Canada — same four each |
+| Hourly-to-salary conversion            | 102 curated salary result pages                          |
+| Methodology, sources, editorial, legal | 5 country hubs                                           |
+
+The live tools are arithmetic that is the same in every country, so they need no
+tax data. The held-back pages are built, tested, and one runbook away.
+
+## Commands
+
+| Command                       | What it does                                                      |
+| ----------------------------- | ----------------------------------------------------------------- |
+| `npm run dev`                 | Development server                                                |
+| `npm run build`               | Manifest, build, then the indexability and link audits            |
+| `npm run gate`                | Format, lint, typecheck, test, tax audit, build                   |
+| `npm run test`                | Unit and integration tests (147)                                  |
+| `npm run test:e2e`            | Playwright: desktop, mobile, no-JavaScript, axe (85)              |
+| `npm run tax:audit`           | Ruleset freshness, sources, expiry. `-- --strict` to fail on gaps |
+| `npm run seo:audit`           | Indexability and internal links, against the built output         |
+| `npm run create:calculator`   | Scaffold a calculator                                             |
+| `npm run create:jurisdiction` | Scaffold a jurisdiction                                           |
+
+## Architecture in one paragraph
+
+Rules live as versioned data with their provenance. A pure decimal engine turns
+them into itemised results. A calculator registry is the single source of truth
+for routes, fields, metadata, structured data, analytics, and sitemaps. A
+build-time page manifest decides what may be indexed and records why anything is
+withheld. Templates read all of it and contain no business logic.
+
+Full detail: `docs/ARCHITECTURE.md`.
+
+## Supported markets
+
+| Market         | Tax period | Regions                                        | State           |
+| -------------- | ---------- | ---------------------------------------------- | --------------- |
+| United Kingdom | 2026/27    | England/Wales/NI, Scotland (separate rulesets) | Awaiting source |
+| Ireland        | 2026       | —                                              | Awaiting source |
+| Australia      | 2026-27    | —                                              | Awaiting source |
+| New Zealand    | 2026-27    | —                                              | Awaiting source |
+| Canada         | 2026       | Federal + Ontario, BC, Alberta, Quebec         | Awaiting source |
+
+Scotland and Quebec are modelled as their own rulesets rather than as flags,
+because their rules differ in structure and not only in numbers.
+
+## Budgets, measured
+
+|                                     | Budget | Actual  |
+| ----------------------------------- | ------ | ------- |
+| First-party JS, gzipped             | 60 KB  | 14.5 KB |
+| First-party CSS, gzipped            | 30 KB  | 3.3 KB  |
+| Render-blocking third-party scripts | 0      | 0       |
+| Automated accessibility violations  | 0      | 0       |
+
+## Privacy
+
+Calculator inputs never leave the browser. The analytics adapter drops any
+property outside its allow-list, validates closed-set values against sets
+generated from our own registries, and is tested by watching the network while a
+figure is entered. No cookies are set. No ad script is loaded.
+
+## Documentation
+
+|                                   |                                          |
+| --------------------------------- | ---------------------------------------- |
+| `docs/ARCHITECTURE.md`            | How the system is put together           |
+| `docs/CALCULATION-METHODOLOGY.md` | The engine, for whoever maintains it     |
+| `docs/TAX-DATA-UPDATE-RUNBOOK.md` | **How to bring a jurisdiction live**     |
+| `docs/COUNTRY-ONBOARDING.md`      | The checklist a new country must pass    |
+| `docs/ADDING-A-CALCULATOR.md`     | The calculator workflow                  |
+| `docs/DEPLOYMENT.md`              | Cloudflare Pages, rollback, headers, ads |
+| `docs/MEASUREMENT.md`             | Events, properties, KPIs, dashboards     |
+| `docs/EDITORIAL-AND-SEO.md`       | What gets published, and what does not   |
+| `docs/ROADMAP.md`                 | Phases, gates, and how this could fail   |
+| `docs/DECISIONS.md`               | Every decision, with its reasoning       |
+
+## Deployment
+
+Not deployed. Configuration, headers, redirects, and a CI workflow are
+committed; `api.cloudflare.com` was unreachable and Wrangler needs an
+interactive login. `docs/DEPLOYMENT.md` has the exact commands.
+
+## Licence and status
+
+Private, pre-launch. The brand, domain, and contact address are placeholders
+resolved from `src/config/site.ts`. No tax professional has reviewed this site.

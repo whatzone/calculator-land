@@ -1,0 +1,60 @@
+name: Deploy to Cloudflare Pages
+
+# Runs only after the release gate passes on the default branch, or on demand.
+# A CLOUDFLARE_API_TOKEN repository secret is required; nothing is stored here.
+on:
+  workflow_run:
+    workflows: ['Release gate']
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Which Cloudflare Pages environment to deploy
+        type: choice
+        options: [preview, production]
+        default: preview
+
+jobs:
+  deploy:
+    name: Build and deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    # Never deploy off the back of a failed gate.
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      github.event.workflow_run.conclusion == 'success'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Build
+        env:
+          SITE_URL: ${{ vars.SITE_URL }}
+          SITE_NAME: ${{ vars.SITE_NAME }}
+          SITE_CONTACT_EMAIL: ${{ vars.SITE_CONTACT_EMAIL }}
+          # Only a production deployment is ever allowed to be indexable.
+          SITE_ALLOW_INDEXING: ${{ inputs.environment == 'production' && 'true' || 'false' }}
+          CF_ANALYTICS_TOKEN: ${{ vars.CF_ANALYTICS_TOKEN }}
+          GA4_MEASUREMENT_ID: ${{ vars.GA4_MEASUREMENT_ID }}
+          SEARCH_CONSOLE_VERIFICATION: ${{ vars.SEARCH_CONSOLE_VERIFICATION }}
+          ADS_ENABLED: ${{ vars.ADS_ENABLED }}
+          AD_PUBLISHER_ID: ${{ vars.AD_PUBLISHER_ID }}
+        run: npm run build
+
+      - name: Deploy
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: >-
+            pages deploy dist
+            --project-name=clearfigures
+            --branch=${{ inputs.environment == 'production' && 'main' || github.ref_name }}

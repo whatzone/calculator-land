@@ -1,0 +1,102 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE } from '../config/site.ts';
+import { JURISDICTIONS, findRuleset } from '../data/jurisdictions/index.ts';
+import {
+  calculatorPath,
+  globalCalculatorList,
+  isCalculatorIndexable,
+} from '../lib/registry/index.ts';
+import { manifestEntry } from '../lib/seo/pages.ts';
+import { summariseManifest } from '../lib/seo/manifest.ts';
+
+const path = '/';
+const entry = manifestEntry(path);
+const globals = globalCalculatorList();
+const summary = summariseManifest();
+
+const liveCount = globals.filter(isCalculatorIndexable).length;
+---
+
+<BaseLayout
+  title={`${SITE.name} — ${SITE.tagline}`}
+  description={SITE.valueProposition}
+  path={path}
+  indexable={entry?.indexable ?? false}
+  crumbs={[{ name: 'Home', path: '/' }]}
+>
+  <div>
+    <h1>Understand what you earn, and what is deducted</h1>
+    <p class="lede">{SITE.valueProposition}</p>
+  </div>
+
+  <section aria-labelledby="live-heading">
+    <h2 id="live-heading">Calculators you can use now</h2>
+    <p>
+      These {liveCount} tools are arithmetic rather than tax rules, so they are the same in every country
+      and are live today. Each shows its formula and its assumptions.
+    </p>
+    <ul class="card-grid">
+      {
+        globals.map((calculator) => (
+          <li>
+            <a class="tool-card" href={calculatorPath(calculator)}>
+              <strong>{calculator.shortTitle}</strong>
+              <p>{calculator.description}</p>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <section aria-labelledby="countries-heading">
+    <h2 id="countries-heading">Country calculators</h2>
+    <p>
+      Salary, net-to-gross, bonus, and pay-rise calculators are built for all five launch markets.
+      Each one stays offline until its rules have been read from the tax authority that sets them
+      and checked by a person — so today they show you their sources rather than a figure.
+    </p>
+    <ul class="card-grid">
+      {
+        JURISDICTIONS.map((meta) => {
+          const ruleset = findRuleset(meta.code);
+          const pending = ruleset?.provenance.dataStatus !== 'populated';
+          return (
+            <li>
+              <a
+                class={`tool-card ${pending ? 'tool-card--disabled' : ''}`}
+                href={`/${meta.slug}/`}
+              >
+                <strong>{meta.adjective} calculators</strong>
+                <p>
+                  Tax period {ruleset?.taxPeriod.label ?? 'unknown'}.
+                  {meta.regions.length > 0 &&
+                    ` Includes ${meta.regions.map((r) => r.label).join(', ')}.`}
+                </p>
+                {pending && <span class="pill pill--pending">Awaiting official source</span>}
+              </a>
+            </li>
+          );
+        })
+      }
+    </ul>
+  </section>
+
+  <section class="card" aria-labelledby="why-heading">
+    <h2 id="why-heading" style="margin-top:0;">
+      Why some of this site is deliberately switched off
+    </h2>
+    <p>
+      A take-home pay figure is only worth having if it is right. Every rate, threshold, and
+      contribution here has to be read from the tax authority that publishes it and checked by a
+      person before it goes live. Until that has happened for a country, its pages show you the
+      official sources and an explanation instead of a number, and they are kept out of search
+      results entirely.
+    </p>
+    <p style="margin-bottom:0;">
+      Right now {summary.withheld} of {summary.total} pages are held back on that basis. You can see exactly
+      which, and why, on the <a href="/tax-data-updates/">tax data update log</a>.
+    </p>
+  </section>
+</BaseLayout>

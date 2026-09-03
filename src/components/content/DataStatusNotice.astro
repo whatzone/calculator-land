@@ -1,0 +1,44 @@
+---
+/**
+ * The honest explanation shown wherever a jurisdiction's rules are not yet
+ * verified.
+ *
+ * This is the most important component on the site right now. It replaces a
+ * confident wrong number with a plain account of what is missing, why, and what
+ * the reader can do instead — which is the only defensible thing to show when
+ * the rules could not be confirmed against the authority that sets them.
+ */
+import { formatDate } from '../../lib/formatting/index.ts';
+import type { Ruleset } from '../../lib/validation/ruleset-schema.ts';
+
+interface Props {
+  ruleset: Ruleset;
+  jurisdictionName: string;
+}
+const { ruleset, jurisdictionName } = Astro.props;
+
+const awaiting = ruleset.provenance.dataStatus !== 'populated';
+---
+
+{
+  awaiting && (
+    <div class="notice notice--unsupported" role="note">
+      <p class="notice__title">This calculator is not live yet</p>
+      <p>
+        The {ruleset.taxPeriod.label} rules for {jurisdictionName} have not been verified against
+        the official source, so this page will not show you a figure. Publishing a take-home number
+        that nobody has checked against the tax authority would be worse than showing none at all.
+      </p>
+      <p>
+        Every source it needs is listed below, with links straight to the authority. Until each one
+        has been read and compared by a person, this page stays out of search results and out of the
+        sitemap.
+      </p>
+      <p class="small muted" style="margin-bottom:0;">
+        Tax period {ruleset.taxPeriod.label} runs from {formatDate(ruleset.taxPeriod.startDate)} to{' '}
+        {formatDate(ruleset.taxPeriod.endDate)}. Status: {ruleset.status}, data{' '}
+        {ruleset.provenance.dataStatus}.
+      </p>
+    </div>
+  )
+}

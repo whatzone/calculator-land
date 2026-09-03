@@ -1,0 +1,111 @@
+/*
+ * Design tokens.
+ *
+ * The target is a modern public-service utility: quiet, dense with real
+ * information, and obviously not trying to sell anything. One accessible blue
+ * carries every action; one restrained green marks take-home pay. Nothing else
+ * is allowed to be a brand colour.
+ */
+:root {
+  color-scheme: light;
+
+  /* Surfaces */
+  --surface: #ffffff;
+  --surface-sunken: #f6f7f9;
+  --surface-raised: #ffffff;
+  --surface-accent: #eef4fb;
+  --surface-success: #edf7f0;
+  --surface-warning: #fdf6e8;
+  --surface-danger: #fdf0ef;
+
+  /* Text */
+  --ink: #16202c;
+  --ink-muted: #4d5a6b;
+  /* 5.03:1 against the palest surface in the set. #6b7889 measured 4.04:1
+     against the accent surface, which fails WCAG AA for body-size text. */
+  --ink-subtle: #5c6979;
+  --ink-inverse: #ffffff;
+
+  /* Lines */
+  --line: #dde2e9;
+  --line-strong: #c3ccd7;
+
+  /* Accents. Both meet 4.5:1 against --surface for their text uses. */
+  --accent: #10529b;
+  --accent-hover: #0c4180;
+  --accent-ink: #0b3c76;
+  --success: #1c6b3f;
+  --success-ink: #14512f;
+  --warning-ink: #7a5406;
+  --danger-ink: #97281f;
+
+  /* Type. A system stack: nothing to download, nothing to shift. */
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+    'Noto Sans', sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, monospace;
+
+  --text-xs: 0.78rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.375rem;
+  --text-2xl: 1.75rem;
+  --text-3xl: 2.25rem;
+  --text-headline: clamp(2rem, 1.4rem + 2.6vw, 3.25rem);
+
+  /* Space */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+
+  --radius: 8px;
+  --radius-lg: 12px;
+
+  --shadow-sm: 0 1px 2px rgb(22 32 44 / 0.06);
+  --shadow: 0 2px 8px rgb(22 32 44 / 0.08);
+
+  --measure: 68ch;
+  --page-max: 1180px;
+
+  /* Every interactive target is at least this tall. */
+  --target: 44px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+
+    --surface: #12181f;
+    --surface-sunken: #0d1319;
+    --surface-raised: #18202a;
+    --surface-accent: #14263c;
+    --surface-success: #12261a;
+    --surface-warning: #2a2312;
+    --surface-danger: #2b1715;
+
+    --ink: #e9eef4;
+    --ink-muted: #a9b6c5;
+    --ink-subtle: #8695a6;
+    --ink-inverse: #0d1319;
+
+    --line: #27313d;
+    --line-strong: #3a4653;
+
+    --accent: #6fa8e8;
+    --accent-hover: #8dbcf0;
+    --accent-ink: #a8cbf2;
+    --success: #6cc48d;
+    --success-ink: #8ed8a8;
+    --warning-ink: #e0bd6a;
+    --danger-ink: #f0a49c;
+
+    --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
+    --shadow: 0 2px 8px rgb(0 0 0 / 0.45);
+  }
+}

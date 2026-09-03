@@ -1,0 +1,56 @@
+---
+/**
+ * The calculator form.
+ *
+ * It is a real HTML form with a real submit button, so it is complete before
+ * any JavaScript runs. Where a static result has been pre-rendered — the
+ * curated salary pages — the page is fully useful with scripting disabled.
+ * The client script upgrades submission to in-place recalculation and
+ * announces the new figure to assistive technology.
+ */
+import FormField from './FormField.astro';
+import type { AnyCalculatorDefinition } from '../../lib/registry/types.ts';
+
+interface Props {
+  calculator: AnyCalculatorDefinition;
+  values?: Record<string, string | number | boolean>;
+  actionPath: string;
+}
+const { calculator, values = {}, actionPath } = Astro.props;
+
+const basicFields = calculator.fields.filter((field) => !field.advanced);
+const advancedFields = calculator.fields.filter((field) => field.advanced);
+---
+
+<form
+  class="card calculator-form"
+  method="get"
+  action={actionPath}
+  data-calculator={calculator.id}
+  data-family={calculator.family}
+  data-jurisdiction={(calculator.jurisdictions as readonly string[])[0]}
+  novalidate
+>
+  <h2 class="panel-title" style="margin-top:0;">Your details</h2>
+
+  {basicFields.map((field) => <FormField field={field} value={values[field.name]} />)}
+
+  {
+    advancedFields.length > 0 && (
+      <details class="advanced" data-advanced>
+        <summary>Advanced options</summary>
+        <div>
+          {advancedFields.map((field) => (
+            <FormField field={field} value={values[field.name]} />
+          ))}
+        </div>
+      </details>
+    )
+  }
+
+  <button class="btn btn--primary" type="submit">Calculate</button>
+  <p class="field__help" style="margin-top:0.75rem;">
+    Nothing you enter is sent anywhere. The calculation runs in your browser, and the figures you
+    type are never included in analytics.
+  </p>
+</form>

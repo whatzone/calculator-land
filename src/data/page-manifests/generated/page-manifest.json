@@ -1,0 +1,2531 @@
+{
+  "generatedFrom": "src/lib/seo/manifest.ts",
+  "summary": {
+    "total": 145,
+    "indexable": 18,
+    "withheld": 127,
+    "byTemplate": {
+      "home": {
+        "total": 1,
+        "indexable": 1
+      },
+      "family-hub": {
+        "total": 2,
+        "indexable": 2
+      },
+      "directory": {
+        "total": 1,
+        "indexable": 1
+      },
+      "content": {
+        "total": 7,
+        "indexable": 7
+      },
+      "legal": {
+        "total": 4,
+        "indexable": 4
+      },
+      "country-hub": {
+        "total": 5,
+        "indexable": 0
+      },
+      "calculator": {
+        "total": 23,
+        "indexable": 3
+      },
+      "salary-result": {
+        "total": 102,
+        "indexable": 0
+      }
+    },
+    "allowIndexing": false
+  },
+  "pages": [
+    {
+      "path": "/",
+      "template": "home",
+      "title": "ClearFigures — Transparent salary, tax and mortgage calculators",
+      "description": "Understand what you earn, what is deducted, and what changes when your pay changes — using transparent calculators sourced from official tax authorities.",
+      "indexable": true,
+      "blockers": [],
+      "inSitemap": true,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/salary-tax-calculators/",
+      "template": "family-hub",
+      "title": "Salary & Tax Calculators | ClearFigures",
+      "description": "Take-home pay, net-to-gross, bonus, and pay-rise calculators for every market we cover.",
+      "indexable": true,
+      "blockers": [],
+      "inSitemap": true,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/mortgage-calculators/",
+      "template": "family-hub",
+      "title": "Mortgage Calculators | ClearFigures",
+      "description": "Repayment, amortisation, and overpayment calculators with the formulas and assumptions shown.",
+      "indexable": true,
+      "blockers": [],
+      "inSitemap": true,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/calculators/",
+      "template": "directory",
+      "title": "All Calculators | ClearFigures",
+      "description": "Every calculator on the site, grouped by what it does and where it applies.",
+      "indexable": true,
+      "blockers": [],
+      "inSitemap": true,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/methodology/",
+      "template": "content",
+      "title": "How These Calculators Work | ClearFigures",
+      "description": "Progressive bands, marginal versus average rates, contribution handling, annualisation, and rounding, explained plainly.",
+      "indexable": true,
+      "blockers": [],
+      "inSitemap": true,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/sources/",
+      "template": "content",
+      "title": "Official Sources | ClearFigures",
+      "description": "Every official source behind these calculators, grouped by country and tax period, with the date each was checked.",
+      "indexable": true,
+      "blockers": [],
+      "inSitemap": true,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/tax-data-updates/",
+      "template": "content",
+      "title": "Tax Data Update Log | ClearFigures",
+      "description": "A dated record of every change to the tax rules behind these calculators.",
+      "indexable": true,
+      "blockers": [],
+      "inSitemap": true,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/editorial-policy/",
+      "template": "content",
+      "title": "Editorial Policy | ClearFigures",
+      "description": "How rules are researched, reviewed, and published, and what that review does and does not amount to.",
+      "indexable": true,
+      "blockers": [],
+      "inSitemap": true,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/corrections/",
+      "template": "content",
+      "title": "Corrections | ClearFigures",
+      "description": "How to report an error in a calculation, and how corrections are handled.",
+      "indexable": true,
+      "blockers": [],
+      "inSitemap": true,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/about/",
+      "template": "content",
+      "title": "About ClearFigures",
+      "description": "What ClearFigures is for and who builds it.",
+      "indexable": true,
+      "blockers": [],
+      "inSitemap": true,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/contact/",
+      "template": "content",
+      "title": "Contact ClearFigures",
+      "description": "How to get in touch with ClearFigures.",
+      "indexable": true,
+      "blockers": [],
+      "inSitemap": true,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/privacy/",
+      "template": "legal",
+      "title": "Privacy Notice | ClearFigures",
+      "description": "What is and is not collected when you use these calculators.",
+      "indexable": true,
+      "blockers": [],
+      "inSitemap": true,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/cookies/",
+      "template": "legal",
+      "title": "Cookies | ClearFigures",
+      "description": "Which cookies and similar technologies this site uses.",
+      "indexable": true,
+      "blockers": [],
+      "inSitemap": true,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/terms/",
+      "template": "legal",
+      "title": "Terms of Use | ClearFigures",
+      "description": "The terms on which this site is provided.",
+      "indexable": true,
+      "blockers": [],
+      "inSitemap": true,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/disclaimer/",
+      "template": "legal",
+      "title": "Disclaimer | ClearFigures",
+      "description": "These calculators produce estimates and are not tax, legal, mortgage, or financial advice.",
+      "indexable": true,
+      "blockers": [],
+      "inSitemap": true,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/uk/",
+      "template": "country-hub",
+      "title": "UK Salary & Tax Calculators (2026/27)",
+      "description": "Take-home pay, bonus, and pay-rise calculators for the UK, with sources and assumptions shown on every result.",
+      "indexable": false,
+      "blockers": [
+        "No calculator for the UK is indexable yet, so the hub has nothing to link to."
+      ],
+      "inSitemap": false,
+      "jurisdiction": "uk",
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/ireland/",
+      "template": "country-hub",
+      "title": "Irish Salary & Tax Calculators (2026)",
+      "description": "Take-home pay, bonus, and pay-rise calculators for Ireland, with sources and assumptions shown on every result.",
+      "indexable": false,
+      "blockers": [
+        "No calculator for Ireland is indexable yet, so the hub has nothing to link to."
+      ],
+      "inSitemap": false,
+      "jurisdiction": "ireland",
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/australia/",
+      "template": "country-hub",
+      "title": "Australian Salary & Tax Calculators (2026-27)",
+      "description": "Take-home pay, bonus, and pay-rise calculators for Australia, with sources and assumptions shown on every result.",
+      "indexable": false,
+      "blockers": [
+        "No calculator for Australia is indexable yet, so the hub has nothing to link to."
+      ],
+      "inSitemap": false,
+      "jurisdiction": "australia",
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/new-zealand/",
+      "template": "country-hub",
+      "title": "New Zealand Salary & Tax Calculators (2026-27)",
+      "description": "Take-home pay, bonus, and pay-rise calculators for New Zealand, with sources and assumptions shown on every result.",
+      "indexable": false,
+      "blockers": [
+        "No calculator for New Zealand is indexable yet, so the hub has nothing to link to."
+      ],
+      "inSitemap": false,
+      "jurisdiction": "new-zealand",
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/canada/",
+      "template": "country-hub",
+      "title": "Canadian Salary & Tax Calculators (2026)",
+      "description": "Take-home pay, bonus, and pay-rise calculators for Canada, with sources and assumptions shown on every result.",
+      "indexable": false,
+      "blockers": [
+        "No calculator for Canada is indexable yet, so the hub has nothing to link to."
+      ],
+      "inSitemap": false,
+      "jurisdiction": "canada",
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/uk/salary-calculator/",
+      "template": "calculator",
+      "title": "UK Salary Calculator 2026/27",
+      "description": "Free UK salary calculator for 2026/27. See your take-home pay a year, a month and a week, with an itemised breakdown of every deduction.",
+      "indexable": false,
+      "blockers": [
+        "uk: rate tables are empty (awaiting-official-source).",
+        "No cited source carries a checked-on date."
+      ],
+      "inSitemap": false,
+      "calculatorId": "uk-salary",
+      "jurisdiction": "uk",
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/uk/net-to-gross-calculator/",
+      "template": "calculator",
+      "title": "UK Net to Gross Salary Calculator 2026/27",
+      "description": "Work out the gross salary you need in the UK to take home a given amount, for 2026/27.",
+      "indexable": false,
+      "blockers": [
+        "uk: rate tables are empty (awaiting-official-source).",
+        "No cited source carries a checked-on date."
+      ],
+      "inSitemap": false,
+      "calculatorId": "uk-net-to-gross",
+      "jurisdiction": "uk",
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/uk/bonus-tax-calculator/",
+      "template": "calculator",
+      "title": "UK Bonus Tax Calculator 2026/27",
+      "description": "Work out how much of your bonus you keep in the UK after tax and contributions, for 2026/27.",
+      "indexable": false,
+      "blockers": [
+        "uk: rate tables are empty (awaiting-official-source).",
+        "No cited source carries a checked-on date."
+      ],
+      "inSitemap": false,
+      "calculatorId": "uk-bonus",
+      "jurisdiction": "uk",
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/uk/pay-rise-calculator/",
+      "template": "calculator",
+      "title": "UK Pay Rise Calculator 2026/27",
+      "description": "See how much extra take-home pay a rise gives you in the UK, and how much of it you keep, for 2026/27.",
+      "indexable": false,
+      "blockers": [
+        "uk: rate tables are empty (awaiting-official-source).",
+        "No cited source carries a checked-on date."
+      ],
+      "inSitemap": false,
+      "calculatorId": "uk-pay-rise",
+      "jurisdiction": "uk",
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/ireland/salary-calculator/",
+      "template": "calculator",
+      "title": "Irish Salary Calculator 2026",
+      "description": "Free Irish salary calculator for 2026. See your take-home pay a year, a month and a week, with an itemised breakdown of every deduction.",
+      "indexable": false,
+      "blockers": [
+        "ireland: rate tables are empty (awaiting-official-source).",
+        "No cited source carries a checked-on date."
+      ],
+      "inSitemap": false,
+      "calculatorId": "ireland-salary",
+      "jurisdiction": "ireland",
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/ireland/net-to-gross-calculator/",
+      "template": "calculator",
+      "title": "Irish Net to Gross Salary Calculator 2026",
+      "description": "Work out the gross salary you need in Ireland to take home a given amount, for 2026.",
+      "indexable": false,
+      "blockers": [
+        "ireland: rate tables are empty (awaiting-official-source).",
+        "No cited source carries a checked-on date."
+      ],
+      "inSitemap": false,
+      "calculatorId": "ireland-net-to-gross",
+      "jurisdiction": "ireland",
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/ireland/bonus-tax-calculator/",
+      "template": "calculator",
+      "title": "Irish Bonus Tax Calculator 2026",
+      "description": "Work out how much of your bonus you keep in Ireland after tax and contributions, for 2026.",
+      "indexable": false,
+      "blockers": [
+        "ireland: rate tables are empty (awaiting-official-source).",
+        "No cited source carries a checked-on date."
+      ],
+      "inSitemap": false,
+      "calculatorId": "ireland-bonus",
+      "jurisdiction": "ireland",
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/ireland/pay-rise-calculator/",
+      "template": "calculator",
+      "title": "Irish Pay Rise Calculator 2026",
+      "description": "See how much extra take-home pay a rise gives you in Ireland, and how much of it you keep, for 2026.",
+      "indexable": false,
+      "blockers": [
+        "ireland: rate tables are empty (awaiting-official-source).",
+        "No cited source carries a checked-on date."
+      ],
+      "inSitemap": false,
+      "calculatorId": "ireland-pay-rise",
+      "jurisdiction": "ireland",
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/australia/salary-calculator/",
+      "template": "calculator",
+      "title": "Australian Salary Calculator 2026-27",
+      "description": "Free Australian salary calculator for 2026-27. See your take-home pay a year, a month and a week, with an itemised breakdown of every deduction.",
+      "indexable": false,
+      "blockers": [
+        "australia: rate tables are empty (awaiting-official-source).",
+        "No cited source carries a checked-on date."
+      ],
+      "inSitemap": false,
+      "calculatorId": "australia-salary",
+      "jurisdiction": "australia",
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/australia/net-to-gross-calculator/",
+      "template": "calculator",
+      "title": "Australian Net to Gross Salary Calculator 2026-27",
+      "description": "Work out the gross salary you need in Australia to take home a given amount, for 2026-27.",
+      "indexable": false,
+      "blockers": [
+        "australia: rate tables are empty (awaiting-official-source).",
+        "No cited source carries a checked-on date."
+      ],
+      "inSitemap": false,
+      "calculatorId": "australia-net-to-gross",
+      "jurisdiction": "australia",
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/australia/bonus-tax-calculator/",
+      "template": "calculator",
+      "title": "Australian Bonus Tax Calculator 2026-27",
+      "description": "Work out how much of your bonus you keep in Australia after tax and contributions, for 2026-27.",
+      "indexable": false,
+      "blockers": [
+        "australia: rate tables are empty (awaiting-official-source).",
+        "No cited source carries a checked-on date."
+      ],
+      "inSitemap": false,
+      "calculatorId": "australia-bonus",
+      "jurisdiction": "australia",
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/australia/pay-rise-calculator/",
+      "template": "calculator",
+      "title": "Australian Pay Rise Calculator 2026-27",
+      "description": "See how much extra take-home pay a rise gives you in Australia, and how much of it you keep, for 2026-27.",
+      "indexable": false,
+      "blockers": [
+        "australia: rate tables are empty (awaiting-official-source).",
+        "No cited source carries a checked-on date."
+      ],
+      "inSitemap": false,
+      "calculatorId": "australia-pay-rise",
+      "jurisdiction": "australia",
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/new-zealand/salary-calculator/",
+      "template": "calculator",
+      "title": "New Zealand Salary Calculator 2026-27",
+      "description": "Free New Zealand salary calculator for 2026-27. See your take-home pay a year, a month and a week, with an itemised breakdown of every deduction.",
+      "indexable": false,
+      "blockers": [
+        "new-zealand: rate tables are empty (awaiting-official-source).",
+        "No cited source carries a checked-on date."
+      ],
+      "inSitemap": false,
+      "calculatorId": "new-zealand-salary",
+      "jurisdiction": "new-zealand",
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/new-zealand/net-to-gross-calculator/",
+      "template": "calculator",
+      "title": "New Zealand Net to Gross Salary Calculator 2026-27",
+      "description": "Work out the gross salary you need in New Zealand to take home a given amount, for 2026-27.",
+      "indexable": false,
+      "blockers": [
+        "new-zealand: rate tables are empty (awaiting-official-source).",
+        "No cited source carries a checked-on date."
+      ],
+      "inSitemap": false,
+      "calculatorId": "new-zealand-net-to-gross",
+      "jurisdiction": "new-zealand",
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/new-zealand/bonus-tax-calculator/",
+      "template": "calculator",
+      "title": "New Zealand Bonus Tax Calculator 2026-27",
+      "description": "Work out how much of your bonus you keep in New Zealand after tax and contributions, for 2026-27.",
+      "indexable": false,
+      "blockers": [
+        "new-zealand: rate tables are empty (awaiting-official-source).",
+        "No cited source carries a checked-on date."
+      ],
+      "inSitemap": false,
+      "calculatorId": "new-zealand-bonus",
+      "jurisdiction": "new-zealand",
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/new-zealand/pay-rise-calculator/",
+      "template": "calculator",
+      "title": "New Zealand Pay Rise Calculator 2026-27",
+      "description": "See how much extra take-home pay a rise gives you in New Zealand, and how much of it you keep, for 2026-27.",
+      "indexable": false,
+      "blockers": [
+        "new-zealand: rate tables are empty (awaiting-official-source).",
+        "No cited source carries a checked-on date."
+      ],
+      "inSitemap": false,
+      "calculatorId": "new-zealand-pay-rise",
+      "jurisdiction": "new-zealand",
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/canada/salary-calculator/",
+      "template": "calculator",
+      "title": "Canadian Salary Calculator 2026",
+      "description": "Free Canadian salary calculator for 2026. See your take-home pay a year, a month and a week, with an itemised breakdown of every deduction.",
+      "indexable": false,
+      "blockers": [
+        "canada: rate tables are empty (awaiting-official-source).",
+        "No cited source carries a checked-on date."
+      ],
+      "inSitemap": false,
+      "calculatorId": "canada-salary",
+      "jurisdiction": "canada",
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/canada/net-to-gross-calculator/",
+      "template": "calculator",
+      "title": "Canadian Net to Gross Salary Calculator 2026",
+      "description": "Work out the gross salary you need in Canada to take home a given amount, for 2026.",
+      "indexable": false,
+      "blockers": [
+        "canada: rate tables are empty (awaiting-official-source).",
+        "No cited source carries a checked-on date."
+      ],
+      "inSitemap": false,
+      "calculatorId": "canada-net-to-gross",
+      "jurisdiction": "canada",
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/canada/bonus-tax-calculator/",
+      "template": "calculator",
+      "title": "Canadian Bonus Tax Calculator 2026",
+      "description": "Work out how much of your bonus you keep in Canada after tax and contributions, for 2026.",
+      "indexable": false,
+      "blockers": [
+        "canada: rate tables are empty (awaiting-official-source).",
+        "No cited source carries a checked-on date."
+      ],
+      "inSitemap": false,
+      "calculatorId": "canada-bonus",
+      "jurisdiction": "canada",
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/canada/pay-rise-calculator/",
+      "template": "calculator",
+      "title": "Canadian Pay Rise Calculator 2026",
+      "description": "See how much extra take-home pay a rise gives you in Canada, and how much of it you keep, for 2026.",
+      "indexable": false,
+      "blockers": [
+        "canada: rate tables are empty (awaiting-official-source).",
+        "No cited source carries a checked-on date."
+      ],
+      "inSitemap": false,
+      "calculatorId": "canada-pay-rise",
+      "jurisdiction": "canada",
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/calculators/hourly-to-salary/",
+      "template": "calculator",
+      "title": "Hourly to Salary Calculator",
+      "description": "Convert hourly pay to an annual salary, or an annual salary back to an hourly rate, using your own hours per week and weeks per year.",
+      "indexable": true,
+      "blockers": [],
+      "inSitemap": true,
+      "calculatorId": "global-hourly-to-salary",
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/mortgage-calculators/monthly-payment/",
+      "template": "calculator",
+      "title": "Mortgage Payment Calculator",
+      "description": "Calculate a repayment mortgage monthly payment, total interest, and full amortisation schedule, with the formula and assumptions shown.",
+      "indexable": true,
+      "blockers": [],
+      "inSitemap": true,
+      "calculatorId": "global-mortgage-payment",
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/mortgage-calculators/overpayment/",
+      "template": "calculator",
+      "title": "Mortgage Overpayment Calculator",
+      "description": "See how much interest a mortgage overpayment saves and how many years it takes off the term, compared side by side with the original schedule.",
+      "indexable": true,
+      "blockers": [],
+      "inSitemap": true,
+      "calculatorId": "global-mortgage-overpayment",
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/uk/salary/18000-after-tax/",
+      "template": "salary-result",
+      "title": "£18,000 After Tax in the UK (2026/27)",
+      "description": "A full breakdown of what £18,000 a year is after tax in the UK for 2026/27, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026/27 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "uk-salary",
+      "jurisdiction": "uk",
+      "region": null,
+      "amount": 18000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/uk/salary/20000-after-tax/",
+      "template": "salary-result",
+      "title": "£20,000 After Tax in the UK (2026/27)",
+      "description": "A full breakdown of what £20,000 a year is after tax in the UK for 2026/27, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026/27 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "uk-salary",
+      "jurisdiction": "uk",
+      "region": null,
+      "amount": 20000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/uk/salary/22000-after-tax/",
+      "template": "salary-result",
+      "title": "£22,000 After Tax in the UK (2026/27)",
+      "description": "A full breakdown of what £22,000 a year is after tax in the UK for 2026/27, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026/27 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "uk-salary",
+      "jurisdiction": "uk",
+      "region": null,
+      "amount": 22000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/uk/salary/25000-after-tax/",
+      "template": "salary-result",
+      "title": "£25,000 After Tax in the UK (2026/27)",
+      "description": "A full breakdown of what £25,000 a year is after tax in the UK for 2026/27, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026/27 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "uk-salary",
+      "jurisdiction": "uk",
+      "region": null,
+      "amount": 25000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/uk/salary/28000-after-tax/",
+      "template": "salary-result",
+      "title": "£28,000 After Tax in the UK (2026/27)",
+      "description": "A full breakdown of what £28,000 a year is after tax in the UK for 2026/27, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026/27 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "uk-salary",
+      "jurisdiction": "uk",
+      "region": null,
+      "amount": 28000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/uk/salary/30000-after-tax/",
+      "template": "salary-result",
+      "title": "£30,000 After Tax in the UK (2026/27)",
+      "description": "A full breakdown of what £30,000 a year is after tax in the UK for 2026/27, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026/27 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "uk-salary",
+      "jurisdiction": "uk",
+      "region": null,
+      "amount": 30000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/uk/salary/32000-after-tax/",
+      "template": "salary-result",
+      "title": "£32,000 After Tax in the UK (2026/27)",
+      "description": "A full breakdown of what £32,000 a year is after tax in the UK for 2026/27, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026/27 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "uk-salary",
+      "jurisdiction": "uk",
+      "region": null,
+      "amount": 32000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/uk/salary/35000-after-tax/",
+      "template": "salary-result",
+      "title": "£35,000 After Tax in the UK (2026/27)",
+      "description": "A full breakdown of what £35,000 a year is after tax in the UK for 2026/27, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026/27 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "uk-salary",
+      "jurisdiction": "uk",
+      "region": null,
+      "amount": 35000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/uk/salary/40000-after-tax/",
+      "template": "salary-result",
+      "title": "£40,000 After Tax in the UK (2026/27)",
+      "description": "A full breakdown of what £40,000 a year is after tax in the UK for 2026/27, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026/27 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "uk-salary",
+      "jurisdiction": "uk",
+      "region": null,
+      "amount": 40000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/uk/salary/45000-after-tax/",
+      "template": "salary-result",
+      "title": "£45,000 After Tax in the UK (2026/27)",
+      "description": "A full breakdown of what £45,000 a year is after tax in the UK for 2026/27, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026/27 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "uk-salary",
+      "jurisdiction": "uk",
+      "region": null,
+      "amount": 45000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/uk/salary/50000-after-tax/",
+      "template": "salary-result",
+      "title": "£50,000 After Tax in the UK (2026/27)",
+      "description": "A full breakdown of what £50,000 a year is after tax in the UK for 2026/27, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026/27 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "uk-salary",
+      "jurisdiction": "uk",
+      "region": null,
+      "amount": 50000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/uk/salary/60000-after-tax/",
+      "template": "salary-result",
+      "title": "£60,000 After Tax in the UK (2026/27)",
+      "description": "A full breakdown of what £60,000 a year is after tax in the UK for 2026/27, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026/27 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "uk-salary",
+      "jurisdiction": "uk",
+      "region": null,
+      "amount": 60000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/uk/salary/75000-after-tax/",
+      "template": "salary-result",
+      "title": "£75,000 After Tax in the UK (2026/27)",
+      "description": "A full breakdown of what £75,000 a year is after tax in the UK for 2026/27, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026/27 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "uk-salary",
+      "jurisdiction": "uk",
+      "region": null,
+      "amount": 75000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/uk/salary/100000-after-tax/",
+      "template": "salary-result",
+      "title": "£100,000 After Tax in the UK (2026/27)",
+      "description": "A full breakdown of what £100,000 a year is after tax in the UK for 2026/27, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026/27 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "uk-salary",
+      "jurisdiction": "uk",
+      "region": null,
+      "amount": 100000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/uk/salary/125000-after-tax/",
+      "template": "salary-result",
+      "title": "£125,000 After Tax in the UK (2026/27)",
+      "description": "A full breakdown of what £125,000 a year is after tax in the UK for 2026/27, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026/27 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "uk-salary",
+      "jurisdiction": "uk",
+      "region": null,
+      "amount": 125000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/uk/salary/150000-after-tax/",
+      "template": "salary-result",
+      "title": "£150,000 After Tax in the UK (2026/27)",
+      "description": "A full breakdown of what £150,000 a year is after tax in the UK for 2026/27, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026/27 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "uk-salary",
+      "jurisdiction": "uk",
+      "region": null,
+      "amount": 150000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/uk/scotland/salary/18000-after-tax/",
+      "template": "salary-result",
+      "title": "£18,000 After Tax in Scotland (2026/27)",
+      "description": "A full breakdown of what £18,000 a year is after tax in Scotland for 2026/27, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026/27 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "uk-salary",
+      "jurisdiction": "uk",
+      "region": "scotland",
+      "amount": 18000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/uk/scotland/salary/20000-after-tax/",
+      "template": "salary-result",
+      "title": "£20,000 After Tax in Scotland (2026/27)",
+      "description": "A full breakdown of what £20,000 a year is after tax in Scotland for 2026/27, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026/27 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "uk-salary",
+      "jurisdiction": "uk",
+      "region": "scotland",
+      "amount": 20000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/uk/scotland/salary/22000-after-tax/",
+      "template": "salary-result",
+      "title": "£22,000 After Tax in Scotland (2026/27)",
+      "description": "A full breakdown of what £22,000 a year is after tax in Scotland for 2026/27, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026/27 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "uk-salary",
+      "jurisdiction": "uk",
+      "region": "scotland",
+      "amount": 22000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/uk/scotland/salary/25000-after-tax/",
+      "template": "salary-result",
+      "title": "£25,000 After Tax in Scotland (2026/27)",
+      "description": "A full breakdown of what £25,000 a year is after tax in Scotland for 2026/27, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026/27 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "uk-salary",
+      "jurisdiction": "uk",
+      "region": "scotland",
+      "amount": 25000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/uk/scotland/salary/28000-after-tax/",
+      "template": "salary-result",
+      "title": "£28,000 After Tax in Scotland (2026/27)",
+      "description": "A full breakdown of what £28,000 a year is after tax in Scotland for 2026/27, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026/27 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "uk-salary",
+      "jurisdiction": "uk",
+      "region": "scotland",
+      "amount": 28000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/uk/scotland/salary/30000-after-tax/",
+      "template": "salary-result",
+      "title": "£30,000 After Tax in Scotland (2026/27)",
+      "description": "A full breakdown of what £30,000 a year is after tax in Scotland for 2026/27, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026/27 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "uk-salary",
+      "jurisdiction": "uk",
+      "region": "scotland",
+      "amount": 30000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/uk/scotland/salary/32000-after-tax/",
+      "template": "salary-result",
+      "title": "£32,000 After Tax in Scotland (2026/27)",
+      "description": "A full breakdown of what £32,000 a year is after tax in Scotland for 2026/27, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026/27 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "uk-salary",
+      "jurisdiction": "uk",
+      "region": "scotland",
+      "amount": 32000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/uk/scotland/salary/35000-after-tax/",
+      "template": "salary-result",
+      "title": "£35,000 After Tax in Scotland (2026/27)",
+      "description": "A full breakdown of what £35,000 a year is after tax in Scotland for 2026/27, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026/27 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "uk-salary",
+      "jurisdiction": "uk",
+      "region": "scotland",
+      "amount": 35000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/uk/scotland/salary/40000-after-tax/",
+      "template": "salary-result",
+      "title": "£40,000 After Tax in Scotland (2026/27)",
+      "description": "A full breakdown of what £40,000 a year is after tax in Scotland for 2026/27, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026/27 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "uk-salary",
+      "jurisdiction": "uk",
+      "region": "scotland",
+      "amount": 40000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/uk/scotland/salary/45000-after-tax/",
+      "template": "salary-result",
+      "title": "£45,000 After Tax in Scotland (2026/27)",
+      "description": "A full breakdown of what £45,000 a year is after tax in Scotland for 2026/27, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026/27 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "uk-salary",
+      "jurisdiction": "uk",
+      "region": "scotland",
+      "amount": 45000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/uk/scotland/salary/50000-after-tax/",
+      "template": "salary-result",
+      "title": "£50,000 After Tax in Scotland (2026/27)",
+      "description": "A full breakdown of what £50,000 a year is after tax in Scotland for 2026/27, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026/27 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "uk-salary",
+      "jurisdiction": "uk",
+      "region": "scotland",
+      "amount": 50000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/uk/scotland/salary/60000-after-tax/",
+      "template": "salary-result",
+      "title": "£60,000 After Tax in Scotland (2026/27)",
+      "description": "A full breakdown of what £60,000 a year is after tax in Scotland for 2026/27, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026/27 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "uk-salary",
+      "jurisdiction": "uk",
+      "region": "scotland",
+      "amount": 60000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/uk/scotland/salary/75000-after-tax/",
+      "template": "salary-result",
+      "title": "£75,000 After Tax in Scotland (2026/27)",
+      "description": "A full breakdown of what £75,000 a year is after tax in Scotland for 2026/27, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026/27 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "uk-salary",
+      "jurisdiction": "uk",
+      "region": "scotland",
+      "amount": 75000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/uk/scotland/salary/100000-after-tax/",
+      "template": "salary-result",
+      "title": "£100,000 After Tax in Scotland (2026/27)",
+      "description": "A full breakdown of what £100,000 a year is after tax in Scotland for 2026/27, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026/27 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "uk-salary",
+      "jurisdiction": "uk",
+      "region": "scotland",
+      "amount": 100000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/uk/scotland/salary/125000-after-tax/",
+      "template": "salary-result",
+      "title": "£125,000 After Tax in Scotland (2026/27)",
+      "description": "A full breakdown of what £125,000 a year is after tax in Scotland for 2026/27, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026/27 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "uk-salary",
+      "jurisdiction": "uk",
+      "region": "scotland",
+      "amount": 125000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/uk/scotland/salary/150000-after-tax/",
+      "template": "salary-result",
+      "title": "£150,000 After Tax in Scotland (2026/27)",
+      "description": "A full breakdown of what £150,000 a year is after tax in Scotland for 2026/27, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026/27 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "uk-salary",
+      "jurisdiction": "uk",
+      "region": "scotland",
+      "amount": 150000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/ireland/salary/25000-after-tax/",
+      "template": "salary-result",
+      "title": "€25,000 After Tax in Ireland (2026)",
+      "description": "A full breakdown of what €25,000 a year is after tax in Ireland for 2026, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "ireland-salary",
+      "jurisdiction": "ireland",
+      "region": null,
+      "amount": 25000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/ireland/salary/30000-after-tax/",
+      "template": "salary-result",
+      "title": "€30,000 After Tax in Ireland (2026)",
+      "description": "A full breakdown of what €30,000 a year is after tax in Ireland for 2026, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "ireland-salary",
+      "jurisdiction": "ireland",
+      "region": null,
+      "amount": 30000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/ireland/salary/35000-after-tax/",
+      "template": "salary-result",
+      "title": "€35,000 After Tax in Ireland (2026)",
+      "description": "A full breakdown of what €35,000 a year is after tax in Ireland for 2026, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "ireland-salary",
+      "jurisdiction": "ireland",
+      "region": null,
+      "amount": 35000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/ireland/salary/40000-after-tax/",
+      "template": "salary-result",
+      "title": "€40,000 After Tax in Ireland (2026)",
+      "description": "A full breakdown of what €40,000 a year is after tax in Ireland for 2026, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "ireland-salary",
+      "jurisdiction": "ireland",
+      "region": null,
+      "amount": 40000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/ireland/salary/45000-after-tax/",
+      "template": "salary-result",
+      "title": "€45,000 After Tax in Ireland (2026)",
+      "description": "A full breakdown of what €45,000 a year is after tax in Ireland for 2026, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "ireland-salary",
+      "jurisdiction": "ireland",
+      "region": null,
+      "amount": 45000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/ireland/salary/50000-after-tax/",
+      "template": "salary-result",
+      "title": "€50,000 After Tax in Ireland (2026)",
+      "description": "A full breakdown of what €50,000 a year is after tax in Ireland for 2026, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "ireland-salary",
+      "jurisdiction": "ireland",
+      "region": null,
+      "amount": 50000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/ireland/salary/60000-after-tax/",
+      "template": "salary-result",
+      "title": "€60,000 After Tax in Ireland (2026)",
+      "description": "A full breakdown of what €60,000 a year is after tax in Ireland for 2026, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "ireland-salary",
+      "jurisdiction": "ireland",
+      "region": null,
+      "amount": 60000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/ireland/salary/75000-after-tax/",
+      "template": "salary-result",
+      "title": "€75,000 After Tax in Ireland (2026)",
+      "description": "A full breakdown of what €75,000 a year is after tax in Ireland for 2026, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "ireland-salary",
+      "jurisdiction": "ireland",
+      "region": null,
+      "amount": 75000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/ireland/salary/100000-after-tax/",
+      "template": "salary-result",
+      "title": "€100,000 After Tax in Ireland (2026)",
+      "description": "A full breakdown of what €100,000 a year is after tax in Ireland for 2026, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "ireland-salary",
+      "jurisdiction": "ireland",
+      "region": null,
+      "amount": 100000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/ireland/salary/125000-after-tax/",
+      "template": "salary-result",
+      "title": "€125,000 After Tax in Ireland (2026)",
+      "description": "A full breakdown of what €125,000 a year is after tax in Ireland for 2026, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "ireland-salary",
+      "jurisdiction": "ireland",
+      "region": null,
+      "amount": 125000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/australia/salary/40000-after-tax/",
+      "template": "salary-result",
+      "title": "$40,000 After Tax in Australia (2026-27)",
+      "description": "A full breakdown of what $40,000 a year is after tax in Australia for 2026-27, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026-27 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "australia-salary",
+      "jurisdiction": "australia",
+      "region": null,
+      "amount": 40000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/australia/salary/50000-after-tax/",
+      "template": "salary-result",
+      "title": "$50,000 After Tax in Australia (2026-27)",
+      "description": "A full breakdown of what $50,000 a year is after tax in Australia for 2026-27, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026-27 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "australia-salary",
+      "jurisdiction": "australia",
+      "region": null,
+      "amount": 50000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/australia/salary/60000-after-tax/",
+      "template": "salary-result",
+      "title": "$60,000 After Tax in Australia (2026-27)",
+      "description": "A full breakdown of what $60,000 a year is after tax in Australia for 2026-27, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026-27 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "australia-salary",
+      "jurisdiction": "australia",
+      "region": null,
+      "amount": 60000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/australia/salary/70000-after-tax/",
+      "template": "salary-result",
+      "title": "$70,000 After Tax in Australia (2026-27)",
+      "description": "A full breakdown of what $70,000 a year is after tax in Australia for 2026-27, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026-27 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "australia-salary",
+      "jurisdiction": "australia",
+      "region": null,
+      "amount": 70000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/australia/salary/80000-after-tax/",
+      "template": "salary-result",
+      "title": "$80,000 After Tax in Australia (2026-27)",
+      "description": "A full breakdown of what $80,000 a year is after tax in Australia for 2026-27, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026-27 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "australia-salary",
+      "jurisdiction": "australia",
+      "region": null,
+      "amount": 80000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/australia/salary/90000-after-tax/",
+      "template": "salary-result",
+      "title": "$90,000 After Tax in Australia (2026-27)",
+      "description": "A full breakdown of what $90,000 a year is after tax in Australia for 2026-27, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026-27 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "australia-salary",
+      "jurisdiction": "australia",
+      "region": null,
+      "amount": 90000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/australia/salary/100000-after-tax/",
+      "template": "salary-result",
+      "title": "$100,000 After Tax in Australia (2026-27)",
+      "description": "A full breakdown of what $100,000 a year is after tax in Australia for 2026-27, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026-27 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "australia-salary",
+      "jurisdiction": "australia",
+      "region": null,
+      "amount": 100000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/australia/salary/120000-after-tax/",
+      "template": "salary-result",
+      "title": "$120,000 After Tax in Australia (2026-27)",
+      "description": "A full breakdown of what $120,000 a year is after tax in Australia for 2026-27, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026-27 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "australia-salary",
+      "jurisdiction": "australia",
+      "region": null,
+      "amount": 120000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/australia/salary/150000-after-tax/",
+      "template": "salary-result",
+      "title": "$150,000 After Tax in Australia (2026-27)",
+      "description": "A full breakdown of what $150,000 a year is after tax in Australia for 2026-27, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026-27 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "australia-salary",
+      "jurisdiction": "australia",
+      "region": null,
+      "amount": 150000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/australia/salary/200000-after-tax/",
+      "template": "salary-result",
+      "title": "$200,000 After Tax in Australia (2026-27)",
+      "description": "A full breakdown of what $200,000 a year is after tax in Australia for 2026-27, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026-27 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "australia-salary",
+      "jurisdiction": "australia",
+      "region": null,
+      "amount": 200000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/new-zealand/salary/40000-after-tax/",
+      "template": "salary-result",
+      "title": "$40,000 After Tax in New Zealand (2026-27)",
+      "description": "A full breakdown of what $40,000 a year is after tax in New Zealand for 2026-27, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026-27 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "new-zealand-salary",
+      "jurisdiction": "new-zealand",
+      "region": null,
+      "amount": 40000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/new-zealand/salary/50000-after-tax/",
+      "template": "salary-result",
+      "title": "$50,000 After Tax in New Zealand (2026-27)",
+      "description": "A full breakdown of what $50,000 a year is after tax in New Zealand for 2026-27, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026-27 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "new-zealand-salary",
+      "jurisdiction": "new-zealand",
+      "region": null,
+      "amount": 50000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/new-zealand/salary/60000-after-tax/",
+      "template": "salary-result",
+      "title": "$60,000 After Tax in New Zealand (2026-27)",
+      "description": "A full breakdown of what $60,000 a year is after tax in New Zealand for 2026-27, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026-27 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "new-zealand-salary",
+      "jurisdiction": "new-zealand",
+      "region": null,
+      "amount": 60000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/new-zealand/salary/70000-after-tax/",
+      "template": "salary-result",
+      "title": "$70,000 After Tax in New Zealand (2026-27)",
+      "description": "A full breakdown of what $70,000 a year is after tax in New Zealand for 2026-27, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026-27 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "new-zealand-salary",
+      "jurisdiction": "new-zealand",
+      "region": null,
+      "amount": 70000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/new-zealand/salary/80000-after-tax/",
+      "template": "salary-result",
+      "title": "$80,000 After Tax in New Zealand (2026-27)",
+      "description": "A full breakdown of what $80,000 a year is after tax in New Zealand for 2026-27, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026-27 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "new-zealand-salary",
+      "jurisdiction": "new-zealand",
+      "region": null,
+      "amount": 80000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/new-zealand/salary/90000-after-tax/",
+      "template": "salary-result",
+      "title": "$90,000 After Tax in New Zealand (2026-27)",
+      "description": "A full breakdown of what $90,000 a year is after tax in New Zealand for 2026-27, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026-27 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "new-zealand-salary",
+      "jurisdiction": "new-zealand",
+      "region": null,
+      "amount": 90000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/new-zealand/salary/100000-after-tax/",
+      "template": "salary-result",
+      "title": "$100,000 After Tax in New Zealand (2026-27)",
+      "description": "A full breakdown of what $100,000 a year is after tax in New Zealand for 2026-27, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026-27 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "new-zealand-salary",
+      "jurisdiction": "new-zealand",
+      "region": null,
+      "amount": 100000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/new-zealand/salary/120000-after-tax/",
+      "template": "salary-result",
+      "title": "$120,000 After Tax in New Zealand (2026-27)",
+      "description": "A full breakdown of what $120,000 a year is after tax in New Zealand for 2026-27, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026-27 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "new-zealand-salary",
+      "jurisdiction": "new-zealand",
+      "region": null,
+      "amount": 120000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/new-zealand/salary/150000-after-tax/",
+      "template": "salary-result",
+      "title": "$150,000 After Tax in New Zealand (2026-27)",
+      "description": "A full breakdown of what $150,000 a year is after tax in New Zealand for 2026-27, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026-27 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "new-zealand-salary",
+      "jurisdiction": "new-zealand",
+      "region": null,
+      "amount": 150000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/new-zealand/salary/200000-after-tax/",
+      "template": "salary-result",
+      "title": "$200,000 After Tax in New Zealand (2026-27)",
+      "description": "A full breakdown of what $200,000 a year is after tax in New Zealand for 2026-27, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026-27 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "new-zealand-salary",
+      "jurisdiction": "new-zealand",
+      "region": null,
+      "amount": 200000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/canada/ontario/salary/30000-after-tax/",
+      "template": "salary-result",
+      "title": "$30,000 After Tax in Ontario (2026)",
+      "description": "A full breakdown of what $30,000 a year is after tax in Ontario for 2026, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "canada-salary",
+      "jurisdiction": "canada",
+      "region": "ontario",
+      "amount": 30000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/canada/ontario/salary/40000-after-tax/",
+      "template": "salary-result",
+      "title": "$40,000 After Tax in Ontario (2026)",
+      "description": "A full breakdown of what $40,000 a year is after tax in Ontario for 2026, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "canada-salary",
+      "jurisdiction": "canada",
+      "region": "ontario",
+      "amount": 40000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/canada/ontario/salary/50000-after-tax/",
+      "template": "salary-result",
+      "title": "$50,000 After Tax in Ontario (2026)",
+      "description": "A full breakdown of what $50,000 a year is after tax in Ontario for 2026, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "canada-salary",
+      "jurisdiction": "canada",
+      "region": "ontario",
+      "amount": 50000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/canada/ontario/salary/60000-after-tax/",
+      "template": "salary-result",
+      "title": "$60,000 After Tax in Ontario (2026)",
+      "description": "A full breakdown of what $60,000 a year is after tax in Ontario for 2026, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "canada-salary",
+      "jurisdiction": "canada",
+      "region": "ontario",
+      "amount": 60000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/canada/ontario/salary/70000-after-tax/",
+      "template": "salary-result",
+      "title": "$70,000 After Tax in Ontario (2026)",
+      "description": "A full breakdown of what $70,000 a year is after tax in Ontario for 2026, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "canada-salary",
+      "jurisdiction": "canada",
+      "region": "ontario",
+      "amount": 70000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/canada/ontario/salary/80000-after-tax/",
+      "template": "salary-result",
+      "title": "$80,000 After Tax in Ontario (2026)",
+      "description": "A full breakdown of what $80,000 a year is after tax in Ontario for 2026, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "canada-salary",
+      "jurisdiction": "canada",
+      "region": "ontario",
+      "amount": 80000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/canada/ontario/salary/100000-after-tax/",
+      "template": "salary-result",
+      "title": "$100,000 After Tax in Ontario (2026)",
+      "description": "A full breakdown of what $100,000 a year is after tax in Ontario for 2026, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "canada-salary",
+      "jurisdiction": "canada",
+      "region": "ontario",
+      "amount": 100000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/canada/ontario/salary/120000-after-tax/",
+      "template": "salary-result",
+      "title": "$120,000 After Tax in Ontario (2026)",
+      "description": "A full breakdown of what $120,000 a year is after tax in Ontario for 2026, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "canada-salary",
+      "jurisdiction": "canada",
+      "region": "ontario",
+      "amount": 120000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/canada/ontario/salary/150000-after-tax/",
+      "template": "salary-result",
+      "title": "$150,000 After Tax in Ontario (2026)",
+      "description": "A full breakdown of what $150,000 a year is after tax in Ontario for 2026, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "canada-salary",
+      "jurisdiction": "canada",
+      "region": "ontario",
+      "amount": 150000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/canada/ontario/salary/200000-after-tax/",
+      "template": "salary-result",
+      "title": "$200,000 After Tax in Ontario (2026)",
+      "description": "A full breakdown of what $200,000 a year is after tax in Ontario for 2026, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "canada-salary",
+      "jurisdiction": "canada",
+      "region": "ontario",
+      "amount": 200000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/canada/british-columbia/salary/30000-after-tax/",
+      "template": "salary-result",
+      "title": "$30,000 After Tax in British Columbia (2026)",
+      "description": "A full breakdown of what $30,000 a year is after tax in British Columbia for 2026, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "canada-salary",
+      "jurisdiction": "canada",
+      "region": "british-columbia",
+      "amount": 30000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/canada/british-columbia/salary/40000-after-tax/",
+      "template": "salary-result",
+      "title": "$40,000 After Tax in British Columbia (2026)",
+      "description": "A full breakdown of what $40,000 a year is after tax in British Columbia for 2026, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "canada-salary",
+      "jurisdiction": "canada",
+      "region": "british-columbia",
+      "amount": 40000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/canada/british-columbia/salary/50000-after-tax/",
+      "template": "salary-result",
+      "title": "$50,000 After Tax in British Columbia (2026)",
+      "description": "A full breakdown of what $50,000 a year is after tax in British Columbia for 2026, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "canada-salary",
+      "jurisdiction": "canada",
+      "region": "british-columbia",
+      "amount": 50000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/canada/british-columbia/salary/60000-after-tax/",
+      "template": "salary-result",
+      "title": "$60,000 After Tax in British Columbia (2026)",
+      "description": "A full breakdown of what $60,000 a year is after tax in British Columbia for 2026, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "canada-salary",
+      "jurisdiction": "canada",
+      "region": "british-columbia",
+      "amount": 60000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/canada/british-columbia/salary/70000-after-tax/",
+      "template": "salary-result",
+      "title": "$70,000 After Tax in British Columbia (2026)",
+      "description": "A full breakdown of what $70,000 a year is after tax in British Columbia for 2026, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "canada-salary",
+      "jurisdiction": "canada",
+      "region": "british-columbia",
+      "amount": 70000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/canada/british-columbia/salary/80000-after-tax/",
+      "template": "salary-result",
+      "title": "$80,000 After Tax in British Columbia (2026)",
+      "description": "A full breakdown of what $80,000 a year is after tax in British Columbia for 2026, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "canada-salary",
+      "jurisdiction": "canada",
+      "region": "british-columbia",
+      "amount": 80000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/canada/british-columbia/salary/100000-after-tax/",
+      "template": "salary-result",
+      "title": "$100,000 After Tax in British Columbia (2026)",
+      "description": "A full breakdown of what $100,000 a year is after tax in British Columbia for 2026, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "canada-salary",
+      "jurisdiction": "canada",
+      "region": "british-columbia",
+      "amount": 100000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/canada/british-columbia/salary/120000-after-tax/",
+      "template": "salary-result",
+      "title": "$120,000 After Tax in British Columbia (2026)",
+      "description": "A full breakdown of what $120,000 a year is after tax in British Columbia for 2026, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "canada-salary",
+      "jurisdiction": "canada",
+      "region": "british-columbia",
+      "amount": 120000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/canada/british-columbia/salary/150000-after-tax/",
+      "template": "salary-result",
+      "title": "$150,000 After Tax in British Columbia (2026)",
+      "description": "A full breakdown of what $150,000 a year is after tax in British Columbia for 2026, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "canada-salary",
+      "jurisdiction": "canada",
+      "region": "british-columbia",
+      "amount": 150000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/canada/british-columbia/salary/200000-after-tax/",
+      "template": "salary-result",
+      "title": "$200,000 After Tax in British Columbia (2026)",
+      "description": "A full breakdown of what $200,000 a year is after tax in British Columbia for 2026, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "canada-salary",
+      "jurisdiction": "canada",
+      "region": "british-columbia",
+      "amount": 200000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/canada/alberta/salary/30000-after-tax/",
+      "template": "salary-result",
+      "title": "$30,000 After Tax in Alberta (2026)",
+      "description": "A full breakdown of what $30,000 a year is after tax in Alberta for 2026, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "canada-salary",
+      "jurisdiction": "canada",
+      "region": "alberta",
+      "amount": 30000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/canada/alberta/salary/40000-after-tax/",
+      "template": "salary-result",
+      "title": "$40,000 After Tax in Alberta (2026)",
+      "description": "A full breakdown of what $40,000 a year is after tax in Alberta for 2026, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "canada-salary",
+      "jurisdiction": "canada",
+      "region": "alberta",
+      "amount": 40000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/canada/alberta/salary/50000-after-tax/",
+      "template": "salary-result",
+      "title": "$50,000 After Tax in Alberta (2026)",
+      "description": "A full breakdown of what $50,000 a year is after tax in Alberta for 2026, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "canada-salary",
+      "jurisdiction": "canada",
+      "region": "alberta",
+      "amount": 50000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/canada/alberta/salary/60000-after-tax/",
+      "template": "salary-result",
+      "title": "$60,000 After Tax in Alberta (2026)",
+      "description": "A full breakdown of what $60,000 a year is after tax in Alberta for 2026, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "canada-salary",
+      "jurisdiction": "canada",
+      "region": "alberta",
+      "amount": 60000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/canada/alberta/salary/70000-after-tax/",
+      "template": "salary-result",
+      "title": "$70,000 After Tax in Alberta (2026)",
+      "description": "A full breakdown of what $70,000 a year is after tax in Alberta for 2026, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "canada-salary",
+      "jurisdiction": "canada",
+      "region": "alberta",
+      "amount": 70000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/canada/alberta/salary/80000-after-tax/",
+      "template": "salary-result",
+      "title": "$80,000 After Tax in Alberta (2026)",
+      "description": "A full breakdown of what $80,000 a year is after tax in Alberta for 2026, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "canada-salary",
+      "jurisdiction": "canada",
+      "region": "alberta",
+      "amount": 80000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/canada/alberta/salary/100000-after-tax/",
+      "template": "salary-result",
+      "title": "$100,000 After Tax in Alberta (2026)",
+      "description": "A full breakdown of what $100,000 a year is after tax in Alberta for 2026, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "canada-salary",
+      "jurisdiction": "canada",
+      "region": "alberta",
+      "amount": 100000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/canada/alberta/salary/120000-after-tax/",
+      "template": "salary-result",
+      "title": "$120,000 After Tax in Alberta (2026)",
+      "description": "A full breakdown of what $120,000 a year is after tax in Alberta for 2026, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "canada-salary",
+      "jurisdiction": "canada",
+      "region": "alberta",
+      "amount": 120000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/canada/alberta/salary/150000-after-tax/",
+      "template": "salary-result",
+      "title": "$150,000 After Tax in Alberta (2026)",
+      "description": "A full breakdown of what $150,000 a year is after tax in Alberta for 2026, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "canada-salary",
+      "jurisdiction": "canada",
+      "region": "alberta",
+      "amount": 150000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/canada/alberta/salary/200000-after-tax/",
+      "template": "salary-result",
+      "title": "$200,000 After Tax in Alberta (2026)",
+      "description": "A full breakdown of what $200,000 a year is after tax in Alberta for 2026, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "canada-salary",
+      "jurisdiction": "canada",
+      "region": "alberta",
+      "amount": 200000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/canada/quebec/salary/30000-after-tax/",
+      "template": "salary-result",
+      "title": "$30,000 After Tax in Quebec (2026)",
+      "description": "A full breakdown of what $30,000 a year is after tax in Quebec for 2026, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "canada-salary",
+      "jurisdiction": "canada",
+      "region": "quebec",
+      "amount": 30000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/canada/quebec/salary/40000-after-tax/",
+      "template": "salary-result",
+      "title": "$40,000 After Tax in Quebec (2026)",
+      "description": "A full breakdown of what $40,000 a year is after tax in Quebec for 2026, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "canada-salary",
+      "jurisdiction": "canada",
+      "region": "quebec",
+      "amount": 40000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/canada/quebec/salary/50000-after-tax/",
+      "template": "salary-result",
+      "title": "$50,000 After Tax in Quebec (2026)",
+      "description": "A full breakdown of what $50,000 a year is after tax in Quebec for 2026, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "canada-salary",
+      "jurisdiction": "canada",
+      "region": "quebec",
+      "amount": 50000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/canada/quebec/salary/60000-after-tax/",
+      "template": "salary-result",
+      "title": "$60,000 After Tax in Quebec (2026)",
+      "description": "A full breakdown of what $60,000 a year is after tax in Quebec for 2026, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "canada-salary",
+      "jurisdiction": "canada",
+      "region": "quebec",
+      "amount": 60000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/canada/quebec/salary/70000-after-tax/",
+      "template": "salary-result",
+      "title": "$70,000 After Tax in Quebec (2026)",
+      "description": "A full breakdown of what $70,000 a year is after tax in Quebec for 2026, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "canada-salary",
+      "jurisdiction": "canada",
+      "region": "quebec",
+      "amount": 70000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/canada/quebec/salary/80000-after-tax/",
+      "template": "salary-result",
+      "title": "$80,000 After Tax in Quebec (2026)",
+      "description": "A full breakdown of what $80,000 a year is after tax in Quebec for 2026, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "canada-salary",
+      "jurisdiction": "canada",
+      "region": "quebec",
+      "amount": 80000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/canada/quebec/salary/100000-after-tax/",
+      "template": "salary-result",
+      "title": "$100,000 After Tax in Quebec (2026)",
+      "description": "A full breakdown of what $100,000 a year is after tax in Quebec for 2026, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "canada-salary",
+      "jurisdiction": "canada",
+      "region": "quebec",
+      "amount": 100000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/canada/quebec/salary/120000-after-tax/",
+      "template": "salary-result",
+      "title": "$120,000 After Tax in Quebec (2026)",
+      "description": "A full breakdown of what $120,000 a year is after tax in Quebec for 2026, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "canada-salary",
+      "jurisdiction": "canada",
+      "region": "quebec",
+      "amount": 120000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/canada/quebec/salary/150000-after-tax/",
+      "template": "salary-result",
+      "title": "$150,000 After Tax in Quebec (2026)",
+      "description": "A full breakdown of what $150,000 a year is after tax in Quebec for 2026, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "canada-salary",
+      "jurisdiction": "canada",
+      "region": "quebec",
+      "amount": 150000,
+      "lastModified": "2026-09-03"
+    },
+    {
+      "path": "/canada/quebec/salary/200000-after-tax/",
+      "template": "salary-result",
+      "title": "$200,000 After Tax in Quebec (2026)",
+      "description": "A full breakdown of what $200,000 a year is after tax in Quebec for 2026, with every deduction itemised.",
+      "indexable": false,
+      "blockers": [
+        "The 2026 ruleset has empty rate tables, so no static result can be rendered.",
+        "Ruleset status is \"draft\", not \"published\".",
+        "The ruleset has no checked-on date.",
+        "The underlying salary calculator is not itself indexable."
+      ],
+      "inSitemap": false,
+      "calculatorId": "canada-salary",
+      "jurisdiction": "canada",
+      "region": "quebec",
+      "amount": 200000,
+      "lastModified": "2026-09-03"
+    }
+  ]
+}

@@ -1,0 +1,60 @@
+---
+/**
+ * The source register for a page, with the date each source was last checked.
+ *
+ * An unchecked source is shown as unchecked. Displaying a confident "last
+ * updated" date that nobody stands behind would be worse than showing none.
+ */
+import { formatDate } from '../../lib/formatting/index.ts';
+import type { SourceReference } from '../../lib/registry/types.ts';
+
+interface Props {
+  sources: readonly SourceReference[];
+}
+const { sources } = Astro.props;
+
+const checked = sources.filter((source) => source.checkedOn !== null);
+const mostRecent = checked
+  .map((source) => source.checkedOn as string)
+  .sort()
+  .at(-1);
+---
+
+<section class="card" aria-labelledby="sources-heading">
+  <h2 id="sources-heading" style="margin-top:0;">Official sources</h2>
+
+  {
+    sources.length === 0 ? (
+      <p class="muted">
+        This calculator does not depend on any tax authority’s rules; it is arithmetic that is the
+        same everywhere.
+      </p>
+    ) : (
+      <>
+        <p class="meta-line">
+          {mostRecent
+            ? `Last checked against official sources on ${formatDate(mostRecent)}.`
+            : 'Not yet checked against official sources.'}
+        </p>
+        <ul>
+          {sources.map((source) => (
+            <li>
+              <a href={source.url} rel="nofollow noopener" target="_blank">
+                {source.title}
+              </a>
+              {' — '}
+              <span class="muted">{source.publisher}</span>
+              {source.checkedOn ? (
+                <span class="muted">, checked {formatDate(source.checkedOn)}</span>
+              ) : (
+                <span class="pill pill--pending" style="margin-left:0.4rem;">
+                  not yet checked
+                </span>
+              )}
+            </li>
+          ))}
+        </ul>
+      </>
+    )
+  }
+</section>

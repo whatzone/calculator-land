@@ -1,0 +1,72 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import CalculatorPage from '../../components/calculator/CalculatorPage.astro';
+import AdSlot from '../../components/monetisation/AdSlot.astro';
+import { JURISDICTIONS, findRuleset, getJurisdiction } from '../../data/jurisdictions/index.ts';
+import { CALCULATORS, calculatorPath, contextFor } from '../../lib/registry/index.ts';
+import { manifestEntry, rulesetsForClient, jurisdictionCrumbs } from '../../lib/seo/pages.ts';
+import { calculatorSchema } from '../../lib/seo/structured-data.ts';
+import type { AnyCalculatorDefinition } from '../../lib/registry/types.ts';
+import type { JurisdictionCode } from '../../lib/calculations/common/types.ts';
+
+export function getStaticPaths() {
+  return JURISDICTIONS.flatMap((meta) =>
+    CALCULATORS.filter((calculator) =>
+      (calculator.jurisdictions as readonly string[]).includes(meta.code),
+    ).map((calculator) => ({
+      params: { jurisdiction: meta.slug, slug: calculator.slug },
+      props: { calculator, jurisdiction: meta.code },
+    })),
+  );
+}
+
+const { calculator, jurisdiction } = Astro.props as {
+  calculator: AnyCalculatorDefinition;
+  jurisdiction: JurisdictionCode;
+};
+
+const meta = getJurisdiction(jurisdiction);
+const path = calculatorPath(calculator);
+const entry = manifestEntry(path);
+const ruleset = findRuleset(jurisdiction);
+const context = contextFor(jurisdiction);
+
+const values: Record<string, string | number | boolean> = {};
+for (const field of calculator.fields) {
+  if (field.defaultValue !== undefined) values[field.name] = field.defaultValue;
+}
+
+const view = calculator.present(calculator.calculate(values as never, context) as never, context);
+
+const crumbs = [...jurisdictionCrumbs(jurisdiction), { name: calculator.shortTitle, path }];
+---
+
+<BaseLayout
+  title={`${calculator.title} | ClearFigures`}
+  description={calculator.metaDescription}
+  path={path}
+  indexable={entry?.indexable ?? false}
+  crumbs={crumbs}
+  locale={meta.locale}
+  withRail
+  extraSchema={[calculatorSchema(calculator, path, view.supported)]}
+>
+  <div>
+    <h1>{calculator.title}</h1>
+    <p class="lede">{calculator.description}</p>
+  </div>
+
+  <CalculatorPage
+    calculator={calculator}
+    view={view}
+    context={context}
+    values={values}
+    rulesets={rulesetsForClient(jurisdiction)}
+    primaryRuleset={ruleset ?? null}
+    jurisdictionName={meta.name}
+  />
+
+  <div slot="rail" class="no-print">
+    <AdSlot slot="result-rail" hideOnMobile />
+  </div>
+</BaseLayout>

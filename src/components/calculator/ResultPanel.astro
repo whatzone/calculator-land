@@ -1,0 +1,140 @@
+---
+/**
+ * The result.
+ *
+ * Order is fixed and deliberate: take-home pay, total deductions, the itemised
+ * breakdown, the same figure at every pay frequency, then assumptions. A reader
+ * who stops after the first screen still gets the answer; a reader who keeps
+ * going can check the working.
+ */
+import DeductionBar from '../charts/DeductionBar.astro';
+import type { ResultViewModel } from '../../lib/registry/types.ts';
+
+interface Props {
+  view: ResultViewModel;
+  /**
+   * Set when the page is already showing a fuller explanation of why the rules
+   * are unavailable. Telling the reader the same thing twice, in two boxes,
+   * reads as a broken page rather than a careful one.
+   */
+  suppressUnsupportedNotices?: boolean;
+}
+const { view, suppressUnsupportedNotices = false } = Astro.props;
+
+const notices = suppressUnsupportedNotices
+  ? view.notices.filter((notice) => notice.severity !== 'unsupported')
+  : view.notices;
+---
+
+<section class="stack" aria-labelledby="result-heading" data-result>
+  <h2 id="result-heading" class="visually-hidden">Your result</h2>
+
+  {
+    notices.map((notice) => (
+      <div
+        class={`notice notice--${notice.severity}`}
+        role={notice.severity === 'unsupported' ? 'alert' : undefined}
+      >
+        <p class="notice__title">
+          {notice.severity === 'unsupported'
+            ? 'This calculation cannot be shown'
+            : notice.severity === 'warning'
+              ? 'Please note'
+              : 'Good to know'}
+        </p>
+        <p style="margin-bottom:0;">{notice.message}</p>
+      </div>
+    ))
+  }
+
+  {
+    view.supported && (
+      <>
+        <div class="headline" aria-live="polite" data-headline>
+          <p class="headline__label">{view.headline.label}</p>
+          <p class="headline__value">{view.headline.value}</p>
+          {view.headline.caption && <p class="headline__caption">{view.headline.caption}</p>}
+        </div>
+
+        {view.summaryRows.length > 0 && (
+          <div class="card card--flush">
+            <div class="table-scroll" tabindex="0" role="region" aria-label="Summary, scrollable">
+              <table class="data">
+                <caption>Summary</caption>
+                <tbody>
+                  {view.summaryRows.map((row) => (
+                    <tr>
+                      <th scope="row">
+                        {row.label}
+                        {row.detail && <span class="detail">{row.detail}</span>}
+                      </th>
+                      <td>{row.value}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {view.chart && (
+          <div class="card">
+            <h3 class="panel-title" style="margin-top:0;">
+              Where the money goes
+            </h3>
+            <DeductionBar
+              segments={[...view.chart]}
+              caption="Every segment is listed as a row in the breakdown below."
+            />
+          </div>
+        )}
+
+        {view.breakdownRows.length > 0 && (
+          <div class="card card--flush">
+            <div
+              class="table-scroll"
+              tabindex="0"
+              role="region"
+              aria-label="Itemised breakdown, scrollable"
+            >
+              <table class="data">
+                <caption>Itemised breakdown</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Deduction</th>
+                    <th scope="col">A year</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {view.breakdownRows.map((row) => (
+                    <tr>
+                      <th scope="row">
+                        {row.label}
+                        {row.detail && <span class="detail">{row.detail}</span>}
+                      </th>
+                      <td>{row.value}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {view.frequencyRows.length > 0 && (
+          <div>
+            <h3 class="panel-title">The same figure, by pay frequency</h3>
+            <dl class="freq-grid">
+              {view.frequencyRows.map((row) => (
+                <div>
+                  <dt>{row.label}</dt>
+                  <dd>{row.value}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        )}
+      </>
+    )
+  }
+</section>

@@ -1,0 +1,215 @@
+---
+/**
+ * The curated salary-result page body.
+ *
+ * A page like "/uk/salary/50000-after-tax/" earns its place in the index only
+ * if it says something specific about that amount in that place. So beyond the
+ * prefilled calculator this template renders: the thresholds this income has
+ * crossed and the next one ahead of it, how much of a further rise is kept, the
+ * composition of the deductions, and the assumptions behind all of it.
+ *
+ * None of that is padding written to reach a word count — every sentence is
+ * generated from the calculation itself, which is why the page cannot exist
+ * until the rules behind it are sourced.
+ */
+import CalculatorForm from './CalculatorForm.astro';
+import ResultPanel from './ResultPanel.astro';
+import Assumptions from '../content/Assumptions.astro';
+import Sources from '../content/Sources.astro';
+import DataStatusNotice from '../content/DataStatusNotice.astro';
+import AdSlot from '../monetisation/AdSlot.astro';
+import { formatAmountForTitle, formatCurrency, formatRate } from '../../lib/formatting/index.ts';
+import { calculatorPath } from '../../lib/registry/index.ts';
+import { neighbouringAmounts } from '../../data/salary-amounts.ts';
+import type { AnyCalculatorDefinition, ResultViewModel } from '../../lib/registry/types.ts';
+import type {
+  CalculationContext,
+  CalculationResult,
+  CurrencyCode,
+  JurisdictionCode,
+} from '../../lib/calculations/common/types.ts';
+import type { Ruleset } from '../../lib/validation/ruleset-schema.ts';
+
+interface Props {
+  calculator: AnyCalculatorDefinition;
+  result: CalculationResult;
+  view: ResultViewModel;
+  context: CalculationContext;
+  ruleset: Ruleset;
+  rulesets: Record<string, Ruleset>;
+  jurisdiction: JurisdictionCode;
+  jurisdictionName: string;
+  region: string | null;
+  placeLabel: string;
+  amount: number;
+  currency: CurrencyCode;
+}
+
+const {
+  calculator,
+  result,
+  view,
+  context,
+  ruleset,
+  rulesets,
+  jurisdiction,
+  jurisdictionName,
+  region,
+  placeLabel,
+  amount,
+  currency,
+} = Astro.props;
+
+const values: Record<string, string | number | boolean> = { grossAnnualIncome: amount };
+for (const field of calculator.fields) {
+  if (field.defaultValue !== undefined && field.name !== 'grossAnnualIncome') {
+    values[field.name] = field.defaultValue;
+  }
+}
+if (region && jurisdiction === 'canada') values['province'] = region;
+else if (region) values['region'] = region;
+
+const amountLabel = formatAmountForTitle(amount, currency);
+
+// See CalculatorPage: DataStatusNotice is the fuller explanation, so the
+// engine's shorter one is suppressed rather than shown alongside it.
+const awaitingSource = ruleset.provenance.dataStatus !== 'populated';
+
+// The threshold immediately ahead is the single most useful fact a reader at a
+// given salary can be told, so it gets its own paragraph rather than a table row.
+const crossed = result.thresholdsCrossed.filter((threshold) => threshold.crossed);
+const upcoming = result.thresholdsCrossed
+  .filter((threshold) => !threshold.crossed)
+  .sort((a, b) => (a.amount.lt(b.amount) ? -1 : 1));
+const nextThreshold = upcoming[0];
+
+const neighbours = neighbouringAmounts(jurisdiction, region, amount);
+
+const clientConfig = {
+  calculatorId: calculator.id,
+  family: calculator.family,
+  jurisdiction,
+  context,
+  isPrefilled: true,
+  rulesets,
+};
+---
+
+<div>
+  <h1>{amountLabel} after tax in {placeLabel}</h1>
+  <p class="lede">
+    What {amountLabel} a year is worth after deductions in {placeLabel} for the{' '}
+    {ruleset.taxPeriod.label} tax period, with every deduction itemised and linked to its source.
+  </p>
+</div>
+
+<ResultPanel view={view} suppressUnsupportedNotices={awaitingSource} />
+
+<DataStatusNotice ruleset={ruleset} jurisdictionName={jurisdictionName} />
+
+{
+  result.supported && (
+    <section aria-labelledby="specific-heading">
+      <h2 id="specific-heading">What this salary means in {placeLabel}</h2>
+
+      <p>
+        At {amountLabel}, {formatRate(result.averageDeductionRate, context.locale)} of your pay is
+        deducted overall, but the next pound you earn is taxed at{' '}
+        {formatRate(result.marginalDeductionRate, context.locale)}. That gap is the reason a pay
+        rise never feels as large as it sounds.
+      </p>
+
+      <p>
+        A further {formatCurrency(result.keptFromNextIncrement.increment, currency, context.locale)}{' '}
+        of gross pay would add{' '}
+        {formatCurrency(result.keptFromNextIncrement.kept, currency, context.locale)} to your
+        take-home pay.
+      </p>
+
+      {nextThreshold && (
+        <p>
+          The next threshold ahead of you is where{' '}
+          <strong>{nextThreshold.label.toLowerCase()}</strong>, at{' '}
+          {formatCurrency(nextThreshold.amount, currency, context.locale)} — that is{' '}
+          {formatCurrency(nextThreshold.distanceToThreshold, currency, context.locale)} above this
+          salary.
+        </p>
+      )}
+
+      {crossed.length > 0 && (
+        <>
+          <h3>Thresholds this salary has passed</h3>
+          <ul>
+            {crossed.map((threshold) => (
+              <li>
+                {threshold.label} at {formatCurrency(threshold.amount, currency, context.locale)}
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+    </section>
+  )
+}
+
+<AdSlot slot="post-result" />
+
+<section aria-labelledby="adjust-heading">
+  <h2 id="adjust-heading">Change the figures</h2>
+  <p>
+    This page is prefilled with {amountLabel}. Adjust anything below to recalculate — nothing you
+    enter leaves your browser.
+  </p>
+  <CalculatorForm calculator={calculator} values={values} actionPath={calculatorPath(calculator)} />
+</section>
+
+<Assumptions
+  assumptions={calculator.assumptions.map((assumption) => assumption.text)}
+  limitations={calculator.limitations}
+/>
+
+<Sources sources={calculator.sources} />
+
+<div class="no-print">
+  <button class="btn btn--quiet" type="button" data-print>Print or save this result</button>
+</div>
+
+{
+  neighbours.length > 0 && (
+    <section aria-labelledby="nearby-heading">
+      <h2 id="nearby-heading">Nearby salaries in {placeLabel}</h2>
+      <ul class="card-grid">
+        {neighbours.map((neighbour) => (
+          <li>
+            <a class="tool-card" href={neighbour.path}>
+              <strong>{formatAmountForTitle(neighbour.amount, currency)}</strong>
+              <p>after tax in {placeLabel}</p>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )
+}
+
+<section aria-labelledby="more-heading">
+  <h2 id="more-heading">Go further</h2>
+  <ul>
+    <li>
+      <a href={calculatorPath(calculator)}>Use the full {jurisdictionName} salary calculator</a>
+    </li>
+    <li><a href={`/${jurisdiction}/`}>All {jurisdictionName} calculators</a></li>
+    <li><a href="/methodology/">How these calculations are done</a></li>
+    <li><a href="/sources/">The official sources behind them</a></li>
+  </ul>
+</section>
+
+<script
+  id="calculator-config"
+  type="application/json"
+  set:html={JSON.stringify(clientConfig)}
+  is:inline
+/>
+<script>
+  import '../../scripts/calculator-client.ts';
+</script>

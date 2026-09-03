@@ -1,0 +1,34 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { calculatorPath, globalCalculatorList } from '../lib/registry/index.ts';
+const globals = globalCalculatorList();
+---
+
+<BaseLayout
+  title="Page not found"
+  description="The page you asked for does not exist."
+  path="/404/"
+  indexable={false}
+>
+  <h1>That page does not exist</h1>
+  <p class="lede">The address may be mistyped, or the page may have been removed.</p>
+  <h2>Try one of these instead</h2>
+  <ul class="card-grid">
+    {
+      globals.map((calculator) => (
+        <li>
+          <a class="tool-card" href={calculatorPath(calculator)}>
+            <strong>{calculator.shortTitle}</strong>
+            <p>{calculator.description}</p>
+          </a>
+        </li>
+      ))
+    }
+    <li>
+      <a class="tool-card" href="/calculators/">
+        <strong>All calculators</strong>
+        <p>The full directory of everything on the site.</p>
+      </a>
+    </li>
+  </ul>
+</BaseLayout>

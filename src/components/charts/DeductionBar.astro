@@ -1,0 +1,59 @@
+---
+/**
+ * A single stacked bar showing where the money goes.
+ *
+ * Hand-drawn with CSS rather than a charting library: the whole thing is a few
+ * hundred bytes, and every segment is already present as a row in the deduction
+ * table below it, so nothing here is information-bearing on its own. The bar is
+ * therefore aria-hidden and the table is the accessible source of truth.
+ */
+interface Segment {
+  label: string;
+  value: number;
+  percent: number;
+}
+interface Props {
+  segments: Segment[];
+  caption?: string;
+}
+const { segments, caption } = Astro.props;
+
+// Take-home pay is always the green one; deductions step through neutral blues.
+const colourFor = (label: string, index: number): string => {
+  if (label === 'Take-home pay') return 'var(--success)';
+  const shades = ['#3c6ea5', '#5182b8', '#6a97c9', '#86acd6', '#a3c1e2'];
+  return shades[index % shades.length] ?? '#6a97c9';
+};
+
+const visible = segments.filter((segment) => segment.percent >= 0.5);
+---
+
+{
+  visible.length > 1 && (
+    <figure style="margin:0;">
+      <div class="bar" aria-hidden="true">
+        {visible.map((segment, index) => (
+          <span
+            style={`width:${segment.percent}%;background:${colourFor(segment.label, index)};`}
+            title={`${segment.label}: ${segment.percent.toFixed(1)}%`}
+          />
+        ))}
+      </div>
+      <ul class="bar-key">
+        {visible.map((segment, index) => (
+          <li>
+            <i style={`background:${colourFor(segment.label, index)};`} aria-hidden="true" />
+            <span>
+              {segment.label} — {segment.percent.toFixed(1)}%
+            </span>
+          </li>
+        ))}
+      </ul>
+      {caption && (
+        <figcaption class="small muted" style="margin-top:0.5rem;">
+          {caption}
+        </figcaption>
+      )}
+    </figure>
+  )
+}

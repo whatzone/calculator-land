@@ -1,0 +1,97 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { JURISDICTIONS, rulesetsFor, findRuleset } from '../data/jurisdictions/index.ts';
+import { manifestEntry } from '../lib/seo/pages.ts';
+import { formatDate } from '../lib/formatting/index.ts';
+
+const path = '/sources/';
+const entry = manifestEntry(path);
+---
+
+<BaseLayout
+  title={entry?.title ?? ''}
+  description={entry?.description ?? ''}
+  path={path}
+  indexable={entry?.indexable ?? false}
+  crumbs={[
+    { name: 'Home', path: '/' },
+    { name: 'Sources', path },
+  ]}
+>
+  <div>
+    <h1>Official sources</h1>
+    <p class="lede">
+      Every rule behind these calculators comes from the authority that sets it. This is the full
+      register, by country and tax period, with the date each source was last checked by a person.
+    </p>
+  </div>
+
+  <div class="notice notice--info">
+    <p class="notice__title">Nothing here has been checked yet</p>
+    <p style="margin-bottom:0;">
+      The sources below are the correct authorities, but none has yet been read and compared by a
+      person, so none carries a checked date. Until that happens the calculators that depend on them
+      will not produce figures, and their pages stay out of search results. Third-party summaries
+      are never used as a source of rules — only as a sanity check after the fact.
+    </p>
+  </div>
+
+  {
+    JURISDICTIONS.map((meta) => {
+      const rulesets = rulesetsFor(meta.code);
+      const primary = findRuleset(meta.code);
+      return (
+        <section aria-labelledby={`sources-${meta.code}`}>
+          <h2 id={`sources-${meta.code}`}>{meta.name}</h2>
+          <p class="meta-line">
+            Tax period {primary?.taxPeriod.label}
+            {primary &&
+              ` (${formatDate(primary.taxPeriod.startDate)} to ${formatDate(primary.taxPeriod.endDate)})`}
+            . Status: {primary?.status}, data {primary?.provenance.dataStatus}.
+          </p>
+          {rulesets.map((ruleset) => (
+            <>
+              <h3>{ruleset.subJurisdictionLabel ?? 'National'}</h3>
+              <ul>
+                {ruleset.sources.map((source) => (
+                  <li>
+                    <a href={source.url} rel="nofollow noopener" target="_blank">
+                      {source.title}
+                    </a>
+                    {' — '}
+                    <span class="muted">{source.publisher}</span>
+                    {source.checkedOn ? (
+                      <span class="muted">, checked {formatDate(source.checkedOn)}</span>
+                    ) : (
+                      <span class="pill pill--pending" style="margin-left:0.4rem;">
+                        not yet checked
+                      </span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </>
+          ))}
+        </section>
+      );
+    })
+  }
+
+  <section aria-labelledby="policy-heading">
+    <h2 id="policy-heading">How sources are used</h2>
+    <ul>
+      <li>Rules are read from the authority that publishes them, never from another calculator.</li>
+      <li>Official text is paraphrased and linked, never copied.</li>
+      <li>
+        Every rate and threshold is stored with the source it came from and the date it was checked.
+      </li>
+      <li>
+        Another calculator may be used afterwards as a rough sanity check, never as the source.
+      </li>
+      <li>
+        A source page changing does not automatically change our figures. A person compares, tests,
+        and publishes.
+      </li>
+    </ul>
+  </section>
+</BaseLayout>

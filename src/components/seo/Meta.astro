@@ -1,0 +1,93 @@
+---
+/**
+ * Every page's head. Canonical, robots, social metadata, and JSON-LD.
+ *
+ * Indexing is opt-in twice over: the page must pass the quality gate AND the
+ * deployment must set SITE_ALLOW_INDEXING. A preview build therefore emits
+ * noindex on every page without anyone having to remember.
+ */
+import { SITE, absoluteUrl } from '../../config/site.ts';
+import { CF_ANALYTICS_TOKEN, SEARCH_CONSOLE_VERIFICATION } from '../../config/analytics.ts';
+import {
+  buildGraph,
+  breadcrumbSchema,
+  organizationSchema,
+  websiteSchema,
+  type Crumb,
+} from '../../lib/seo/structured-data.ts';
+
+interface Props {
+  title: string;
+  description: string;
+  path: string;
+  indexable: boolean;
+  crumbs?: Crumb[];
+  extraSchema?: (Record<string, unknown> | null)[];
+  locale?: string;
+}
+
+const {
+  title,
+  description,
+  path,
+  indexable,
+  crumbs = [],
+  extraSchema = [],
+  locale = SITE.defaultLocale,
+} = Astro.props;
+
+const canonical = absoluteUrl(path);
+const allowIndex = indexable && SITE.allowIndexing;
+const robots = allowIndex ? 'index,follow' : 'noindex,follow';
+
+const jsonLd = buildGraph([
+  organizationSchema(),
+  websiteSchema(),
+  breadcrumbSchema(crumbs),
+  ...extraSchema,
+]);
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>{title}</title>
+<meta name="description" content={description} />
+<meta name="robots" content={robots} />
+<link rel="canonical" href={canonical} />
+
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content={SITE.name} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:locale" content={locale.replace('-', '_')} />
+<meta name="twitter:card" content="summary" />
+
+{
+  SEARCH_CONSOLE_VERIFICATION && (
+    <meta name="google-site-verification" content={SEARCH_CONSOLE_VERIFICATION} />
+  )
+}
+
+<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+<link rel="sitemap" href="/sitemap-index.xml" />
+
+<script type="application/ld+json" set:html={jsonLd} is:inline />
+
+{
+  /*
+  Cloudflare Web Analytics is cookie-light and loads only when a token is
+  configured. GA4 is deliberately absent from the head: it is consent-gated and
+  is never loaded from a template.
+*/
+}
+{
+  CF_ANALYTICS_TOKEN && (
+    <script
+      defer
+      src="https://static.cloudflareinsights.com/beacon.min.js"
+      data-cf-beacon={`{"token": "${CF_ANALYTICS_TOKEN}"}`}
+      is:inline
+    />
+  )
+}

@@ -1,0 +1,76 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import SalaryResultPage from '../../../components/calculator/SalaryResultPage.astro';
+import AdSlot from '../../../components/monetisation/AdSlot.astro';
+import { getJurisdiction, findRuleset } from '../../../data/jurisdictions/index.ts';
+import { requireCalculator, contextFor } from '../../../lib/registry/index.ts';
+import { manifestEntry, rulesetsForClient, jurisdictionCrumbs } from '../../../lib/seo/pages.ts';
+import { salaryPageEntries } from '../../../data/salary-amounts.ts';
+import { calculateSalary } from '../../../lib/calculations/index.ts';
+import { money } from '../../../lib/calculations/common/money.ts';
+import { formatAmountForTitle } from '../../../lib/formatting/index.ts';
+import type { CurrencyCode, JurisdictionCode } from '../../../lib/calculations/common/types.ts';
+
+export function getStaticPaths() {
+  return salaryPageEntries()
+    .filter((entry) => entry.region === null)
+    .map((entry) => ({
+      params: { jurisdiction: entry.jurisdiction, slug: `${entry.amount}-after-tax` },
+      props: { amount: entry.amount, jurisdiction: entry.jurisdiction },
+    }));
+}
+
+const { amount, jurisdiction } = Astro.props as { amount: number; jurisdiction: JurisdictionCode };
+
+const meta = getJurisdiction(jurisdiction);
+const currency = meta.currency as CurrencyCode;
+const path = `/${jurisdiction}/salary/${amount}-after-tax/`;
+const entry = manifestEntry(path);
+const ruleset = findRuleset(jurisdiction);
+if (!ruleset) throw new Error(`No ruleset for ${jurisdiction}`);
+
+const calculator = requireCalculator(`${jurisdiction}-salary`);
+const context = contextFor(jurisdiction);
+
+const result = calculateSalary({
+  jurisdiction,
+  taxPeriod: ruleset.taxPeriod.label,
+  grossAnnualIncome: money(amount),
+  payFrequency: 'annual',
+  profile: {},
+});
+const view = calculator.present(result as never, context);
+
+const crumbs = [
+  ...jurisdictionCrumbs(jurisdiction),
+  { name: `${formatAmountForTitle(amount, currency)} after tax`, path },
+];
+---
+
+<BaseLayout
+  title={`${entry?.title ?? ''} | ClearFigures`}
+  description={entry?.description ?? ''}
+  path={path}
+  indexable={entry?.indexable ?? false}
+  crumbs={crumbs}
+  locale={meta.locale}
+  withRail
+>
+  <SalaryResultPage
+    calculator={calculator}
+    result={result}
+    view={view}
+    context={context}
+    ruleset={ruleset}
+    rulesets={rulesetsForClient(jurisdiction)}
+    jurisdiction={jurisdiction}
+    jurisdictionName={meta.name}
+    region={null}
+    placeLabel={meta.name}
+    amount={amount}
+    currency={currency}
+  />
+  <div slot="rail" class="no-print">
+    <AdSlot slot="result-rail" hideOnMobile />
+  </div>
+</BaseLayout>

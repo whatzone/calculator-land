@@ -1,0 +1,101 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE } from '../config/site.ts';
+import {
+  CF_ANALYTICS_TOKEN,
+  GA4_MEASUREMENT_ID,
+  ALLOWED_EVENT_PROPERTIES,
+} from '../config/analytics.ts';
+import { ADS_ENABLED } from '../config/monetisation.ts';
+import { manifestEntry } from '../lib/seo/pages.ts';
+const path = '/privacy/';
+const entry = manifestEntry(path);
+---
+
+<BaseLayout
+  title={entry?.title ?? ''}
+  description={entry?.description ?? ''}
+  path={path}
+  indexable={entry?.indexable ?? false}
+  crumbs={[
+    { name: 'Home', path: '/' },
+    { name: 'Privacy', path },
+  ]}
+>
+  <div>
+    <h1>Privacy notice</h1>
+    <p class="lede">
+      The short version: what you type into a calculator never leaves your browser, and we never
+      send it to anyone.
+    </p>
+  </div>
+
+  <section aria-labelledby="calculators">
+    <h2 id="calculators">What happens to the figures you enter</h2>
+    <p>
+      Nothing. Calculations run entirely in your browser. Your salary, bonus, pension choice,
+      mortgage balance, interest rate, and every result computed from them stay on your device.
+      There is no server that receives them, because there is no server — this is a set of static
+      files.
+    </p>
+    <p>
+      This is enforced in code, not just promised. The analytics adapter accepts only a fixed list
+      of properties and rejects anything else, including anything that looks like a number you
+      typed. The list is: {ALLOWED_EVENT_PROPERTIES.join(', ')}. Those are identifiers for which
+      tool and which country, nothing about you.
+    </p>
+  </section>
+
+  <section aria-labelledby="analytics">
+    <h2 id="analytics">Analytics</h2>
+    <p>
+      We measure which pages are used, so we know what to improve. We record which calculator was
+      viewed, whether a calculation completed, whether advanced options were opened, and similar
+      product events — never their contents.
+    </p>
+    <p>
+      Currently: Cloudflare Web Analytics is{' '}
+      <strong>{CF_ANALYTICS_TOKEN ? 'enabled' : 'not enabled'}</strong> and Google Analytics is{' '}
+      <strong>{GA4_MEASUREMENT_ID ? 'configured' : 'not configured'}</strong>. Where Google
+      Analytics is used it loads only after a positive consent choice; without one it does not load
+      at all.
+    </p>
+    <p>We do not fingerprint devices, store IP addresses, or keep cross-site identifiers.</p>
+  </section>
+
+  <section aria-labelledby="ads-section">
+    <h2 id="ads-section">Advertising</h2>
+    <p>
+      Advertising is currently <strong>{ADS_ENABLED ? 'enabled' : 'not enabled'}</strong>. No
+      third-party advertising script is loaded on any page while it is off.
+    </p>
+    <p>
+      Before personalised advertising is ever enabled for visitors in the UK or EEA, a certified
+      consent management platform will be configured and this notice will be updated to describe
+      exactly what is collected and by whom.
+    </p>
+  </section>
+
+  <section aria-labelledby="storage">
+    <h2 id="storage">Cookies and local storage</h2>
+    <p>
+      No cookies are set by this site itself. See the <a href="/cookies/">cookie page</a> for the full
+      picture, including what would change if analytics or advertising are switched on.
+    </p>
+  </section>
+
+  <section aria-labelledby="rights">
+    <h2 id="rights">Your rights</h2>
+    <p>
+      Because we do not collect personal data through the calculators, there is generally nothing
+      held about you to access, correct, or erase. If you email us, we hold that correspondence in
+      order to reply to it. To ask about anything here, contact{' '}
+      <a href={`mailto:${SITE.contactEmail}`}>{SITE.contactEmail}</a>.
+    </p>
+    <p class="muted small">
+      This site is published from the United Kingdom and read internationally. It is written to be
+      compatible with UK GDPR and the EU GDPR. It is not legal advice, and a lawyer should review it
+      before commercial launch.
+    </p>
+  </section>
+</BaseLayout>

@@ -1,0 +1,108 @@
+name: Monthly tax data review
+
+# Raises a dated reminder when a ruleset is approaching expiry, has an
+# unreachable source, or is otherwise due for review.
+#
+# It deliberately does NOT fetch a tax authority page and update a rate. A
+# scraper that edits production tax constants is a liability, not a feature: a
+# person must compare the official announcement, update the versioned ruleset,
+# change the tests, review the generated page diff, and publish.
+on:
+  schedule:
+    # 07:00 UTC on the 1st of each month.
+    - cron: '0 7 1 * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  review:
+    name: Check ruleset freshness
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Run the tax data audit
+        id: audit
+        continue-on-error: true
+        run: |
+          {
+            echo 'report<<AUDIT_EOF'
+            npm run --silent tax:audit || true
+            echo 'AUDIT_EOF'
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Check that official sources still resolve
+        id: links
+        continue-on-error: true
+        run: |
+          npm run --silent build
+          {
+            echo 'links<<LINKS_EOF'
+            npx tsx scripts/check-links.ts --external || true
+            echo 'LINKS_EOF'
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Open or update the review issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = 'Monthly tax data review';
+            const body = [
+              '_Raised automatically. Nothing has been changed — this is a prompt for a person._',
+              '',
+              '## What to do',
+              '1. For each ruleset flagged below, open its official source and compare every figure.',
+              '2. Update the versioned ruleset, recording the URL and the date you read it.',
+              '3. Add or update golden and boundary tests.',
+              '4. Run `npm run gate` and review the page inventory diff.',
+              '5. Only then change `status` to `published`.',
+              '',
+              'Full procedure: `docs/TAX-DATA-UPDATE-RUNBOOK.md`.',
+              '',
+              '## Audit output',
+              '```',
+              `${{ steps.audit.outputs.report }}`,
+              '```',
+              '',
+              '## Source link check',
+              '```',
+              `${{ steps.links.outputs.links }}`,
+              '```',
+            ].join('\n');
+
+            const existing = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'tax-data',
+            });
+
+            const open = existing.data.find((issue) => issue.title === title);
+            if (open) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: open.number,
+                body,
+              });
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title,
+                body,
+                labels: ['tax-data'],
+              });
+            }

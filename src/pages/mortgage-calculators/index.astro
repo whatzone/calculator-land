@@ -1,0 +1,59 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import AdSlot from '../../components/monetisation/AdSlot.astro';
+import { calculatorsInFamily, calculatorPath } from '../../lib/registry/index.ts';
+import { manifestEntry } from '../../lib/seo/pages.ts';
+
+const path = '/mortgage-calculators/';
+const entry = manifestEntry(path);
+const tools = calculatorsInFamily('mortgage');
+---
+
+<BaseLayout
+  title={entry?.title ?? ''}
+  description={entry?.description ?? ''}
+  path={path}
+  indexable={entry?.indexable ?? false}
+  crumbs={[
+    { name: 'Home', path: '/' },
+    { name: 'Mortgage calculators', path },
+  ]}
+  withRail
+>
+  <div>
+    <h1>Mortgage calculators</h1>
+    <p class="lede">
+      Repayment maths with the formula on the page and the full schedule underneath. These work the
+      same in every country, so they are live now.
+    </p>
+  </div>
+
+  <ul class="card-grid">
+    {
+      tools.map((tool) => (
+        <li>
+          <a class="tool-card" href={calculatorPath(tool)}>
+            <strong>{tool.shortTitle}</strong>
+            <p>{tool.description}</p>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+
+  <section class="notice notice--warning">
+    <p class="notice__title">What these tools will not tell you</p>
+    <p style="margin-bottom:0;">
+      They do not assess affordability, they do not say whether a lender would offer you a loan, and
+      they exclude product fees, valuation fees, insurance, and early repayment charges. A fixed
+      rate is applied for the whole term, which is not how most real mortgages work once the fixed
+      period ends. Treat the output as arithmetic, not as a lending decision.
+    </p>
+  </section>
+
+  <AdSlot slot="guide-mid-content" />
+
+  <div slot="rail" class="no-print">
+    <AdSlot slot="result-rail" hideOnMobile />
+  </div>
+</BaseLayout>

@@ -1,0 +1,70 @@
+---
+/**
+ * A reserved advertising placement.
+ *
+ * While ADS_ENABLED is false — which is the committed default — this renders a
+ * labelled empty box at the exact dimensions an ad would occupy. Reserving the
+ * space now means enabling ads later cannot shift the page, and it makes every
+ * placement visible during design review rather than a surprise after launch.
+ *
+ * No third-party script is loaded from this component under any configuration
+ * that has not also supplied a publisher ID and a consent platform.
+ */
+import {
+  ADS_ENABLED,
+  AD_PUBLISHER_ID,
+  getAdSlot,
+  type AdSlotId,
+} from '../../config/monetisation.ts';
+
+interface Props {
+  slot: AdSlotId;
+  hideOnMobile?: boolean;
+}
+const { slot, hideOnMobile = false } = Astro.props;
+
+const config = getAdSlot(slot);
+const [mobileWidth, mobileHeight] = config.reserve.mobile;
+const [desktopWidth, desktopHeight] = config.reserve.desktop;
+
+// A slot with no reserved mobile size simply does not exist on mobile.
+const renderOnMobile = mobileWidth > 0 && mobileHeight > 0 && !hideOnMobile;
+const live = ADS_ENABLED && AD_PUBLISHER_ID !== '' && config.networkSlotId !== '';
+---
+
+<aside
+  class="ad-region no-print"
+  data-ad-slot={config.id}
+  data-ad-live={String(live)}
+  aria-label="Advertisement"
+>
+  <span class="ad-slot__label">{config.label}</span>
+  <div
+    class="ad-slot"
+    style={`--m-w:${mobileWidth}px;--m-h:${mobileHeight}px;--d-w:${desktopWidth}px;--d-h:${desktopHeight}px;`}
+  >
+    {live ? <slot /> : <span>Reserved — ads are not enabled</span>}
+  </div>
+</aside>
+
+<style define:vars={{ renderOnMobile: renderOnMobile ? 'block' : 'none' }}>
+  .ad-region {
+    display: var(--renderOnMobile);
+    margin-block: var(--space-5);
+  }
+  .ad-slot {
+    width: 100%;
+    max-width: var(--m-w);
+    height: var(--m-h);
+    margin-inline: auto;
+  }
+  @media (min-width: 1024px) {
+    .ad-region {
+      display: block;
+    }
+    .ad-slot {
+      max-width: var(--d-w);
+      height: var(--d-h);
+    }
+  }
+</style>

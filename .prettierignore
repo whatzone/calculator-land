@@ -1,0 +1,13 @@
+dist/
+.astro/
+node_modules/
+package-lock.json
+coverage/
+playwright-report/
+test-results/
+# Generated on every build by scripts/build-page-manifest.ts. Formatting a
+# machine-written file is not meaningful review, and checking it would make the
+# release gate fail on its own output.
+src/data/page-manifests/generated/
+src/lib/analytics/closed-values.generated.ts
+public/ads.txt

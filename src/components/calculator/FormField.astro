@@ -1,0 +1,103 @@
+---
+/**
+ * One form control, rendered from its registry definition.
+ *
+ * Native inputs throughout: they are keyboard-accessible, work at 200% zoom,
+ * carry the right mobile keyboard, and cost nothing to ship. Help text is
+ * rendered visibly beside the control rather than hidden behind a tooltip,
+ * because in a tax calculator the caveat is the product.
+ */
+import type { CalculatorFieldDefinition } from '../../lib/registry/types.ts';
+
+interface Props {
+  field: CalculatorFieldDefinition;
+  value?: string | number | boolean;
+}
+const { field, value } = Astro.props;
+
+const current = value ?? field.defaultValue ?? '';
+const id = `field-${field.name}`;
+const helpId = field.help ? `${id}-help` : undefined;
+const errorId = `${id}-error`;
+const describedBy = [helpId, errorId].filter(Boolean).join(' ') || undefined;
+const numeric = field.type === 'money' || field.type === 'percent' || field.type === 'number';
+---
+
+{
+  field.type === 'checkbox' ? (
+    <div class="field field--check">
+      <input
+        type="checkbox"
+        id={id}
+        name={field.name}
+        checked={current === true || current === 'true'}
+        aria-describedby={describedBy}
+      />
+      <div>
+        <label class="field__label" for={id}>
+          {field.label}
+        </label>
+        {field.help && (
+          <span class="field__help" id={helpId}>
+            {field.help}
+          </span>
+        )}
+      </div>
+    </div>
+  ) : (
+    <div class="field">
+      <label class="field__label" for={id}>
+        {field.label}
+      </label>
+      <div class="field__control">
+        {field.prefix && (
+          <span class="field__affix field__affix--prefix" aria-hidden="true">
+            {field.prefix}
+          </span>
+        )}
+
+        {field.type === 'select' ? (
+          <select
+            id={id}
+            name={field.name}
+            aria-describedby={describedBy}
+            required={field.required}
+          >
+            {(field.options ?? []).map((option) => (
+              <option value={option.value} selected={String(current) === option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        ) : (
+          <input
+            type="text"
+            id={id}
+            name={field.name}
+            value={String(current)}
+            required={field.required}
+            aria-describedby={describedBy}
+            inputmode={field.inputMode ?? (numeric ? 'decimal' : 'text')}
+            autocomplete={field.autocomplete ?? 'off'}
+            data-type={field.type}
+            data-min={field.min}
+            data-max={field.max}
+            data-step={field.step}
+          />
+        )}
+
+        {field.suffix && (
+          <span class="field__affix field__affix--suffix" aria-hidden="true">
+            {field.suffix}
+          </span>
+        )}
+      </div>
+      {field.help && (
+        <span class="field__help" id={helpId}>
+          {field.help}
+        </span>
+      )}
+      <span class="field__error" id={errorId} data-error-for={field.name} hidden />
+    </div>
+  )
+}

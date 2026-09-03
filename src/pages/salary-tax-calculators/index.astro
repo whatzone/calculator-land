@@ -1,0 +1,90 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import AdSlot from '../../components/monetisation/AdSlot.astro';
+import { JURISDICTIONS, findRuleset } from '../../data/jurisdictions/index.ts';
+import {
+  calculatorsInFamily,
+  calculatorPath,
+  isCalculatorIndexable,
+} from '../../lib/registry/index.ts';
+import { manifestEntry } from '../../lib/seo/pages.ts';
+
+const path = '/salary-tax-calculators/';
+const entry = manifestEntry(path);
+const tools = calculatorsInFamily('salary-tax');
+---
+
+<BaseLayout
+  title={entry?.title ?? ''}
+  description={entry?.description ?? ''}
+  path={path}
+  indexable={entry?.indexable ?? false}
+  crumbs={[
+    { name: 'Home', path: '/' },
+    { name: 'Salary & tax', path },
+  ]}
+  withRail
+>
+  <div>
+    <h1>Salary and tax calculators</h1>
+    <p class="lede">
+      Four tools for each market: what you take home, what gross salary produces a given take-home
+      figure, what a bonus is really worth, and what a pay rise actually adds.
+    </p>
+  </div>
+
+  <section aria-labelledby="approach-heading">
+    <h2 id="approach-heading">How these differ from most salary calculators</h2>
+    <p>
+      A bonus here is worked out by calculating your whole year twice — once with the bonus and once
+      without — and taking the difference. Multiplying a bonus by a headline tax rate is the common
+      shortcut, and it is wrong whenever the bonus pushes you across a band, a taper, or a
+      contribution ceiling. The same applies to a pay rise.
+    </p>
+    <p>
+      Marginal rates are measured the same way, by re-running the calculation slightly higher up,
+      rather than read off a rate table. Where an allowance is being withdrawn, the true marginal
+      rate can be far above the headline band rate, and that is exactly the situation people most
+      need explaining.
+    </p>
+  </section>
+
+  {
+    JURISDICTIONS.map((meta) => {
+      const ruleset = findRuleset(meta.code);
+      const forCountry = tools.filter((tool) =>
+        (tool.jurisdictions as readonly string[]).includes(meta.code),
+      );
+      return (
+        <section aria-labelledby={`country-${meta.code}`}>
+          <h2 id={`country-${meta.code}`}>
+            {meta.adjective} calculators
+            {ruleset && <span class="muted small"> — {ruleset.taxPeriod.label}</span>}
+          </h2>
+          <ul class="card-grid">
+            {forCountry.map((tool) => (
+              <li>
+                <a
+                  class={`tool-card ${isCalculatorIndexable(tool) ? '' : 'tool-card--disabled'}`}
+                  href={calculatorPath(tool)}
+                >
+                  <strong>{tool.shortTitle}</strong>
+                  <p>{tool.description}</p>
+                  {!isCalculatorIndexable(tool) && (
+                    <span class="pill pill--pending">Awaiting official source</span>
+                  )}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      );
+    })
+  }
+
+  <AdSlot slot="guide-mid-content" />
+
+  <div slot="rail" class="no-print">
+    <AdSlot slot="result-rail" hideOnMobile />
+  </div>
+</BaseLayout>

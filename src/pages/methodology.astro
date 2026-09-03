@@ -1,0 +1,130 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AdSlot from '../components/monetisation/AdSlot.astro';
+import { manifestEntry } from '../lib/seo/pages.ts';
+const path = '/methodology/';
+const entry = manifestEntry(path);
+---
+
+<BaseLayout
+  title={entry?.title ?? ''}
+  description={entry?.description ?? ''}
+  path={path}
+  indexable={entry?.indexable ?? false}
+  crumbs={[
+    { name: 'Home', path: '/' },
+    { name: 'How these work', path },
+  ]}
+>
+  <div>
+    <h1>How these calculators work</h1>
+    <p class="lede">
+      Every figure on this site is produced by the same engine, from rules held as data. This page
+      explains what that engine does, so you can check whether it matches your situation.
+    </p>
+  </div>
+
+  <section aria-labelledby="progressive">
+    <h2 id="progressive">Progressive bands</h2>
+    <p>
+      Income tax in all five launch markets is progressive: a rate applies only to the slice of
+      income that falls inside its band, not to your whole income. Someone who crosses into a 40%
+      band does not suddenly pay 40% on everything — they pay 40% only on the part above the
+      threshold.
+    </p>
+    <p>
+      The engine applies each band to its own slice and shows the working, so you can see how much
+      income was taxed at each rate rather than being asked to trust a single total.
+    </p>
+  </section>
+
+  <section aria-labelledby="marginal">
+    <h2 id="marginal">Marginal versus average rates</h2>
+    <p>
+      The <strong>average rate</strong> is your total deductions divided by your total pay. The
+      <strong>marginal rate</strong> is what comes off the next unit of pay you earn. They are almost
+      never the same, and the marginal one is what determines how a pay rise feels.
+    </p>
+    <p>
+      We measure the marginal rate rather than looking it up. The calculation is run again at a
+      slightly higher salary and the difference in deductions is compared to the difference in pay.
+      That matters because the true marginal rate often differs from the headline band rate — where
+      an allowance is being withdrawn as income rises, for instance, each extra pound is taxed and
+      also removes allowance that then gets taxed, producing an effective rate well above any
+      published band.
+    </p>
+  </section>
+
+  <section aria-labelledby="contributions">
+    <h2 id="contributions">Contributions, levies and credits</h2>
+    <p>
+      Social contributions are not income tax and are shown on their own line. They typically have
+      their own floor, their own bands, and often a ceiling above which no more is charged — which
+      is why marginal rates can fall as income rises past a cap.
+    </p>
+    <p>
+      Some systems reduce tax with an allowance deducted before the bands apply; others use credits
+      subtracted from the tax due afterwards. The two are not interchangeable, and the engine models
+      whichever the jurisdiction actually uses. Non-refundable credits are floored at zero — they
+      can reduce tax to nothing but never produce a refund.
+    </p>
+  </section>
+
+  <section aria-labelledby="annualisation">
+    <h2 id="annualisation">Annualisation, and why results are estimates</h2>
+    <p>
+      Every result is calculated on a full tax year and then divided to show monthly, fortnightly,
+      and weekly figures. Real payroll does not work that way: it withholds period by period, often
+      cumulatively, and some contributions stop mid-year once an annual maximum is reached.
+    </p>
+    <p>
+      So if you start a job part-way through the year, change salary mid-year, or receive very
+      uneven pay, your actual deductions in any given month will differ from the figure shown here
+      even when the annual total is right. That is why every result is labelled an estimate.
+    </p>
+  </section>
+
+  <AdSlot slot="guide-mid-content" />
+
+  <section aria-labelledby="rounding">
+    <h2 id="rounding">Rounding and precision</h2>
+    <p>
+      Money is never handled as a binary floating-point number anywhere in this codebase. Ordinary
+      computer arithmetic cannot represent 0.1 exactly, and errors accumulate across the dozens of
+      multiplications and divisions a tax calculation involves. Every monetary value here is a
+      decimal from the moment it is entered until it is formatted for display.
+    </p>
+    <p>
+      Rounding is applied at the stage the relevant tax authority specifies, and the policy for each
+      jurisdiction is recorded in its ruleset alongside the rates. Where an authority rounds a
+      figure down to the whole unit, we round down too, rather than doing what looks tidier.
+    </p>
+  </section>
+
+  <section aria-labelledby="net-to-gross">
+    <h2 id="net-to-gross">Working backwards from take-home pay</h2>
+    <p>
+      There is no formula that inverts a tax system with allowances, tapers and caps, so the
+      net-to-gross calculator searches for the answer instead: it repeatedly narrows a range of
+      possible gross salaries until it finds the one that produces your target.
+    </p>
+    <p>
+      The answer is then checked by feeding it back through the ordinary forward calculation. If the
+      round trip does not match, you are told so rather than shown a confident-looking figure. It is
+      genuinely possible for no gross salary to produce a particular take-home figure, and when that
+      happens the calculator says it.
+    </p>
+  </section>
+
+  <section aria-labelledby="unsupported">
+    <h2 id="unsupported">What happens when we cannot answer</h2>
+    <p>
+      If a ruleset has not been verified against its official source, or you select an option the
+      rules do not cover, the calculator does not estimate. It tells you what is missing and shows
+      you the official source instead. A page in that state is also kept out of search results
+      entirely, so it cannot be found by someone who has no way of knowing it is incomplete.
+    </p>
+  </section>
+
+  <p><a href="/sources/">See the official sources behind each calculator →</a></p>
+</BaseLayout>

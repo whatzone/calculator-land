@@ -1,0 +1,139 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import CalculatorPage from '../../components/calculator/CalculatorPage.astro';
+import AdSlot from '../../components/monetisation/AdSlot.astro';
+import { globalCalculatorList, calculatorPath } from '../../lib/registry/index.ts';
+import { manifestEntry } from '../../lib/seo/pages.ts';
+import { calculatorSchema } from '../../lib/seo/structured-data.ts';
+import { amortise, annualSummary } from '../../lib/calculations/global/mortgage.ts';
+import { money } from '../../lib/calculations/common/money.ts';
+import { formatCurrency, formatCurrencyPrecise } from '../../lib/formatting/index.ts';
+import type { AnyCalculatorDefinition } from '../../lib/registry/types.ts';
+import type { CalculationContext } from '../../lib/calculations/common/types.ts';
+
+export function getStaticPaths() {
+  return globalCalculatorList()
+    .filter((calculator) => calculator.family === 'mortgage')
+    .map((calculator) => ({ params: { slug: calculator.slug }, props: { calculator } }));
+}
+
+const { calculator } = Astro.props as { calculator: AnyCalculatorDefinition };
+const path = calculatorPath(calculator);
+const entry = manifestEntry(path);
+
+const context: CalculationContext = {
+  locale: 'en-GB',
+  currency: 'GBP',
+  taxPeriodLabel: 'n/a',
+  rulesetVersion: 'global',
+};
+
+const values: Record<string, string | number | boolean> = {};
+for (const field of calculator.fields) {
+  if (field.defaultValue !== undefined) values[field.name] = field.defaultValue;
+}
+values['principal'] = values['principal'] ?? 200000;
+if (calculator.id === 'global-mortgage-overpayment') values['monthlyOverpayment'] = 200;
+
+const view = calculator.present(calculator.calculate(values as never, context) as never, context);
+
+// The amortisation schedule is rendered as a real table, condensed to one row
+// per year so it is readable and printable rather than 300 rows long.
+const schedule = annualSummary(
+  amortise({
+    principal: money(String(values['principal'])),
+    annualRatePercent: money(String(values['annualRatePercent'])),
+    termYears: Number(values['termYears']),
+  }),
+);
+
+const crumbs = [
+  { name: 'Home', path: '/' },
+  { name: 'Mortgage calculators', path: '/mortgage-calculators/' },
+  { name: calculator.shortTitle, path },
+];
+---
+
+<BaseLayout
+  title={`${calculator.title} | ClearFigures`}
+  description={calculator.metaDescription}
+  path={path}
+  indexable={entry?.indexable ?? false}
+  crumbs={crumbs}
+  withRail
+  extraSchema={[calculatorSchema(calculator, path, view.supported)]}
+>
+  <div>
+    <h1>{calculator.title}</h1>
+    <p class="lede">{calculator.description}</p>
+  </div>
+
+  <CalculatorPage
+    calculator={calculator}
+    view={view}
+    context={context}
+    values={values}
+    rulesets={{}}
+  />
+
+  <section class="card card--flush" aria-labelledby="schedule-heading">
+    <h2 id="schedule-heading" class="visually-hidden">Amortisation schedule</h2>
+    <div
+      class="table-scroll"
+      tabindex="0"
+      role="region"
+      aria-label="Amortisation schedule, scrollable"
+    >
+      <table class="data">
+        <caption>
+          How the balance falls, year by year
+          <span class="detail">
+            Based on the figures currently shown above. Interest is heaviest at the start, because
+            it is charged on a larger balance.
+          </span>
+        </caption>
+        <thead>
+          <tr>
+            <th scope="col">Year</th>
+            <th scope="col">Paid</th>
+            <th scope="col">Interest</th>
+            <th scope="col">Capital</th>
+            <th scope="col">Balance</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            schedule.map((row) => (
+              <tr>
+                <th scope="row">{row.year}</th>
+                <td>{formatCurrencyPrecise(row.paid, 'GBP')}</td>
+                <td>{formatCurrencyPrecise(row.interest, 'GBP')}</td>
+                <td>{formatCurrencyPrecise(row.principal, 'GBP')}</td>
+                <td>{formatCurrency(row.balance, 'GBP')}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section aria-labelledby="formula-heading">
+    <h2 id="formula-heading">The formula</h2>
+    <p>
+      A repayment mortgage uses the standard annuity formula, where <em>P</em> is the amount borrowed,
+      <em>r</em> the monthly interest rate, and <em>n</em> the number of monthly payments:
+    </p>
+    <p><code>payment = P × r ÷ (1 − (1 + r)<sup>−n</sup>)</code></p>
+    <p>
+      At a rate of zero that expression divides by zero, so the zero-interest case is handled
+      separately as <code>P ÷ n</code>. The schedule is then built by simulating each month against
+      the running balance rather than by splitting the total, which is what allows the final payment
+      to absorb the rounding and land the balance on exactly zero.
+    </p>
+  </section>
+
+  <div slot="rail" class="no-print">
+    <AdSlot slot="result-rail" hideOnMobile />
+  </div>
+</BaseLayout>

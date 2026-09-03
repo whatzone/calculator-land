@@ -1,0 +1,60 @@
+---
+import '../styles/global.css';
+import Meta from '../components/seo/Meta.astro';
+import Header from '../components/layout/Header.astro';
+import Footer from '../components/layout/Footer.astro';
+import Breadcrumbs from '../components/layout/Breadcrumbs.astro';
+import type { Crumb } from '../lib/seo/structured-data.ts';
+
+interface Props {
+  title: string;
+  description: string;
+  path: string;
+  indexable: boolean;
+  crumbs?: Crumb[];
+  extraSchema?: (Record<string, unknown> | null)[];
+  locale?: string;
+  withRail?: boolean;
+}
+
+const {
+  title,
+  description,
+  path,
+  indexable,
+  crumbs = [],
+  extraSchema = [],
+  locale = 'en-GB',
+  withRail = false,
+} = Astro.props;
+---
+
+<html lang="en">
+  <head>
+    <Meta
+      title={title}
+      description={description}
+      path={path}
+      indexable={indexable}
+      crumbs={crumbs}
+      extraSchema={extraSchema}
+      locale={locale}
+    />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to the calculator</a>
+    <Header currentPath={path} />
+
+    <div class="wrap">
+      <div class={withRail ? 'page page--with-rail' : 'page'}>
+        <main id="main" class="stack-lg">
+          {crumbs.length > 1 && <Breadcrumbs crumbs={crumbs} />}
+          <slot />
+        </main>
+        <slot name="rail" />
+      </div>
+    </div>
+
+    <Footer />
+  </body>
+</html>

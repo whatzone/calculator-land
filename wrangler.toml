@@ -1,0 +1,16 @@
+# Cloudflare Pages configuration.
+#
+# Deploying needs an authenticated Wrangler session; see docs/DEPLOYMENT.md.
+# No token is stored in this repository, and none should ever be committed.
+name = "clearfigures"
+compatibility_date = "2026-09-03"
+pages_build_output_dir = "dist"
+
+# Production is the only environment that sets SITE_ALLOW_INDEXING. Preview and
+# branch deployments therefore emit noindex on every page and ship an empty
+# sitemap without anyone having to remember to switch anything off.
+[env.production.vars]
+SITE_ALLOW_INDEXING = "true"
+
+[env.preview.vars]
+SITE_ALLOW_INDEXING = "false"

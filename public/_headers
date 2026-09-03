@@ -1,0 +1,46 @@
+# Cloudflare Pages headers.
+#
+# The Content-Security-Policy is written for the integrations this site
+# actually has, and is deliberately tight: there is no inline script beyond the
+# JSON-LD and calculator-config blocks (both `application/...` types, not
+# executable), and no third-party script at all until analytics or ads are
+# switched on. Each third-party origin below is commented with what needs it, so
+# that removing an integration also means removing its origin.
+
+/*
+  # Only Cloudflare Web Analytics is permitted today. When GA4 is enabled, add
+  #   https://www.googletagmanager.com https://www.google-analytics.com
+  # When an ad network is enabled, add its documented origins here as well —
+  # and check that the calculator still works, because a CSP that silently
+  # blocks the calculator island is worse than no ads.
+  Content-Security-Policy: default-src 'self'; script-src 'self' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://cloudflareinsights.com; form-action 'self'; frame-ancestors 'none'; base-uri 'self'; object-src 'none'; upgrade-insecure-requests
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  # Nothing here needs a camera, a microphone, a location, or a payment handler.
+  Permissions-Policy: accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=(), interest-cohort=()
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  Cross-Origin-Opener-Policy: same-origin
+  # No X-Robots-Tag here on purpose. Indexing is controlled per page by the
+  # meta robots tag, which is driven by SITE_ALLOW_INDEXING — so preview
+  # deployments are noindex and production is not. A blanket header here would
+  # override that and keep production out of the index permanently.
+
+# Hashed build assets are immutable, so they can be cached for a year.
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+  X-Robots-Tag: none
+
+/favicon.svg
+  Cache-Control: public, max-age=604800
+
+# HTML is revalidated so a tax data correction reaches readers promptly rather
+# than sitting in a cache for a week.
+/*.html
+  Cache-Control: public, max-age=0, must-revalidate
+
+/sitemap-*.xml
+  Cache-Control: public, max-age=3600
+
+/robots.txt
+  Cache-Control: public, max-age=3600

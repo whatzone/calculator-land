@@ -1,0 +1,104 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { manifestEntry } from '../lib/seo/pages.ts';
+const path = '/editorial-policy/';
+const entry = manifestEntry(path);
+---
+
+<BaseLayout
+  title={entry?.title ?? ''}
+  description={entry?.description ?? ''}
+  path={path}
+  indexable={entry?.indexable ?? false}
+  crumbs={[
+    { name: 'Home', path: '/' },
+    { name: 'Editorial policy', path },
+  ]}
+>
+  <div>
+    <h1>Editorial policy</h1>
+    <p class="lede">
+      How rules get onto this site, and what our review does and does not amount to.
+    </p>
+  </div>
+
+  <div class="notice notice--warning">
+    <p class="notice__title">No tax professional has reviewed this site</p>
+    <p style="margin-bottom:0;">
+      The review described below is a software and data review carried out by the people who build
+      the site. It is not a professional tax review, and nothing here has been checked or approved
+      by an accountant, tax adviser, or lawyer. If we ever obtain professional review, this page
+      will say so and name who did it.
+    </p>
+  </div>
+
+  <section aria-labelledby="process">
+    <h2 id="process">How a rule gets published</h2>
+    <ol>
+      <li>
+        The rule is read from the tax authority that publishes it. Not from another calculator, not
+        from a news article, not from a summary.
+      </li>
+      <li>
+        The figures are entered into a versioned ruleset file alongside the source URL and the date
+        they were checked.
+      </li>
+      <li>
+        Tests are written from the authority's own worked examples where they exist, and
+        hand-calculated with the workings recorded where they do not.
+      </li>
+      <li>
+        Every band boundary is tested immediately below, at, and immediately above the threshold,
+        along with allowances, caps, tapers, and credits.
+      </li>
+      <li>Someone other than the person who entered the data reviews the diff.</li>
+      <li>
+        Only then is the ruleset marked published, which is what allows its pages to be indexed.
+      </li>
+    </ol>
+    <p>
+      A source page changing does not change our figures automatically. There is a monthly automated
+      check that raises the question, but a person answers it.
+    </p>
+  </section>
+
+  <section aria-labelledby="withhold">
+    <h2 id="withhold">When we withhold rather than estimate</h2>
+    <p>
+      If a rule cannot be implemented confidently from an official source, the affected feature is
+      marked unsupported and its pages are kept out of search results. This is enforced by the build
+      rather than by anyone remembering: a page that fails the quality gate is either not emitted at
+      all or emitted with a noindex directive, and it cannot appear in a sitemap.
+    </p>
+    <p>
+      The same applies to combinations we do not model. Selecting an option the rules do not cover
+      produces a visible warning, never a plausible-looking guess.
+    </p>
+  </section>
+
+  <section aria-labelledby="pages">
+    <h2 id="pages">What makes a page worth publishing</h2>
+    <p>
+      We do not create pages to increase a URL count. A page is published only if it runs a real
+      calculation, answers a distinct question, exposes its assumptions, and says something specific
+      to its own subject. Salary pages exist for a curated list of amounts held in a single reviewed
+      file — not for every number between them.
+    </p>
+    <p>
+      Near-identical pages produced by swapping a city, a currency, or a word are not published at
+      all, regardless of what they might rank for.
+    </p>
+  </section>
+
+  <section aria-labelledby="ads">
+    <h2 id="ads">Advertising and independence</h2>
+    <p>
+      This site is funded by display advertising. Advertising is never allowed to change a
+      calculation, a recommendation, or which pages exist. Ad placements are fixed in the page
+      layout, are labelled, and are never positioned where they could be mistaken for a result, a
+      form control, or a source link. At the time of writing no ads are enabled at all.
+    </p>
+  </section>
+
+  <p><a href="/corrections/">Found an error? Here is how to report it →</a></p>
+</BaseLayout>
