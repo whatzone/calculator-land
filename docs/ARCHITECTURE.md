@@ -111,7 +111,7 @@ result through a live region, and rewrites the query string so the page can be
 shared — while the canonical link keeps pointing at the clean tool path, so
 query variants never become crawlable URLs.
 
-Measured: 15.3 KB of JavaScript gzipped, 5.2 KB of CSS. Budgets are 60 KB and
+Measured: 15.6 KB of JavaScript gzipped, 5.8 KB of CSS. Budgets are 60 KB and
 30 KB.
 
 ## Deliberate absences

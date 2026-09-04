@@ -18,6 +18,7 @@ import Assumptions from '../content/Assumptions.astro';
 import Sources from '../content/Sources.astro';
 import DataStatusNotice from '../content/DataStatusNotice.astro';
 import AdSlot from '../monetisation/AdSlot.astro';
+import ResultBar from './ResultBar.astro';
 import { formatAmountForTitle, formatCurrency, formatRate } from '../../lib/formatting/index.ts';
 import { calculatorPath } from '../../lib/registry/index.ts';
 import { neighbouringAmounts } from '../../data/salary-amounts.ts';
@@ -205,6 +206,8 @@ const clientConfig = {
     <li><a href="/sources/">The official sources behind them</a></li>
   </ul>
 </section>
+
+<ResultBar />
 
 <script
   id="calculator-config"

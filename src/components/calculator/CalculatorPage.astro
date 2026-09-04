@@ -12,6 +12,7 @@ import Assumptions from '../content/Assumptions.astro';
 import Sources from '../content/Sources.astro';
 import DataStatusNotice from '../content/DataStatusNotice.astro';
 import AdSlot from '../monetisation/AdSlot.astro';
+import ResultBar from './ResultBar.astro';
 import { calculatorPath, getCalculator } from '../../lib/registry/index.ts';
 import type { AnyCalculatorDefinition, ResultViewModel } from '../../lib/registry/types.ts';
 import type { Ruleset } from '../../lib/validation/ruleset-schema.ts';
@@ -127,6 +128,8 @@ const clientConfig = {
     </section>
   )
 }
+
+<ResultBar />
 
 <script
   id="calculator-config"

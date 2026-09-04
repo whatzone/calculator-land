@@ -683,3 +683,81 @@ this shipped. CSS 4.7 → 5.2 KB gzipped against a 30 KB budget; JS unchanged.
 materially more than the post-result slot, the two columns can move to a 1440px
 container with the rail restored above 1400px, at the cost of a third
 breakpoint.
+
+---
+
+## D-021 — Mobile first, and the answer is what gets pinned
+
+**Date:** 2026-09-04 · **Status:** Active · **Owner:** design
+**Supersedes:** the sticky input column in D-020.
+
+**Context.** The owner: "we have never optimised for mobile… I really would
+like to optimise for mobile first, desktop second." That was correct. D-020
+fixed the desktop calculator page and left the phone exactly as it was.
+Measured on a 390×844 screen before this change:
+
+|                                           | Before                                                                    |
+| ----------------------------------------- | ------------------------------------------------------------------------- |
+| First screen spent before the first input | 55% (input at y≈500)                                                      |
+| Result on the salary calculator           | y=1,616 — two screens down                                                |
+| Header, permanently sticky                | 119px                                                                     |
+| Navigation                                | 561px of links in a 358px strip; two of five unreachable, nothing said so |
+| Tap targets under 44px, home page         | 27                                                                        |
+| Result tables                             | horizontal scroll                                                         |
+
+**Decision.** Six changes, each measured.
+
+1. **Unpin the header, pin the answer.** Nothing in the header is sticky on a
+   phone any more; scrolling up for navigation is a gesture people already
+   have. In its place `ResultBar.astro` fixes the headline figure to the bottom
+   of the screen from the moment there is one, and doubles as the jump to the
+   full breakdown.
+2. **Recalculate as the form is edited**, debounced 250ms for typing and
+   immediate for selects. This is the change most likely to affect how long
+   anyone stays: adjusting a salary and watching the figure move is a thing
+   people do repeatedly; tapping Calculate and scrolling two screens is a thing
+   people do once.
+3. **Stack two-column tables** rather than scrolling them sideways.
+4. **Halve the chrome above the first input** — smaller title, two-line
+   description, no "Your details" heading, tighter header.
+5. **44px tap targets** on navigation and footer links; 24px, the AA minimum,
+   on breadcrumbs.
+6. **Selects shrink to fit; text inputs never do.** Below 16px iOS Safari zooms
+   on focus and does not zoom back, so inputs hold at 17px. Selects have no
+   such behaviour, so they take the smaller size rather than cut "England,
+   Wales & Northern Ireland" mid-word.
+
+**Measured after:** first input at 415px, under half a screen; the answer
+visible while typing with no scroll at all; 119px of sticky header replaced by
+a 72px bar carrying the figure; tap targets under 44px down from 27 to one
+inline prose link, which the AA rule exempts.
+
+**A quiet recalculation is not a submission.** It must not report a validation
+error against a figure one keystroke old, must not fill the back button with
+half-typed salaries, and must not count as a completed calculation in
+analytics. Pressing the button still does all three. Both halves are asserted.
+
+**What this cost.** The sticky input column from D-020 is gone. The salary form
+is ~830px tall — more than most laptop viewports — so a sticky column could
+never be scrolled to its own end, and its Calculate button sat permanently
+below the fold. It also raced: the e2e suite caught clicks landing on a moving
+target. Side by side already achieves what stickiness was reaching for. That
+D-020 called it "sticky, so they stay put while the breakdown is read" was
+right about the goal and wrong about the mechanism.
+
+**Two mistakes the tests caught before this shipped.** Stacking every
+`table.data` rather than only two-column ones turned the all-calculators page
+from 10,583px to 17,127px — hence the `data--pairs` class. And the first draft
+of the "half a screen" test failed against my own layout, which is what forced
+the chrome above the fold down rather than leaving it at "better than it was".
+
+**Not done, deliberately.** No bottom tab bar: it would compete with the result
+bar for the one piece of pinned space a phone has, and the site's navigation is
+shallow enough that a scroll strip covers it. No autofocus on the salary field:
+opening a page by throwing up a keyboard is hostile.
+
+**What would change this.** Real analytics. Every claim above about behaviour —
+that people adjust more when the figure moves live, that the bar is used to
+reach the breakdown — is reasoned, not observed. `result_bar_opened` is
+instrumented so the second one, at least, becomes a fact rather than an
+argument.

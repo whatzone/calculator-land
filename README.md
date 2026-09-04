@@ -34,6 +34,12 @@ and hourly tools everywhere. 120 of 130 pages are indexable.
 Each salary calculator offers a choice of **tax year** — three per market — and
 recalculates against the year you pick.
 
+The calculators recalculate as you edit rather than on a button press, and on a
+phone the headline figure is pinned to the bottom of the screen while you work,
+so the answer is never off-screen. Layout decisions are made for a 390px screen
+first: see the mobile-first section of `docs/DESIGN.md` for the specifics and
+the measurements behind them.
+
 **Every rate on the site is unverified.** The figures were entered from general
 knowledge, not read from the authority that publishes them, because the build
 environment cannot reach any official tax domain. That is not a caveat buried in
@@ -52,7 +58,7 @@ engine cannot yet express. Its ten salary pages are withheld from the index.
 | `npm run build`               | Manifest, build, then the indexability and link audits            |
 | `npm run gate`                | Format, lint, typecheck, test, tax audit, build                   |
 | `npm run test`                | Unit and integration tests (207)                                  |
-| `npm run test:e2e`            | Playwright: desktop, mobile, no-JavaScript, axe (123)             |
+| `npm run test:e2e`            | Playwright: desktop, mobile, no-JavaScript, axe (145)             |
 | `npm run tax:audit`           | Years offered, sources, succession. `-- --strict` to fail on gaps |
 | `npm run seo:audit`           | Indexability and internal links, against the built output         |
 | `npm run create:calculator`   | Scaffold a calculator                                             |
@@ -96,8 +102,8 @@ than partial. See D-018.
 
 |                                     | Budget | Actual  |
 | ----------------------------------- | ------ | ------- |
-| Calculator client bundle, gzipped   | 60 KB  | 15.3 KB |
-| First-party CSS, gzipped            | 30 KB  | 5.2 KB  |
+| Calculator client bundle, gzipped   | 60 KB  | 15.6 KB |
+| First-party CSS, gzipped            | 30 KB  | 5.8 KB  |
 | Render-blocking third-party scripts | 0      | 0       |
 | Automated accessibility violations  | 0      | 0       |
 

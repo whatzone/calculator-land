@@ -1,0 +1,39 @@
+---
+/**
+ * The pinned result summary, shown on narrow screens only.
+ *
+ * On a phone the form is a screen tall, so the answer sits below the fold
+ * while it is being filled in. Every adjustment then costs a scroll down to
+ * see the effect and a scroll back up to change it again, which is the point
+ * most people stop adjusting. This keeps the headline figure in view for the
+ * whole of that interaction, and doubles as the way to the full breakdown.
+ *
+ * It starts hidden and is filled in by the client script, so a reader without
+ * JavaScript is never shown an empty bar. Nothing here is a second source of
+ * truth: every value is copied from the same view model the result panel
+ * renders.
+ */
+---
+
+<button class="result-bar no-print" type="button" data-result-bar hidden>
+  <span class="result-bar__text">
+    <span class="result-bar__label" data-bar-label></span>
+    <span class="result-bar__value" data-bar-value></span>
+    <span class="result-bar__caption" data-bar-caption></span>
+  </span>
+  <span class="result-bar__action">
+    Breakdown
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path d="M6 9l6 6 6-6"></path>
+    </svg>
+  </span>
+</button>

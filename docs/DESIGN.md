@@ -15,6 +15,8 @@ page. Everything below exists to keep numbers legible and claims honest.
 4. **Restraint over effect.** No gradients, no glassmorphism, no motion beyond a
    120ms state change. Depth comes from a hairline and a very soft shadow.
 5. **Nothing visual-only.** Every chart segment appears as a table row.
+6. **The phone is the design target.** Every layout decision is made for a
+   390px screen first and adapted upward, not the other way round. See below.
 
 ## Colour
 
@@ -117,5 +119,55 @@ key containing exactly one word.
   surface is pure black, and that the palette carries no dead tokens.
 - `tests/e2e/accessibility.spec.ts` runs axe over ten templates in **both**
   themes — twenty runs. Passing in light says nothing about dark.
-- Budgets: 4.7 KB of CSS and 15.7 KB of JavaScript, gzipped, against 30 KB and
+- `tests/e2e/mobile.spec.ts` asserts the mobile rules as behaviour rather than
+  as intent: the first input inside half a screen, the result bar present
+  below 1040px and absent above it, stacked tables not scrolling sideways,
+  every navigation and footer link at 44px, and the bar never covering the
+  last line of the page.
+- Budgets: 5.8 KB of CSS and 15.6 KB of JavaScript, gzipped, against 30 KB and
   60 KB.
+
+## Mobile first, in specifics
+
+The site was built desktop-first and adapted down, and it showed. Measured on a
+390×844 screen before the change: 55% of the first screen spent before the
+first input, the answer 1,616px down, five navigation links in a strip that
+could only hold three with nothing to say the rest were there, 27 tap targets
+under 44px on the home page alone, and every result table scrolling sideways.
+
+The rules now, in the order they were applied:
+
+**Nothing in the header is pinned.** On a phone the element worth permanent
+space is the answer, not the navigation. The header scrolls away; the nav
+becomes a scroll strip masked at both edges so the links past the fold read as
+"more this way" rather than as the end of the list.
+
+**The answer is pinned instead.** `ResultBar.astro` fixes the headline figure
+to the bottom of the screen from the moment there is one. It is the same view
+model the result panel renders — not a second source of truth — and it doubles
+as the jump to the full breakdown. Hidden by default in the markup, so a reader
+without JavaScript never sees an empty bar.
+
+**The form recalculates as it is edited.** Typing is debounced at 250ms;
+changing a select runs at once. A recalculation nobody asked for is _quiet_: it
+does not report a validation error against a half-typed figure, does not
+rewrite the URL on every keystroke, and does not count as a completed
+calculation in analytics. Pressing the button still does all three.
+
+**Two-column tables stack.** A label-and-value row on a 358px screen wraps its
+label to four lines and strands the figure in a column of its own; stacked, the
+label runs full width and the figure sits below it, larger. Only tables marked
+`data--pairs` — applying it to a three-column listing made that page 11,418px
+tall, which is how the class came to exist.
+
+**44px targets, with one deliberate exception.** Navigation and footer links
+take the full 44px. Breadcrumbs take the 24px AA minimum: the trail is one line
+of small text near the top of the page, and 44px there costs more screen than
+the trail is worth.
+
+**Text inputs never drop below 16px.** iOS Safari zooms the page on focus below
+that and does not zoom back out. Selects have no such behaviour, so they take
+the smaller size when a long option label would otherwise be cut mid-word.
+
+Result on the same screen: first input at 415px, answer visible while typing
+without any scroll at all.

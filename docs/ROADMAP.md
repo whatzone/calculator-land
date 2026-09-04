@@ -8,8 +8,8 @@ it starts because its gate is met.
 ## Phase 0 — Where things actually stand
 
 **Complete.** The platform is built, tested, and buildable. 130 pages generate,
-120 pass the quality gate, 207 unit and integration tests and 123 end-to-end
-tests pass, and the client bundle is 15.3 KB gzipped.
+120 pass the quality gate, 207 unit and integration tests and 145 end-to-end
+tests pass, and the client bundle is 15.6 KB gzipped.
 
 **Live today, with unverified figures:** every calculator in four markets — the
 UK including Scotland, Ireland, Australia, and Canada federal plus Ontario,

@@ -191,11 +191,13 @@ svg {
 
    A calculator whose answer sits below the fold makes the reader scroll away
    from the controls to see what they changed. Above 1040px the form and the
-   result share one screen: inputs on the left, sticky, so they stay put while
-   the breakdown is read; the answer on the right, where the eye lands.
+   result share one screen: inputs on the left, the answer on the right, where
+   the eye lands.
 
    Below that it stacks — form, then answer — which is the right order on a
-   phone, where side-by-side would make both columns unusable.
+   phone, where side-by-side would make both columns unusable. There the same
+   problem is solved differently: the result bar pins the headline figure to
+   the bottom of the screen for the whole of the interaction.
    -------------------------------------------------------------------------- */
 .calc-grid {
   display: grid;
@@ -215,21 +217,13 @@ svg {
     grid-template-columns: minmax(20rem, 26rem) minmax(0, 1fr);
     gap: var(--s7);
   }
-
-  .calc-grid__input {
-    position: sticky;
-    /* Clears the sticky site header, with a little air above the card. */
-    top: calc(var(--header-h) + var(--s4));
-  }
 }
 
-/* A sticky column taller than the viewport can never be scrolled to its end,
-   so it only sticks where it fits. */
-@media (min-width: 1040px) and (max-height: 44rem) {
-  .calc-grid__input {
-    position: static;
-  }
-}
+/* The input column is deliberately NOT sticky. The salary form is around
+   830px tall, which is more than most laptop viewports, so a sticky column
+   could never be scrolled to its own end — its Calculate button sat below the
+   fold and stayed there. Side by side already solves the problem stickiness
+   was reaching for: the answer is beside the form, not below it. */
 
 .calc-grid__output > * + * {
   margin-top: var(--s5);
@@ -328,22 +322,76 @@ svg {
   background: var(--accent-surface);
 }
 
+/* --------------------------------------------------------------------------
+   Header on a phone
+
+   Measured before this: 119px of permanently sticky chrome on an 844px
+   screen, with the nav overflowing its row — 561px of links in 358px of space,
+   so two of the five were unreachable and nothing said so.
+
+   Now nothing in the header is pinned: on a phone the element worth the
+   permanent space is the answer, and scrolling up for navigation is a gesture
+   people already have. The nav becomes a scroll strip that fades at its edges,
+   so the links past the fold read as "there is more this way" rather than as
+   the end of the list.
+   -------------------------------------------------------------------------- */
 @media (max-width: 860px) {
+  /* Not sticky. On a phone the thing worth pinning is the answer, not the
+     navigation — see the result bar further down this file. */
+  .site-header {
+    position: static;
+    backdrop-filter: none;
+  }
   .site-header__inner {
     flex-wrap: wrap;
     min-height: 0;
-    padding-block: var(--s3);
+    padding-block: var(--s1);
+    row-gap: 0;
   }
   .site-nav {
     order: 3;
     width: 100%;
     margin-left: 0;
+    margin-inline: calc(var(--s5) * -1);
+    padding-inline: var(--s5);
     overflow-x: auto;
+    overscroll-behavior-inline: contain;
     scrollbar-width: none;
-    padding-bottom: 2px;
+    scroll-snap-type: inline proximity;
+    padding-bottom: var(--s2);
+    /* Fades the strip out at the edges so the links past the fold read as
+       "there is more this way" rather than as the end of the list. */
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent 0,
+      #000 var(--s5),
+      #000 calc(100% - var(--s6)),
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      to right,
+      transparent 0,
+      #000 var(--s5),
+      #000 calc(100% - var(--s6)),
+      transparent 100%
+    );
   }
   .site-nav::-webkit-scrollbar {
     display: none;
+  }
+  .site-nav a {
+    scroll-snap-align: start;
+    min-height: var(--target);
+  }
+  .site-header__brand {
+    min-height: var(--target);
+  }
+}
+
+@media (max-width: 480px) {
+  .site-nav {
+    margin-inline: calc(var(--s4) * -1);
+    padding-inline: var(--s4);
   }
 }
 
@@ -353,8 +401,8 @@ svg {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 38px;
-  height: 38px;
+  width: var(--target);
+  height: var(--target);
   margin-left: var(--s3);
   flex: none;
   padding: 0;
@@ -479,6 +527,51 @@ svg {
 .page-head .meta-line {
   margin-top: var(--s4);
   margin-bottom: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Page head on a phone
+
+   Measured before this: breadcrumbs at y=167, an h1 at 28px running to two
+   lines, a three-line lede, and the first input at y=466 — 55% of an 844px
+   screen spent before the reader could type anything. The title and the
+   description still earn their place (they are the page's promise, and its
+   meta description), but not at that size and not with that much air.
+   -------------------------------------------------------------------------- */
+@media (max-width: 860px) {
+  .page-head h1 {
+    font-size: var(--text-2xl);
+    margin-bottom: var(--s3);
+  }
+  .page-head--tool h1 {
+    font-size: var(--text-xl);
+  }
+  /* Two lines of description, then the tool. The full sentence stays in the
+     DOM and in the meta description; what it does not do is push the first
+     input off the screen. */
+  .page-head--tool .lede {
+    font-size: var(--text-sm);
+    color: var(--ink-3);
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+  }
+  .page-head--tool {
+    margin-bottom: var(--s2);
+  }
+  /* "Your details" above a form of obviously personal details is a line of
+     heading doing no work on a screen this size. */
+  .calculator-form > .panel-title {
+    display: none;
+  }
+  .breadcrumbs {
+    font-size: var(--text-xs);
+  }
+  .page {
+    padding-block: var(--s5) var(--s7);
+  }
 }
 
 /* The home page leads with the proposition, so it gets more room to breathe. */
@@ -672,6 +765,19 @@ select {
   font: inherit;
   font-size: var(--text-base);
   font-variant-numeric: tabular-nums;
+  /* "England, Wales & Northern Ireland" does not fit a 358px screen at body
+     size. An ellipsis reads as a long name, a hard cut mid-word reads as a
+     bug. */
+  text-overflow: ellipsis;
+}
+
+/* Text inputs stay at 16px or above on a phone: below that, iOS Safari zooms
+   the page on focus and does not zoom back out. Selects do not have that
+   behaviour, so a long option label can take the smaller size to fit. */
+@media (max-width: 700px) {
+  select {
+    font-size: var(--text-sm);
+  }
 }
 input:focus,
 select:focus {
@@ -877,6 +983,52 @@ table.data th:last-child {
   font-weight: 560;
 }
 
+/* --------------------------------------------------------------------------
+   Two-column data tables on a phone
+
+   A label-and-value table has one wide column and one narrow one, so on a
+   358px screen the label wraps to three or four lines while the figure sits
+   alone in a column of its own. Those rows stack instead: label above, figure
+   below and larger, right where the eye lands. The markup does not change —
+   it is still a real table with real row headers, so it is still announced as
+   one and still prints as one.
+
+   Only tables marked `data--pairs` — the ones that really are two columns.
+   Applying this to a three-column listing made it 11,418px tall.
+   -------------------------------------------------------------------------- */
+@media (max-width: 700px) {
+  table.data--pairs tbody tr {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: baseline;
+    gap: 0 var(--s4);
+    padding: var(--s4) var(--s5);
+    border-bottom: 1px solid var(--line);
+  }
+  table.data--pairs tbody th,
+  table.data--pairs tbody td {
+    padding: 0;
+    border-bottom: 0;
+  }
+  table.data--pairs tbody td:last-child {
+    font-size: var(--text-base);
+    font-weight: 620;
+  }
+  table.data--pairs tbody tr:last-child {
+    border-bottom: 0;
+  }
+  table.data--pairs thead th {
+    padding-inline: var(--s5);
+  }
+
+  /* Stacked rows are as wide as their container, so nothing overflows and the
+     scroll affordance is pure noise. Tables with three or more columns keep
+     theirs — stacking those loses the alignment that makes them readable. */
+  .table-scroll:has(.data--pairs) {
+    overflow-x: visible;
+  }
+}
+
 table.data tbody tr:last-child th,
 table.data tbody tr:last-child td {
   border-bottom: 0;
@@ -1032,6 +1184,112 @@ table.data .detail {
 [data-result],
 .calc-grid__input {
   scroll-margin-top: calc(var(--header-h) + var(--s4));
+}
+
+/* --------------------------------------------------------------------------
+   The pinned result bar (narrow screens only)
+
+   The one piece of chrome worth permanent space on a phone. It replaces the
+   sticky header, which was 119px of navigation nobody needs mid-calculation,
+   with the figure they came for.
+   -------------------------------------------------------------------------- */
+.result-bar {
+  display: none;
+}
+
+@media (max-width: 1039px) {
+  .result-bar {
+    position: fixed;
+    inset-inline: 0;
+    bottom: 0;
+    z-index: 30;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s4);
+    width: 100%;
+    /* Clears the home indicator on a phone with no hardware button. */
+    padding: var(--s3) var(--s5) calc(var(--s3) + env(safe-area-inset-bottom, 0px));
+    border: 0;
+    border-top: 1px solid var(--line);
+    border-radius: 0;
+    background: color-mix(in srgb, var(--surface) 94%, transparent);
+    backdrop-filter: saturate(1.4) blur(10px);
+    box-shadow: 0 -6px 24px -18px rgb(0 0 0 / 0.5);
+    text-align: left;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+    animation: result-bar-in 0.18s ease-out;
+  }
+
+  .result-bar[hidden] {
+    display: none;
+  }
+
+  /* The bar floats over the page, so the last section needs room to clear it
+     or its final line is unreachable. */
+  body:has(.result-bar:not([hidden])) .site-footer {
+    padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+@keyframes result-bar-in {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .result-bar {
+    animation: none;
+  }
+}
+
+.result-bar__text {
+  display: grid;
+  min-width: 0;
+}
+.result-bar__label {
+  font-size: var(--text-xs);
+  font-weight: 620;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.result-bar__value {
+  font-size: var(--text-xl);
+  font-weight: 680;
+  letter-spacing: -0.02em;
+  color: var(--accent-ink);
+  font-variant-numeric: tabular-nums;
+}
+.result-bar__caption {
+  font-size: var(--text-xs);
+  color: var(--ink-3);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.result-bar__action {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s2);
+  flex: none;
+  min-height: var(--target);
+  padding-inline: var(--s3);
+  border-radius: var(--radius-pill);
+  background: var(--surface-2);
+  font-size: var(--text-sm);
+  font-weight: 580;
+  color: var(--ink-2);
+}
+.result-bar__action svg {
+  width: 16px;
+  height: 16px;
 }
 
 /* The result panel before there is anything to calculate. It reserves the
@@ -1298,6 +1556,33 @@ table.data .detail {
 }
 .site-footer a:hover {
   color: var(--accent);
+}
+
+/* --------------------------------------------------------------------------
+   Touch targets
+
+   Measured before this: 27 links on the home page under the 44px minimum,
+   most of them footer and navigation links sitting at 31–38px with only a few
+   pixels between them. A finger is not a cursor; a target that small next to
+   another that small is a coin toss.
+   -------------------------------------------------------------------------- */
+@media (max-width: 860px) {
+  .site-footer li {
+    margin-bottom: 0;
+  }
+  .site-footer li a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--target);
+  }
+  /* The trail is one line of small text near the top of the page, not a
+     primary control, so it takes the 24px AA minimum rather than the 44px one
+     — 44 here costs more screen than the trail is worth. */
+  .breadcrumbs a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 24px;
+  }
 }
 
 .footer-grid {

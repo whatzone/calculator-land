@@ -344,7 +344,7 @@ function renderView(target: HTMLElement, view: ResultViewModel): void {
     ) =>
       rows.length === 0
         ? ''
-        : `<div class="card card--flush"><div class="table-scroll" tabindex="0" role="region" aria-label="${escapeHtml(caption)}, scrollable"><table class="data"><caption>${caption}</caption>` +
+        : `<div class="card card--flush"><div class="table-scroll" tabindex="0" role="region" aria-label="${escapeHtml(caption)}, scrollable"><table class="data data--pairs"><caption>${caption}</caption>` +
           (headings
             ? `<thead><tr><th scope="col">${escapeHtml(headings.item)}</th><th scope="col">${escapeHtml(headings.value)}</th></tr></thead>`
             : '') +
@@ -413,14 +413,46 @@ function init(): void {
   result.setAttribute('aria-live', 'polite');
   result.setAttribute('aria-atomic', 'true');
 
-  form.addEventListener('submit', (event) => {
-    event.preventDefault();
-    // There is a result to print from the first submission onwards.
-    document.querySelector<HTMLElement>('[data-print-wrap]')?.removeAttribute('hidden');
+  const resultBar = document.querySelector<HTMLElement>('[data-result-bar]');
+
+  /**
+   * The pinned summary on a phone.
+   *
+   * On a narrow screen the answer is a screen or more below the inputs, so
+   * every adjustment means scrolling down to see what it did and back up to
+   * change it again. This keeps the headline figure in view the whole time the
+   * form is being used, and doubles as the way back to the full breakdown.
+   */
+  const syncResultBar = (view: ResultViewModel | null): void => {
+    if (!resultBar) return;
+    if (!view || !view.supported) {
+      resultBar.hidden = true;
+      return;
+    }
+    const label = resultBar.querySelector<HTMLElement>('[data-bar-label]');
+    const value = resultBar.querySelector<HTMLElement>('[data-bar-value]');
+    const caption = resultBar.querySelector<HTMLElement>('[data-bar-caption]');
+    if (label) label.textContent = view.headline.label;
+    if (value) value.textContent = view.headline.value;
+    if (caption) caption.textContent = view.headline.caption ?? '';
+    resultBar.hidden = false;
+  };
+
+  /**
+   * Recalculation while the reader is still typing.
+   *
+   * `quiet` runs are the ones nobody asked for: they must not report a
+   * validation error against a field that is simply half-entered, must not
+   * rewrite the URL on every keystroke, and must not each count as a completed
+   * calculation in analytics. Pressing the button is still the explicit
+   * action, and still does all three.
+   */
+  const recalculate = (quiet: boolean): void => {
     const { values, errors } = validate(form);
-    showErrors(form, errors);
+    if (!quiet) showErrors(form, errors);
 
     if (errors.length > 0) {
+      if (quiet) return;
       track('calculation_completed', {
         ...analyticsBase,
         interaction_type: 'submit',
@@ -430,6 +462,8 @@ function init(): void {
       return;
     }
 
+    document.querySelector<HTMLElement>('[data-print-wrap]')?.removeAttribute('hidden');
+
     let view: ResultViewModel;
     try {
       view = computeView(config, values);
@@ -437,11 +471,14 @@ function init(): void {
       // Never fail silently. A reader who presses Calculate and sees the page
       // sit there has no way to know whether it worked, and would reasonably
       // read the stale figure above as their answer.
-      track('calculation_completed', {
-        ...analyticsBase,
-        interaction_type: 'submit',
-        validation_state: 'unsupported',
-      });
+      if (!quiet) {
+        track('calculation_completed', {
+          ...analyticsBase,
+          interaction_type: 'submit',
+          validation_state: 'unsupported',
+        });
+      }
+      syncResultBar(null);
       renderView(result, {
         headline: { label: 'Result', value: 'Not available' },
         summaryRows: [],
@@ -464,6 +501,10 @@ function init(): void {
 
     renderView(result, view);
     syncProvenancePeriod(values['taxPeriod']);
+    syncResultBar(view);
+
+    if (quiet) return;
+
     track('calculation_completed', {
       ...analyticsBase,
       interaction_type: 'submit',
@@ -475,6 +516,34 @@ function init(): void {
     const params = new URLSearchParams();
     for (const [key, value] of Object.entries(values)) params.set(key, String(value));
     window.history.replaceState(null, '', `?${params.toString()}`);
+  };
+
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+    recalculate(false);
+  });
+
+  // Recalculate as the form is edited. Typing is debounced so a four-digit
+  // salary is one calculation rather than four; changing a select or a
+  // checkbox is a finished decision, so it runs at once.
+  let pending: number | undefined;
+  form.addEventListener('input', (event) => {
+    if ((event.target as HTMLElement)?.tagName === 'SELECT') return;
+    window.clearTimeout(pending);
+    pending = window.setTimeout(() => recalculate(true), 250);
+  });
+  form.addEventListener('change', () => {
+    window.clearTimeout(pending);
+    recalculate(true);
+  });
+
+  // A prefilled page already shows a real answer, so the bar belongs there from
+  // the start rather than only after the reader touches something.
+  if (config.isPrefilled) recalculate(true);
+
+  resultBar?.addEventListener('click', () => {
+    result.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    track('result_bar_opened', { ...analyticsBase, interaction_type: 'scroll' });
   });
 
   form.querySelector('[data-advanced]')?.addEventListener('toggle', (event) => {
