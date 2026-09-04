@@ -94,6 +94,12 @@ export interface ResultViewModel {
   readonly headline: { readonly label: string; readonly value: string; readonly caption?: string };
   readonly summaryRows: readonly ResultRow[];
   readonly breakdownRows: readonly ResultRow[];
+  /**
+   * Column headings for the breakdown table. A salary breakdown is per year; a
+   * mortgage breakdown is a total over the term. Labelling both "A year" would
+   * misstate the mortgage figures by a factor of the term.
+   */
+  readonly breakdownHeadings?: { readonly item: string; readonly value: string };
   readonly frequencyRows: readonly ResultRow[];
   readonly notices: readonly {
     readonly severity: 'info' | 'warning' | 'unsupported';

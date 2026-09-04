@@ -21,6 +21,8 @@ interface Props {
 }
 const { view, suppressUnsupportedNotices = false } = Astro.props;
 
+const headings = view.breakdownHeadings ?? { item: 'Deduction', value: 'A year' };
+
 const notices = suppressUnsupportedNotices
   ? view.notices.filter((notice) => notice.severity !== 'unsupported')
   : view.notices;
@@ -101,8 +103,8 @@ const notices = suppressUnsupportedNotices
                 <caption>Itemised breakdown</caption>
                 <thead>
                   <tr>
-                    <th scope="col">Deduction</th>
-                    <th scope="col">A year</th>
+                    <th scope="col">{headings.item}</th>
+                    <th scope="col">{headings.value}</th>
                   </tr>
                 </thead>
                 <tbody>

@@ -14,8 +14,11 @@ const path = '/';
 const entry = manifestEntry(path);
 const globals = globalCalculatorList();
 const summary = summariseManifest();
-
 const liveCount = globals.filter(isCalculatorIndexable).length;
+
+/** Numbers under ten read better spelled out in running prose. */
+const WORDS = ['no', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'];
+const liveCountWord = WORDS[liveCount] ?? String(liveCount);
 ---
 
 <BaseLayout
@@ -25,17 +28,41 @@ const liveCount = globals.filter(isCalculatorIndexable).length;
   indexable={entry?.indexable ?? false}
   crumbs={[{ name: 'Home', path: '/' }]}
 >
-  <div>
-    <h1>Understand what you earn, and what is deducted</h1>
-    <p class="lede">{SITE.valueProposition}</p>
+  <div class="page-head page-head--hero">
+    <h1>Know exactly what you take home.</h1>
+    <p class="lede">
+      Transparent salary, tax and mortgage calculators. Every deduction itemised, every rule linked
+      to the authority that sets it, every assumption stated beside the answer.
+    </p>
+
+    <ul class="hero-facts">
+      <li>
+        <span class="fact__label">Markets</span>
+        <span class="fact__value">5</span>
+      </li>
+      <li>
+        <span class="fact__label">Calculators</span>
+        <span class="fact__value">23</span>
+      </li>
+      <li>
+        <span class="fact__label">Cost</span>
+        <span class="fact__value">Free</span>
+      </li>
+      <li>
+        <span class="fact__label">Data collected</span>
+        <span class="fact__value">None</span>
+      </li>
+    </ul>
   </div>
 
   <section aria-labelledby="live-heading">
-    <h2 id="live-heading">Calculators you can use now</h2>
-    <p>
-      These {liveCount} tools are arithmetic rather than tax rules, so they are the same in every country
-      and are live today. Each shows its formula and its assumptions.
-    </p>
+    <div class="section-head">
+      <h2 id="live-heading">Ready to use</h2>
+      <p>
+        These {liveCountWord} tools are arithmetic rather than tax rules, so they work the same Each shows
+        its formula and its assumptions on the page.
+      </p>
+    </div>
     <ul class="card-grid">
       {
         globals.map((calculator) => (
@@ -51,12 +78,14 @@ const liveCount = globals.filter(isCalculatorIndexable).length;
   </section>
 
   <section aria-labelledby="countries-heading">
-    <h2 id="countries-heading">Country calculators</h2>
-    <p>
-      Salary, net-to-gross, bonus, and pay-rise calculators are built for all five launch markets.
-      Each one stays offline until its rules have been read from the tax authority that sets them
-      and checked by a person — so today they show you their sources rather than a figure.
-    </p>
+    <div class="section-head">
+      <h2 id="countries-heading">By country</h2>
+      <p>
+        Salary, net-to-gross, bonus and pay-rise calculators are built for all five launch markets.
+        Each stays offline until its rules have been read from the tax authority that publishes them
+        and checked by a person — so today they show you their sources instead of a figure.
+      </p>
+    </div>
     <ul class="card-grid">
       {
         JURISDICTIONS.map((meta) => {
@@ -68,11 +97,11 @@ const liveCount = globals.filter(isCalculatorIndexable).length;
                 class={`tool-card ${pending ? 'tool-card--disabled' : ''}`}
                 href={`/${meta.slug}/`}
               >
-                <strong>{meta.adjective} calculators</strong>
+                <strong>{meta.adjective}</strong>
                 <p>
                   Tax period {ruleset?.taxPeriod.label ?? 'unknown'}.
                   {meta.regions.length > 0 &&
-                    ` Includes ${meta.regions.map((r) => r.label).join(', ')}.`}
+                    ` Includes ${meta.regions.map((region) => region.label).join(', ')}.`}
                 </p>
                 {pending && <span class="pill pill--pending">Awaiting official source</span>}
               </a>
@@ -84,18 +113,15 @@ const liveCount = globals.filter(isCalculatorIndexable).length;
   </section>
 
   <section class="card" aria-labelledby="why-heading">
-    <h2 id="why-heading" style="margin-top:0;">
-      Why some of this site is deliberately switched off
-    </h2>
+    <h2 id="why-heading" style="margin-top:0;">Why some of this is deliberately switched off</h2>
     <p>
-      A take-home pay figure is only worth having if it is right. Every rate, threshold, and
-      contribution here has to be read from the tax authority that publishes it and checked by a
-      person before it goes live. Until that has happened for a country, its pages show you the
-      official sources and an explanation instead of a number, and they are kept out of search
-      results entirely.
+      A take-home figure is only worth having if it is right. Every rate and threshold here has to
+      be read from the tax authority that publishes it and checked by a person before it goes live.
+      Until that has happened for a country, its pages show the official sources and an explanation
+      rather than a number — and they are kept out of search results entirely.
     </p>
     <p style="margin-bottom:0;">
-      Right now {summary.withheld} of {summary.total} pages are held back on that basis. You can see exactly
+      {summary.withheld} of {summary.total} pages are held back on that basis today. You can see exactly
       which, and why, on the <a href="/tax-data-updates/">tax data update log</a>.
     </p>
   </section>

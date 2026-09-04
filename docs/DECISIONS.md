@@ -272,3 +272,59 @@ change.
 would resolve both `/uk` and `/uk/`, which is precisely the duplicate-content
 problem the URL policy exists to prevent. Cloudflare and Netlify handle this
 natively.
+
+---
+
+## D-014 — Full reskin: a calm financial-utility aesthetic in two designed themes
+
+**Date:** 2026-09-03 · **Status:** Active
+
+**Context.** The owner asked for a simple but genuinely well-made aesthetic:
+trustworthy and premium, warm off-whites in light and deep charcoal rather than
+black in dark, one soft blue accent, crisp slightly editorial typography, large
+confident numerical outputs, and no loud fintech styling, gradients,
+glassmorphism, or excessive motion.
+
+**Decision.** Rebuilt the token system and stylesheet from scratch around those
+constraints, and added a theme toggle.
+
+**Judgements worth recording.**
+
+- **The palette was computed, not chosen by eye.** Every ink/surface pair was
+  measured against WCAG AA before it was written. The tertiary ink went through
+  two candidates; the first measured 4.24:1 against tinted surfaces.
+- **The dark ground is blue-black, not black.** Pure black behind light text
+  halates, which matters on a site that is mostly columns of figures.
+- **The editorial quality comes from type scale, not a serif.** A first draft
+  set lede paragraphs in a system serif. Rendered, it was Times, and it read
+  dated rather than considered. Removed in favour of scale, tracking and measure
+  on the system sans.
+- **The theme script is a file, not an inline script.** The CSP permits
+  same-origin scripts only, deliberately, so a pre-paint inline script was not
+  an option. `public/theme-init.js` costs 1.1 KB gzipped and removes any flash
+  of the wrong theme.
+- **The toggle is hidden until its script runs.** A control that cannot work
+  without JavaScript should not be offered to a reader who has none.
+
+**Three defects this work surfaced, all fixed.**
+
+1. Renaming the spacing scale left `var(--space-5)` in the ad component. A
+   missing custom property does not throw, warn, or fail a build — it silently
+   drops the declaration. `tests/integration/design-tokens.test.ts` now fails
+   the build on any undeclared property, and also checks both themes define
+   every colour, that no dark surface is pure black, and that no token is dead.
+2. The itemised breakdown column was hard-coded to "A year". On the mortgage
+   calculators those figures are totals over the full term, so the column
+   overstated the period by a factor of the term. Column headings are now part
+   of the view model.
+3. The two-segment chart used adjacent steps of the ramp, which are nearly
+   indistinguishable. Segments are now spread across the whole ramp.
+
+**Storage.** The theme name is the only value the site writes, and only on an
+explicit choice. Disclosed on `/cookies/` and pinned by two tests: using a
+calculator writes nothing, and choosing a theme writes exactly one key holding
+exactly one word.
+
+**Verification.** Axe over ten templates in both themes — twenty runs, zero
+violations. 164 unit and integration tests, 109 end-to-end tests. CSS 4.7 KB
+gzipped against a 30 KB budget; JavaScript 15.7 KB against 60 KB.

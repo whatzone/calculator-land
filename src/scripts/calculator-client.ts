@@ -330,10 +330,15 @@ function renderView(target: HTMLElement, view: ResultViewModel): void {
     const table = (
       caption: string,
       rows: readonly { label: string; value: string; detail?: string }[],
+      headings?: { item: string; value: string },
     ) =>
       rows.length === 0
         ? ''
-        : `<div class="card card--flush"><div class="table-scroll" tabindex="0" role="region" aria-label="${escapeHtml(caption)}, scrollable"><table class="data"><caption>${caption}</caption><tbody>` +
+        : `<div class="card card--flush"><div class="table-scroll" tabindex="0" role="region" aria-label="${escapeHtml(caption)}, scrollable"><table class="data"><caption>${caption}</caption>` +
+          (headings
+            ? `<thead><tr><th scope="col">${escapeHtml(headings.item)}</th><th scope="col">${escapeHtml(headings.value)}</th></tr></thead>`
+            : '') +
+          '<tbody>' +
           rows
             .map(
               (row) =>
@@ -345,7 +350,7 @@ function renderView(target: HTMLElement, view: ResultViewModel): void {
           '</tbody></table></div></div>';
 
     parts.push(table('Summary', view.summaryRows));
-    parts.push(table('Itemised breakdown', view.breakdownRows));
+    parts.push(table('Itemised breakdown', view.breakdownRows, view.breakdownHeadings));
 
     if (view.frequencyRows.length > 0) {
       parts.push(

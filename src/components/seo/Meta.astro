@@ -70,6 +70,15 @@ const jsonLd = buildGraph([
 }
 
 <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+{
+  /*
+  Resolves the reader's theme before first paint, so a chosen theme never
+  flashes the other one. A separate file rather than an inline script because
+  the Content-Security-Policy permits same-origin scripts only.
+*/
+}
+<script src="/theme-init.js" is:inline></script>
 <link rel="sitemap" href="/sitemap-index.xml" />
 
 <script type="application/ld+json" set:html={jsonLd} is:inline />

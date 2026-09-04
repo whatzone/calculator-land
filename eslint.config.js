@@ -35,6 +35,19 @@ export default tseslint.config(
     rules: { 'no-console': 'off' },
   },
   {
+    // Scripts served straight to the browser, outside the bundler. They are
+    // plain ES5-compatible files, so they get browser globals rather than Node's.
+    files: ['public/**/*.js'],
+    languageOptions: {
+      globals: {
+        window: 'readonly',
+        document: 'readonly',
+        localStorage: 'readonly',
+      },
+      sourceType: 'script',
+    },
+  },
+  {
     files: ['tests/**/*.ts'],
     rules: { '@typescript-eslint/no-explicit-any': 'off' },
   },

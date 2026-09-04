@@ -1,11 +1,16 @@
 ---
 /**
- * A single stacked bar showing where the money goes.
+ * A single slim bar showing where the money goes.
  *
- * Hand-drawn with CSS rather than a charting library: the whole thing is a few
- * hundred bytes, and every segment is already present as a row in the deduction
- * table below it, so nothing here is information-bearing on its own. The bar is
- * therefore aria-hidden and the table is the accessible source of truth.
+ * Drawn with CSS rather than a charting library: it is a few hundred bytes, it
+ * inherits the theme, and every segment already exists as a row in the table
+ * below it. Because nothing here is information-bearing on its own, the bar is
+ * aria-hidden and the table is the accessible source of truth.
+ *
+ * One hue stepped by lightness, so the bar reads as a single quantity being
+ * divided rather than as five unrelated categories. Take-home pay is the one
+ * segment that gets a semantic colour, because it is the one that means
+ * something different from the others.
  */
 interface Segment {
   label: string;
@@ -18,13 +23,27 @@ interface Props {
 }
 const { segments, caption } = Astro.props;
 
-// Take-home pay is always the green one; deductions step through neutral blues.
-const colourFor = (label: string, index: number): string => {
-  if (label === 'Take-home pay') return 'var(--success)';
-  const shades = ['#3c6ea5', '#5182b8', '#6a97c9', '#86acd6', '#a3c1e2'];
-  return shades[index % shades.length] ?? '#6a97c9';
+const SERIES = [
+  'var(--series-1)',
+  'var(--series-2)',
+  'var(--series-3)',
+  'var(--series-4)',
+  'var(--series-5)',
+];
+
+/**
+ * Spread the segments across the whole ramp rather than taking the first N.
+ * A two-segment bar using steps 1 and 2 is two nearly identical blues; using
+ * the ends of the ramp keeps them legible at any segment count.
+ */
+const colourFor = (label: string, index: number, count: number): string => {
+  if (label === 'Take-home pay') return 'var(--good)';
+  const step = count <= 1 ? 0 : Math.round((index * (SERIES.length - 1)) / (count - 1));
+  return SERIES[step] ?? 'var(--series-3)';
 };
 
+// Segments below half a percent are invisible at any realistic width and would
+// only add noise to the key.
 const visible = segments.filter((segment) => segment.percent >= 0.5);
 ---
 
@@ -34,23 +53,25 @@ const visible = segments.filter((segment) => segment.percent >= 0.5);
       <div class="bar" aria-hidden="true">
         {visible.map((segment, index) => (
           <span
-            style={`width:${segment.percent}%;background:${colourFor(segment.label, index)};`}
-            title={`${segment.label}: ${segment.percent.toFixed(1)}%`}
+            style={`width:${segment.percent}%;background:${colourFor(segment.label, index, visible.length)};`}
           />
         ))}
       </div>
       <ul class="bar-key">
         {visible.map((segment, index) => (
           <li>
-            <i style={`background:${colourFor(segment.label, index)};`} aria-hidden="true" />
+            <i
+              style={`background:${colourFor(segment.label, index, visible.length)};`}
+              aria-hidden="true"
+            />
             <span>
-              {segment.label} — {segment.percent.toFixed(1)}%
+              {segment.label} <span class="muted">{segment.percent.toFixed(1)}%</span>
             </span>
           </li>
         ))}
       </ul>
       {caption && (
-        <figcaption class="small muted" style="margin-top:0.5rem;">
+        <figcaption class="small muted" style="margin-top:0.75rem;">
           {caption}
         </figcaption>
       )}

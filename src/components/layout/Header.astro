@@ -11,12 +11,22 @@ const links = [
   { href: '/methodology/', label: 'How it works' },
   { href: '/sources/', label: 'Sources' },
 ];
+
 const isCurrent = (href: string) => currentPath === href;
 ---
 
 <header class="site-header">
   <div class="wrap site-header__inner">
-    <a class="site-header__brand" href="/">Clear<span>Figures</span></a>
+    <a class="site-header__brand" href="/">
+      <svg class="site-header__mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+        <rect width="32" height="32" rx="8" fill="currentColor" opacity="0.1"></rect>
+        <rect x="7" y="19" width="4" height="7" rx="1.5" fill="currentColor" opacity="0.45"></rect>
+        <rect x="14" y="13" width="4" height="13" rx="1.5" fill="currentColor" opacity="0.7"></rect>
+        <rect x="21" y="6" width="4" height="20" rx="1.5" fill="currentColor"></rect>
+      </svg>
+      <span>ClearFigures</span>
+    </a>
+
     <nav class="site-nav" aria-label="Main">
       {
         links.map((link) => (
@@ -26,5 +36,40 @@ const isCurrent = (href: string) => currentPath === href;
         ))
       }
     </nav>
+
+    <!--
+      Hidden until the theme script runs. A control that cannot work without
+      JavaScript should not be offered to a reader who has none.
+    -->
+    <button class="theme-toggle" type="button" data-theme-toggle hidden aria-label="Switch theme">
+      <svg
+        class="icon-light"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.7"
+        stroke-linecap="round"
+        aria-hidden="true"
+        focusable="false"
+      >
+        <circle cx="12" cy="12" r="4.2"></circle>
+        <path
+          d="M12 2.6v2.2M12 19.2v2.2M4.2 4.2l1.6 1.6M18.2 18.2l1.6 1.6M2.6 12h2.2M19.2 12h2.2M4.2 19.8l1.6-1.6M18.2 5.8l1.6-1.6"
+        ></path>
+      </svg>
+      <svg
+        class="icon-dark"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.7"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+        focusable="false"
+      >
+        <path d="M20.5 14.3A8.6 8.6 0 0 1 9.7 3.5a8.6 8.6 0 1 0 10.8 10.8Z"></path>
+      </svg>
+    </button>
   </div>
 </header>
