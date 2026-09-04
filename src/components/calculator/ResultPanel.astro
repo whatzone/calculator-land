@@ -18,8 +18,15 @@ interface Props {
    * reads as a broken page rather than a careful one.
    */
   suppressUnsupportedNotices?: boolean;
+  /**
+   * Set when the form is empty, so there is nothing to calculate yet. The
+   * panel then holds the space and says what to do, rather than presenting a
+   * zero as though it were an answer — which is how it reads once the form and
+   * the result sit side by side.
+   */
+  awaitingInput?: boolean;
 }
-const { view, suppressUnsupportedNotices = false } = Astro.props;
+const { view, suppressUnsupportedNotices = false, awaitingInput = false } = Astro.props;
 
 const headings = view.breakdownHeadings ?? { item: 'Deduction', value: 'A year' };
 
@@ -50,7 +57,18 @@ const notices = suppressUnsupportedNotices
   }
 
   {
-    view.supported && (
+    awaitingInput && (
+      <div class="result-empty">
+        <p class="result-empty__label">{view.headline.label}</p>
+        <p class="result-empty__body">
+          Fill in the form and select <strong>Calculate</strong>. Your figures stay in this browser.
+        </p>
+      </div>
+    )
+  }
+
+  {
+    view.supported && !awaitingInput && (
       <>
         <div class="headline" aria-live="polite" data-headline>
           <p class="headline__label">{view.headline.label}</p>

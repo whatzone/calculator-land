@@ -186,6 +186,55 @@ svg {
   }
 }
 
+/* --------------------------------------------------------------------------
+   The calculator working area
+
+   A calculator whose answer sits below the fold makes the reader scroll away
+   from the controls to see what they changed. Above 1040px the form and the
+   result share one screen: inputs on the left, sticky, so they stay put while
+   the breakdown is read; the answer on the right, where the eye lands.
+
+   Below that it stacks — form, then answer — which is the right order on a
+   phone, where side-by-side would make both columns unusable.
+   -------------------------------------------------------------------------- */
+.calc-grid {
+  display: grid;
+  /* Explicit, because a grid item's default min-width is its content: an
+     unconstrained column lets a wide table push the page sideways. */
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--s6);
+  align-items: start;
+}
+.calc-grid__input,
+.calc-grid__output {
+  min-width: 0;
+}
+
+@media (min-width: 1040px) {
+  .calc-grid {
+    grid-template-columns: minmax(20rem, 26rem) minmax(0, 1fr);
+    gap: var(--s7);
+  }
+
+  .calc-grid__input {
+    position: sticky;
+    /* Clears the sticky site header, with a little air above the card. */
+    top: calc(var(--header-h) + var(--s4));
+  }
+}
+
+/* A sticky column taller than the viewport can never be scrolled to its end,
+   so it only sticks where it fits. */
+@media (min-width: 1040px) and (max-height: 44rem) {
+  .calc-grid__input {
+    position: static;
+  }
+}
+
+.calc-grid__output > * + * {
+  margin-top: var(--s5);
+}
+
 .stack > * + * {
   margin-top: var(--s4);
 }
@@ -226,7 +275,7 @@ svg {
   display: flex;
   align-items: center;
   gap: var(--s4);
-  min-height: 68px;
+  min-height: var(--header-h);
   padding-block: var(--s2);
 }
 
@@ -399,6 +448,33 @@ svg {
 }
 .page-head .lede {
   margin-bottom: 0;
+}
+
+/* On a calculator the title is a label for the tool, not the point of the
+   page — the answer is. It runs on one line beside its description so the
+   working area starts near the top of the screen instead of a screen down. */
+.page-head--tool {
+  max-width: none;
+}
+.page-head--tool h1 {
+  font-size: var(--text-2xl);
+  margin-bottom: var(--s3);
+}
+.page-head--tool .lede {
+  max-width: 62ch;
+  font-size: var(--text-base);
+}
+
+@media (min-width: 1040px) {
+  .page-head--tool {
+    display: grid;
+    grid-template-columns: minmax(0, 20rem) minmax(0, 1fr);
+    align-items: baseline;
+    gap: var(--s4) var(--s7);
+  }
+  .page-head--tool h1 {
+    margin-bottom: 0;
+  }
 }
 .page-head .meta-line {
   margin-top: var(--s4);
@@ -902,6 +978,164 @@ table.data .detail {
   background: var(--bad-surface);
   border-color: color-mix(in srgb, var(--bad) 22%, transparent);
   border-left-color: var(--bad);
+}
+
+/* The provenance warning. Tight enough that the reader takes it in at a
+   glance instead of skipping a wall of text, with the reasoning one click
+   away rather than deleted. */
+.notice--compact {
+  padding: var(--s4);
+}
+.notice--compact p {
+  margin-bottom: var(--s3);
+}
+
+.notice__more > summary {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s2);
+  padding: var(--s1) 0;
+  font-size: var(--text-sm);
+  font-weight: 560;
+  color: var(--ink-2);
+  cursor: pointer;
+  list-style: none;
+  text-decoration: underline;
+  text-decoration-color: var(--line-strong);
+  text-underline-offset: 3px;
+}
+.notice__more > summary::-webkit-details-marker {
+  display: none;
+}
+.notice__more > summary::before {
+  content: '';
+  flex: none;
+  width: 6px;
+  height: 6px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: rotate(-45deg);
+  transition: transform 0.15s ease;
+}
+.notice__more[open] > summary::before {
+  transform: rotate(45deg);
+}
+.notice__more[open] > summary {
+  color: var(--ink);
+}
+.notice__more > div {
+  padding-top: var(--s3);
+}
+
+/* Nothing should land under the sticky header when it is scrolled or linked
+   to. */
+[data-result],
+.calc-grid__input {
+  scroll-margin-top: calc(var(--header-h) + var(--s4));
+}
+
+/* The result panel before there is anything to calculate. It reserves the
+   height a real answer occupies, so filling the form in does not make the page
+   jump. */
+.result-empty {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 11rem;
+  padding: var(--s6);
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+}
+.result-empty__label {
+  margin: 0 0 var(--s2);
+  font-size: var(--text-sm);
+  font-weight: 640;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.result-empty__body {
+  margin: 0;
+  max-width: 40ch;
+  color: var(--ink-2);
+}
+
+/* --------------------------------------------------------------------------
+   Disclosure — a full section folded shut
+
+   Used for reference material that belongs on the page but not in front of
+   the answer. The heading stays a real heading, so the document outline and
+   the in-page landmarks are unchanged whether it is open or closed.
+   -------------------------------------------------------------------------- */
+.disclosure {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+.disclosure > summary {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--s4);
+  padding: var(--s5);
+  border-radius: var(--radius);
+  cursor: pointer;
+  list-style: none;
+}
+.disclosure > summary::-webkit-details-marker {
+  display: none;
+}
+.disclosure > summary h2,
+.disclosure > summary h3 {
+  margin: 0;
+  font-size: var(--text-lg);
+}
+.disclosure__hint {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s2);
+  font-size: var(--text-sm);
+  color: var(--ink-3);
+}
+.disclosure__hint::after {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: translateY(-2px) rotate(45deg);
+  transition: transform 0.15s ease;
+}
+.disclosure[open] > summary .disclosure__hint::after {
+  transform: translateY(1px) rotate(-135deg);
+}
+.disclosure[open] > summary {
+  border-bottom: 1px solid var(--line);
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+.disclosure__body {
+  padding: var(--s5);
+}
+.disclosure__body > :first-child {
+  margin-top: 0;
+}
+.disclosure__body > :last-child {
+  margin-bottom: 0;
+}
+
+/* The print button opens every folded section before printing (see
+   calculator-client.ts) — a closed <details> is hidden by the browser and no
+   stylesheet can reliably override that. This only tidies what is left. */
+@media print {
+  .disclosure > summary .disclosure__hint {
+    display: none;
+  }
+  .disclosure,
+  .notice__more > summary {
+    border-color: var(--line);
+  }
 }
 
 /* ==========================================================================

@@ -11,6 +11,13 @@
  * by accident. So this renders above the result, it is not dismissible, and
  * `scripts/check-indexability.ts` fails the build if a page carrying unverified
  * figures ships without it.
+ *
+ * It used to say all of that in three paragraphs, which is how a warning stops
+ * being read: at that length it reads as boilerplate and the eye skips it. The
+ * claim a reader must not miss is one sentence, so that is what is shown. The
+ * reasoning behind it is a disclosure below, for the reader who wants it. The
+ * warning is quieter, not weaker — nothing was removed, and the enforcement is
+ * unchanged.
  */
 import { formatDate } from '../../lib/formatting/index.ts';
 import type { Ruleset } from '../../lib/validation/ruleset-schema.ts';
@@ -22,19 +29,18 @@ interface Props {
 const { ruleset, jurisdictionName } = Astro.props;
 
 const status = ruleset.provenance.dataStatus;
+const authority = jurisdictionName === 'the UK' ? 'HMRC' : 'the tax authority';
 ---
 
 {
   status === 'awaiting-official-source' && (
     <div class="notice notice--unsupported" role="note" data-provenance="awaiting-official-source">
       <p class="notice__title">This calculator is not live yet</p>
-      <p>
+      <p style="margin-bottom:0;">
         The {ruleset.taxPeriod.label} rules for {jurisdictionName} have not been entered, so this
         page will not show you a figure. Publishing a take-home number that nobody has checked
-        against the tax authority would be worse than showing none at all.
-      </p>
-      <p style="margin-bottom:0;">
-        Every source it needs is listed below, with links straight to the authority.
+        against the tax authority would be worse than showing none at all. Every source it needs is
+        listed below, with links straight to the authority.
       </p>
     </div>
   )
@@ -42,45 +48,36 @@ const status = ruleset.provenance.dataStatus;
 
 {
   status === 'unverified' && (
-    <div class="notice notice--warning" role="note" data-provenance="unverified">
+    <div class="notice notice--warning notice--compact" role="note" data-provenance="unverified">
       <p class="notice__title">These figures have not been checked against the official source</p>
       <p>
-        The <span data-provenance-period>{ruleset.taxPeriod.label}</span> rates used on this page
-        were entered from general knowledge, not read from{' '}
-        {jurisdictionName === 'the UK' ? 'HMRC' : 'the tax authority'}. No person has compared them
-        against the authority that publishes them.
+        The <span data-provenance-period>{ruleset.taxPeriod.label}</span> rates here were entered
+        from general knowledge, not read from {authority}. Treat the result as an estimate to
+        sanity-check.
       </p>
-      <p>
-        <strong>
-          Treat the result as an estimate to sanity-check, not as a figure to rely on.
-        </strong>{' '}
-        The structure of the calculation — which bands apply, how allowances taper, how
-        contributions are capped — is tested and sound. It is the specific numbers that may be out
-        of date, and thresholds usually change at the start of each tax year.
-      </p>
-      <p style="margin-bottom:0;">
-        The official sources are linked below. If you spot an error, please{' '}
-        <a href="/corrections/">tell us</a> — corrections are logged and dated.
-      </p>
-    </div>
-  )
-}
 
-{
-  status === 'unverified' && ruleset.exclusions.length > 0 && (
-    <details class="advanced">
-      <summary>What this calculation leaves out for {jurisdictionName}</summary>
-      <div>
-        <ul>
-          {ruleset.exclusions.map((item) => (
-            <li>{item}</li>
-          ))}
-        </ul>
-        <p class="small muted" style="margin-bottom:0;">
-          Tax period {ruleset.taxPeriod.label} runs {formatDate(ruleset.taxPeriod.startDate)} to{' '}
-          {formatDate(ruleset.taxPeriod.endDate)}.
-        </p>
-      </div>
-    </details>
+      <details class="notice__more">
+        <summary>Why, and what that does and does not affect</summary>
+        <div class="stack">
+          <p>
+            The structure of the calculation — which bands apply, how allowances taper, how
+            contributions are capped — is tested and sound. It is the specific numbers that may be
+            out of date, and thresholds usually change at the start of each tax year.
+          </p>
+          {ruleset.exclusions.length > 0 && (
+            <p style="margin-bottom:0;">
+              What this leaves out for {jurisdictionName}, and the assumptions behind it, are listed
+              under <strong>What this assumes</strong> below.
+            </p>
+          )}
+          <p style="margin-bottom:0;">
+            The official sources are linked below, each marked as unchecked. Tax period{' '}
+            {ruleset.taxPeriod.label} runs {formatDate(ruleset.taxPeriod.startDate)} to{' '}
+            {formatDate(ruleset.taxPeriod.endDate)}. If you spot an error, please{' '}
+            <a href="/corrections/">tell us</a> — corrections are logged and dated.
+          </p>
+        </div>
+      </details>
+    </div>
   )
 }

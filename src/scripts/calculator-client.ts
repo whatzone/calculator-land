@@ -415,6 +415,8 @@ function init(): void {
 
   form.addEventListener('submit', (event) => {
     event.preventDefault();
+    // There is a result to print from the first submission onwards.
+    document.querySelector<HTMLElement>('[data-print-wrap]')?.removeAttribute('hidden');
     const { values, errors } = validate(form);
     showErrors(form, errors);
 
@@ -487,7 +489,14 @@ function init(): void {
 
   document.querySelector('[data-print]')?.addEventListener('click', () => {
     track('print_or_share_selected', { ...analyticsBase, interaction_type: 'print' });
+    // A printed result should carry the working behind it. Sections folded
+    // shut on screen are opened for the print and put back afterwards, because
+    // a closed <details> is hidden by the browser and no print stylesheet can
+    // reliably override that.
+    const folded = Array.from(document.querySelectorAll<HTMLDetailsElement>('details:not([open])'));
+    for (const item of folded) item.open = true;
     window.print();
+    for (const item of folded) item.open = false;
   });
 
   for (const link of Array.from(document.querySelectorAll('a[href^="http"][rel*="nofollow"]'))) {

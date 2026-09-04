@@ -612,3 +612,74 @@ someone whose income fell in the second half of the year and understates it for
 the first half. Ireland 2024 understates PRSI for the final quarter. Both are
 correct for a salary held evenly across the year, which is what every figure on
 this site already assumes.
+
+---
+
+## D-020 — The calculator is one screen: form beside answer, caveats folded
+
+**Date:** 2026-09-04 · **Status:** Active · **Owner:** design
+
+**Context.** The owner's report: the UK salary page "seems cluttered", the form
+and the result should be on one screen, and "multiple warnings and disclaimers…
+feels like it's ruining it". Measured on the built page at 1440×900 before any
+change: the page was **5,394px tall** and the result began at **y=1,809** — two
+full screens below the form. Between the two sat the provenance warning as three
+paragraphs, then a separate "what this leaves out" disclosure. After the result
+came an ad, an assumptions list, a limitations list, a sources block, and a
+second privacy note. Six blocks of caveat around one number.
+
+**Decision.** Four changes, in order of effect.
+
+1. **Two columns above 1040px.** Form on the left, sticky under the header;
+   answer on the right. Below that it stacks form-then-answer, which is the
+   right order on a phone. The page container widens from 1140px to 1280px to
+   make room.
+2. **The right-hand ad rail comes off calculator pages.** It was taking 300px of
+   the width the two columns needed. The post-result slot stays, so these pages
+   keep an ad placement; they lose one. This is the only part of the change that
+   costs anything, and it is reversible — the rail returns by restoring
+   `withRail` on the three calculator routes.
+3. **The provenance warning is compressed, not weakened.** The claim a reader
+   must not miss is one sentence and stays at the top of the answer column,
+   non-dismissible, with the same `data-provenance="unverified"` marker the
+   build checks for. The reasoning behind it moves into a disclosure inside the
+   same box. Nothing was deleted.
+4. **One caveat block instead of three.** The calculator's assumptions, its
+   limitations, and the jurisdiction's exclusions were three overlapping lists;
+   they are now one section below the result, folded shut, with the count on the
+   summary. The duplicate privacy sentence is gone — the form already says it.
+
+**Measured after.** 5,394px → **2,859px**; result at y=1,809 → **y=491**. The
+form and the whole summary table are visible together on a 900px screen.
+
+**A consequence worth naming.** With the two side by side, a calculator opened
+with an empty form showed "£0" as its answer, which reads as broken rather than
+empty. That zero was always there — it was simply two screens down where nobody
+saw it. The result panel now shows a prompt until there is something to
+calculate, sized to the space a real answer takes so filling the form in does
+not make the page jump.
+
+**Why the warning was compressed rather than moved or softened.** D-016 requires
+it to be impossible to miss and impossible to remove by accident. Length is not
+what makes a warning read: at three paragraphs it reads as boilerplate and the
+eye skips it, which is the failure mode D-016 was written to prevent. One
+sentence in an amber box directly above the number is harder to skip than three
+paragraphs above the fold. The enforcement is untouched —
+`check-indexability.ts` still fails the build on any page carrying unverified
+figures without the notice, and the e2e test still asserts its wording.
+
+**Printing.** Folding sections shut created a real risk that a printed result
+would lose its own assumptions. The print button opens every `<details>` before
+printing and closes them afterwards; a closed `<details>` is hidden by the
+browser in a way no print stylesheet can reliably override.
+
+**Verified.** 207 unit and integration tests, 123 e2e tests including axe on
+desktop, mobile and no-JavaScript. The design-token test caught a token that
+does not exist (`--ink-subtle`, removed during the contrast work in D-011) and
+the 320px overflow test caught an unconstrained grid column — both fixed before
+this shipped. CSS 4.7 → 5.2 KB gzipped against a 30 KB budget; JS unchanged.
+
+**What would change this.** Ads going live. If the rail turns out to be worth
+materially more than the post-result slot, the two columns can move to a 1440px
+container with the rail restored above 1400px, at the cost of a third
+breakpoint.

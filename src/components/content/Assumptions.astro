@@ -1,40 +1,74 @@
 ---
 /**
- * Assumptions and limitations, rendered beside the result rather than buried in
- * a legal page. A take-home figure without its assumptions is not a smaller
- * answer, it is a misleading one.
+ * Assumptions, limitations, and what a jurisdiction's rules leave out.
+ *
+ * These used to be three separate blocks — the calculator's assumptions, its
+ * limitations, and a per-jurisdiction exclusions list rendered up beside the
+ * provenance notice. Three overlapping lists of caveats read as a page that is
+ * apologising for itself, and the exclusions one sat between the form and the
+ * answer. They are one block now, below the result, folded shut.
+ *
+ * Folded, not removed: a take-home figure without its assumptions is not a
+ * smaller answer, it is a misleading one. But it is reference material for a
+ * reader who is already looking at their number, not a preamble to it.
  */
 interface Props {
   assumptions: readonly string[];
   limitations: readonly string[];
+  exclusions?: readonly string[];
+  jurisdictionName?: string;
 }
-const { assumptions, limitations } = Astro.props;
+const { assumptions, limitations, exclusions = [], jurisdictionName = '' } = Astro.props;
+
+const count = assumptions.length + limitations.length + exclusions.length;
+const excludedHeading = jurisdictionName
+  ? `Not modelled for ${jurisdictionName}`
+  : 'Not modelled here';
 ---
 
-<section class="card stack" aria-labelledby="assumptions-heading">
-  <h2 id="assumptions-heading" style="margin-top:0;">What this assumes</h2>
-  {
-    assumptions.length > 0 ? (
-      <ul>
-        {assumptions.map((item) => (
-          <li>{item}</li>
-        ))}
-      </ul>
-    ) : (
-      <p class="muted">No assumptions are recorded for this calculator.</p>
-    )
-  }
+<details class="disclosure" aria-labelledby="assumptions-heading">
+  <summary>
+    <h2 id="assumptions-heading">What this assumes</h2>
+    <span class="disclosure__hint">{count} points</span>
+  </summary>
 
-  {
-    limitations.length > 0 && (
-      <>
-        <h3>What it does not cover</h3>
+  <div class="disclosure__body stack">
+    {
+      assumptions.length > 0 ? (
         <ul>
-          {limitations.map((item) => (
+          {assumptions.map((item) => (
             <li>{item}</li>
           ))}
         </ul>
-      </>
-    )
-  }
-</section>
+      ) : (
+        <p class="muted">No assumptions are recorded for this calculator.</p>
+      )
+    }
+
+    {
+      limitations.length > 0 && (
+        <>
+          <h3>What it does not cover</h3>
+          <ul>
+            {limitations.map((item) => (
+              <li>{item}</li>
+            ))}
+          </ul>
+        </>
+      )
+    }
+
+    {
+      exclusions.length > 0 && (
+        <>
+          <h3>{excludedHeading}</h3>
+          <ul>
+            {exclusions.map((item) => (
+              <li>{item}</li>
+            ))}
+          </ul>
+        </>
+      )
+    }
+  </div>
+</details>

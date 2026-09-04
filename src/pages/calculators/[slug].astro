@@ -1,7 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import CalculatorPage from '../../components/calculator/CalculatorPage.astro';
-import AdSlot from '../../components/monetisation/AdSlot.astro';
 import { globalCalculatorList, calculatorPath } from '../../lib/registry/index.ts';
 import { manifestEntry } from '../../lib/seo/pages.ts';
 import { calculatorSchema } from '../../lib/seo/structured-data.ts';
@@ -48,10 +47,9 @@ const crumbs = [
   path={path}
   indexable={entry?.indexable ?? false}
   crumbs={crumbs}
-  withRail
   extraSchema={[calculatorSchema(calculator, path, view.supported)]}
 >
-  <div class="page-head">
+  <div class="page-head page-head--tool">
     <h1>{calculator.title}</h1>
     <p class="lede">{calculator.description}</p>
   </div>
@@ -63,8 +61,4 @@ const crumbs = [
     values={values}
     rulesets={{}}
   />
-
-  <div slot="rail" class="no-print">
-    <AdSlot slot="result-rail" hideOnMobile />
-  </div>
 </BaseLayout>

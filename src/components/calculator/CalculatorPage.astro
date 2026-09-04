@@ -50,6 +50,21 @@ const related = calculator.relatedCalculatorIds
 const awaitingSource =
   primaryRuleset !== null && primaryRuleset.provenance.dataStatus === 'awaiting-official-source';
 
+// A calculator opened with nothing filled in has no answer to give, and
+// rendering "£0" beside an empty form reads as a broken calculator rather than
+// an empty one. Now that the form and the result share a screen, that zero is
+// the first thing a reader sees, so the result panel shows a prompt instead
+// until there is something to calculate. The client script replaces this the
+// moment the form is submitted.
+const awaitingInput =
+  !isPrefilled &&
+  calculator.fields.some(
+    (field) =>
+      field.required &&
+      (field.type === 'money' || field.type === 'number') &&
+      (values[field.name] === undefined || values[field.name] === '' || values[field.name] === 0),
+  );
+
 const clientConfig = {
   calculatorId: calculator.id,
   family: calculator.family,
@@ -60,29 +75,40 @@ const clientConfig = {
 };
 ---
 
-<CalculatorForm calculator={calculator} values={values} actionPath={path} />
+<div class="calc-grid">
+  <div class="calc-grid__input">
+    <CalculatorForm calculator={calculator} values={values} actionPath={path} />
+  </div>
 
-{
-  primaryRuleset && (
-    <DataStatusNotice ruleset={primaryRuleset} jurisdictionName={jurisdictionName} />
-  )
-}
+  <div class="calc-grid__output">
+    {
+      primaryRuleset && (
+        <DataStatusNotice ruleset={primaryRuleset} jurisdictionName={jurisdictionName} />
+      )
+    }
 
-<ResultPanel view={view} suppressUnsupportedNotices={awaitingSource} />
+    <ResultPanel
+      view={view}
+      suppressUnsupportedNotices={awaitingSource}
+      awaitingInput={awaitingInput}
+    />
+
+    <div class="no-print" data-print-wrap hidden={awaitingInput}>
+      <button class="btn btn--quiet" type="button" data-print>Print or save this result</button>
+    </div>
+  </div>
+</div>
 
 <AdSlot slot="post-result" />
 
-<Assumptions assumptions={assumptionTexts} limitations={calculator.limitations} />
+<Assumptions
+  assumptions={assumptionTexts}
+  limitations={calculator.limitations}
+  exclusions={primaryRuleset?.exclusions ?? []}
+  jurisdictionName={jurisdictionName}
+/>
 
 <Sources sources={calculator.sources} />
-
-<div class="no-print">
-  <button class="btn btn--quiet" type="button" data-print>Print or save this result</button>
-  <p class="small muted" style="margin-top:0.5rem;">
-    Sharing the page address includes the figures you entered. It always points at this calculator,
-    never at a separate copy of the page.
-  </p>
-</div>
 
 {
   related.length > 0 && (

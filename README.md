@@ -97,7 +97,7 @@ than partial. See D-018.
 |                                     | Budget | Actual  |
 | ----------------------------------- | ------ | ------- |
 | Calculator client bundle, gzipped   | 60 KB  | 15.3 KB |
-| First-party CSS, gzipped            | 30 KB  | 4.7 KB  |
+| First-party CSS, gzipped            | 30 KB  | 5.2 KB  |
 | Render-blocking third-party scripts | 0      | 0       |
 | Automated accessibility violations  | 0      | 0       |
 

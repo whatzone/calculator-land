@@ -98,7 +98,9 @@
   --radius-pill: 999px;
 
   --measure: 66ch;
-  --page-max: 1140px;
+  --page-max: 1280px;
+  /* The sticky header's height. Anything that sticks below it offsets by this. */
+  --header-h: 68px;
   --target: 44px;
 }
 

@@ -1,7 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import CalculatorPage from '../../components/calculator/CalculatorPage.astro';
-import AdSlot from '../../components/monetisation/AdSlot.astro';
 import { JURISDICTIONS, findRuleset, getJurisdiction } from '../../data/jurisdictions/index.ts';
 import { CALCULATORS, calculatorPath, contextFor } from '../../lib/registry/index.ts';
 import { manifestEntry, rulesetsForClient, jurisdictionCrumbs } from '../../lib/seo/pages.ts';
@@ -48,10 +47,9 @@ const crumbs = [...jurisdictionCrumbs(jurisdiction), { name: calculator.shortTit
   indexable={entry?.indexable ?? false}
   crumbs={crumbs}
   locale={meta.locale}
-  withRail
   extraSchema={[calculatorSchema(calculator, path, view.supported)]}
 >
-  <div class="page-head">
+  <div class="page-head page-head--tool">
     <h1>{calculator.title}</h1>
     <p class="lede">{calculator.description}</p>
   </div>
@@ -65,8 +63,4 @@ const crumbs = [...jurisdictionCrumbs(jurisdiction), { name: calculator.shortTit
     primaryRuleset={ruleset ?? null}
     jurisdictionName={meta.name}
   />
-
-  <div slot="rail" class="no-print">
-    <AdSlot slot="result-rail" hideOnMobile />
-  </div>
 </BaseLayout>
