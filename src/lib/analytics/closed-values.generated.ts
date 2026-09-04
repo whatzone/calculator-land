@@ -25,7 +25,6 @@ export const DERIVED_CLOSED_VALUES: Partial<Record<AnalyticsProperty, readonly s
     "canada",
     "global",
     "ireland",
-    "new-zealand",
     "uk"
   ],
   "sub_jurisdiction": [
@@ -52,10 +51,6 @@ export const DERIVED_CLOSED_VALUES: Partial<Record<AnalyticsProperty, readonly s
     "ireland-net-to-gross",
     "ireland-pay-rise",
     "ireland-salary",
-    "new-zealand-bonus",
-    "new-zealand-net-to-gross",
-    "new-zealand-pay-rise",
-    "new-zealand-salary",
     "uk-bonus",
     "uk-net-to-gross",
     "uk-pay-rise",

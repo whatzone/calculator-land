@@ -7,33 +7,46 @@ it starts because its gate is met.
 
 ## Phase 0 — Where things actually stand
 
-**Complete.** The platform is built, tested, and buildable. 146 pages generate,
-18 pass the quality gate, 147 unit and integration tests and 85 end-to-end tests
-pass, and the client bundle is 14.5 KB gzipped.
+**Complete.** The platform is built, tested, and buildable. 130 pages generate,
+120 pass the quality gate, 207 unit and integration tests and 123 end-to-end
+tests pass, and the client bundle is 15.3 KB gzipped.
 
-**Blocked.** Every tax rate table is empty. The build environment could not
-reach any tax authority, and populating the tables from anything other than an
-official source is prohibited. See D-001.
+**Live today, with unverified figures:** every calculator in four markets — the
+UK including Scotland, Ireland, Australia, and Canada federal plus Ontario,
+British Columbia and Alberta — each offering a choice of three tax years, plus
+the mortgage and hourly tools and the trust and legal pages. 120 indexable
+pages: 92 curated salary pages, 16 tax calculator pages, 4 country hubs, and the
+global and editorial set.
 
-**Live today:** the mortgage payment, mortgage overpayment, and hourly-to-salary
-calculators, plus the trust and legal pages — 18 indexable pages.
+**Still unsourced.** No figure on the site has been read from the authority that
+publishes it, because the build environment cannot reach one. Every affected
+page says so above its result, and the build fails if one does not. See D-001
+for the block and D-016 for the decision to publish anyway, honestly labelled.
 
-**Held back:** 127 pages, comprising 102 curated salary pages, 20 tax calculator
-pages, and 5 country hubs.
+**Held back:** Quebec's 10 salary pages, for a structural reason rather than a
+data one — the Quebec abatement reduces another layer's tax and the engine has
+no construct for it.
+
+**Withdrawn:** New Zealand, whose thresholds changed part-way through 2024-25,
+leaving a year that could not be modelled honestly. See D-018.
 
 **The single unblocking action:** work through
 `docs/TAX-DATA-UPDATE-RUNBOOK.md` on a machine with access to the tax authority
-websites. No code change is required.
+websites, correcting in the order set out in `docs/RATE-AMBIGUITIES.md`. No code
+change is required.
 
 ---
 
-## Phase 1 — Five markets live
+## Phase 1 — Four markets verified
 
 **Gate to start:** access to the official sources.
 
-- Source and publish all five jurisdictions, one at a time. Do not batch them —
-  each needs its own review, and a reviewer who has just checked four countries
-  is not checking the fifth carefully.
+- Source and verify all four jurisdictions, one at a time. Do not batch them —
+  each needs its own review, and a reviewer who has just checked three countries
+  is not checking the fourth carefully.
+- Within a jurisdiction, verify the settled years first. A completed tax year
+  verified once is verified forever; the current year has to be revisited every
+  time an authority uprates something.
 - Publish only what passes the gate. Resist the urge to relax it for one
   awkward figure.
 - Verify analytics collects no financial input, on the live site.
@@ -45,8 +58,8 @@ websites. No code change is required.
 
 | Measure                          | Target                                         |
 | -------------------------------- | ---------------------------------------------- |
-| Indexable pages                  | 130–145                                        |
-| Jurisdictions published          | 5                                              |
+| Indexable pages                  | 115–130                                        |
+| Jurisdictions verified           | 4                                              |
 | Golden fixtures per jurisdiction | ≥ 3 from official worked examples              |
 | Release gate                     | Green, including `tax:audit --strict`          |
 | Search Console                   | Verified, sitemap submitted                    |
@@ -127,7 +140,7 @@ Worth writing down while it is still avoidable.
 
 1. **Publishing unsourced figures under deadline pressure.** The gate exists to
    make this hard. Do not add an override.
-2. **Scaling page count ahead of demand.** 102 curated salary pages that each
+2. **Scaling page count ahead of demand.** 92 curated salary pages that each
    say something specific will outperform 10,000 that do not, and will not take
    the site down with them.
 3. **Letting rulesets expire.** The audit warns at 60 days and the monthly job

@@ -106,11 +106,6 @@
       "permanent": true
     },
     {
-      "source": "/new-zealand/salary",
-      "destination": "/new-zealand/salary-calculator/",
-      "permanent": true
-    },
-    {
       "source": "/canada/salary",
       "destination": "/canada/salary-calculator/",
       "permanent": true

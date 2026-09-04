@@ -5,14 +5,12 @@ import type { CalculationInput, CalculationResult, JurisdictionCode } from './co
 import { calculateUkSalary } from './uk/index.ts';
 import { calculateIrelandSalary } from './ireland/index.ts';
 import { calculateAustraliaSalary } from './australia/index.ts';
-import { calculateNewZealandSalary } from './new-zealand/index.ts';
 import { calculateCanadaSalary } from './canada/index.ts';
 
 const ADAPTERS: Record<JurisdictionCode, (input: CalculationInput) => CalculationResult> = {
   uk: calculateUkSalary,
   ireland: calculateIrelandSalary,
   australia: calculateAustraliaSalary,
-  'new-zealand': calculateNewZealandSalary,
   canada: calculateCanadaSalary,
 };
 
@@ -26,7 +24,6 @@ export {
   calculateUkSalary,
   calculateIrelandSalary,
   calculateAustraliaSalary,
-  calculateNewZealandSalary,
   calculateCanadaSalary,
 };
 export * from './common/types.ts';

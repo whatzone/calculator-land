@@ -85,8 +85,8 @@ the rate tables are empty — which is the system working as designed.
 ## The curated amount list
 
 `src/data/salary-amounts.ts` holds every programmatic salary page the site will
-build: 102 across five markets, including a full Scottish set and four Canadian
-provinces. It is a typed literal, so adding one is an explicit reviewed change.
+build: 92 across four markets, including a full Scottish set and three published
+Canadian provinces. It is a typed literal, so adding one is an explicit reviewed change.
 
 To add an amount you need Search Console evidence of distinct demand at that
 figure — impressions for that specific number, not a hunch that round numbers
@@ -131,7 +131,7 @@ trades that for traffic that does not convert.
 
 ## hreflang
 
-Not used, and deliberately so. Five English-language editions for five countries
+Not used, and deliberately so. Four English-language editions for four countries
 are not an `hreflang` cluster, and marking them as one tells search engines
 something untrue about the relationship between the pages.
 
@@ -144,6 +144,6 @@ Split by family — pages, calculators, salary — from the start, so growth nee
 no restructuring and a family can be diagnosed on its own in Search Console.
 
 `lastmod` reflects the date a ruleset was checked or the content changed, never
-the deployment time. Telling search engines that 145 pages changed because
+the deployment time. Telling search engines that 130 pages changed because
 someone fixed a typo in a footer is how a site teaches them to ignore its
 sitemap.

@@ -23,15 +23,14 @@ Each market is a table of tax years, and the calculator has a year selector.
 `npm run tax:audit` prints this list, so it is always current in the terminal
 even if this file falls behind.
 
-| Market                      | Years offered             | Oldest year omitted because                                                                                                                                                  |
-| --------------------------- | ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| UK (England, Wales, NI)     | 2026/27, 2025/26, 2024/25 | —                                                                                                                                                                            |
-| UK (Scotland)               | 2026/27, 2025/26, 2024/25 | —                                                                                                                                                                            |
-| Ireland                     | 2026, 2025, 2024          | —                                                                                                                                                                            |
-| Australia                   | 2026-27, 2025-26, 2024-25 | —                                                                                                                                                                            |
-| New Zealand                 | 2026-27, 2025-26          | 2024-25 changed thresholds on 31 July 2024; the composite rates for that split year could not be worked out reliably, so it is not offered at all rather than offered wrong. |
-| Canada (federal + ON/BC/AB) | 2026, 2025, 2024          | —                                                                                                                                                                            |
-| Canada (Quebec)             | not published             | See the Quebec note below.                                                                                                                                                   |
+| Market                      | Years offered             | Oldest year omitted because |
+| --------------------------- | ------------------------- | --------------------------- |
+| UK (England, Wales, NI)     | 2026/27, 2025/26, 2024/25 | —                           |
+| UK (Scotland)               | 2026/27, 2025/26, 2024/25 | —                           |
+| Ireland                     | 2026, 2025, 2024          | —                           |
+| Australia                   | 2026-27, 2025-26, 2024-25 | —                           |
+| Canada (federal + ON/BC/AB) | 2026, 2025, 2024          | —                           |
+| Canada (Quebec)             | not published             | See the Quebec note below.  |
 
 Every year carries one of three confidence levels, and the level is written into
 the ruleset itself so it reaches the reader:
@@ -48,17 +47,16 @@ to be revisited each time an authority uprates something.
 
 ---
 
-## Start here: the five most likely to be wrong
+## Start here: the four most likely to be wrong
 
-All five are in the **newest** year of their market.
+All four are in the **newest** year of their market.
 
-| #   | Figure                                                   | Where                  | Why it is doubtful                                                                                                                                                               |
-| --- | -------------------------------------------------------- | ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | **Ireland 2026 — standard rate band (€44,000)**          | `ireland/index.ts`     | Carried forward from 2025 unchanged. Ireland moves this most Budgets, so if Budget 2026 raised it, every 2026 Irish result is wrong.                                             |
-| 2   | **Ireland 2026 — PRSI rate (4.1%)**                      | `ireland/index.ts`     | Was on a schedule of stepped annual increases. 2026 may be higher.                                                                                                               |
-| 3   | **Australia 2026-27 — lowest marginal rate (15%)**       | `australia/index.ts`   | Legislated to fall from 16% on 1 July 2026. Confirm it actually took effect before anything else in that year.                                                                   |
-| 4   | **Canada 2026 — all indexed amounts**                    | `canada/index.ts`      | Brackets, basic personal amounts and the CPP/EI maximums are carried forward from 2025 and are indexed every year. The structure is right; the numbers are almost certainly out. |
-| 5   | **New Zealand 2026-27 — ACC levy (1.67%, cap $152,790)** | `new-zealand/index.ts` | Reset annually and often changed; carried forward from 2025-26.                                                                                                                  |
+| #   | Figure                                             | Where                | Why it is doubtful                                                                                                                                                               |
+| --- | -------------------------------------------------- | -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | **Ireland 2026 — standard rate band (€44,000)**    | `ireland/index.ts`   | Carried forward from 2025 unchanged. Ireland moves this most Budgets, so if Budget 2026 raised it, every 2026 Irish result is wrong.                                             |
+| 2   | **Ireland 2026 — PRSI rate (4.1%)**                | `ireland/index.ts`   | Was on a schedule of stepped annual increases. 2026 may be higher.                                                                                                               |
+| 3   | **Australia 2026-27 — lowest marginal rate (15%)** | `australia/index.ts` | Legislated to fall from 16% on 1 July 2026. Confirm it actually took effect before anything else in that year.                                                                   |
+| 4   | **Canada 2026 — all indexed amounts**              | `canada/index.ts`    | Brackets, basic personal amounts and the CPP/EI maximums are carried forward from 2025 and are indexed every year. The structure is right; the numbers are almost certainly out. |
 
 ---
 
@@ -150,26 +148,6 @@ almost certainly slightly out even if the rate cut is confirmed.
 **Omitted deliberately:** HELP and study loan repayments. Their bands change
 every July.
 
-### New Zealand — medium-high confidence, two years only
-
-The income tax thresholds took full effect from 2025-26 and are shared by both
-years held. The ACC figures are reset annually and are carried forward, so they
-are the weakest part.
-
-| Figure                      | Value used (both years)                | Confidence  |
-| --------------------------- | -------------------------------------- | ----------- |
-| Bands                       | $15,600 / $53,500 / $78,100 / $180,000 | Medium-high |
-| Rates                       | 10.5% / 17.5% / 30% / 33% / 39%        | High        |
-| ACC earners' levy           | 1.67%                                  | **Low**     |
-| ACC maximum liable earnings | $152,790                               | **Low**     |
-| Student loan                | 12% above $24,128                      | Medium      |
-
-**2024-25 is deliberately absent.** The thresholds changed on 31 July 2024, so
-that year runs on composite rates I could not derive reliably. Offering it
-approximated would be worse than not offering it: the selector simply has no
-such option, and a request for it returns no ruleset rather than silently
-substituting another year.
-
 ### Canada — medium confidence on structure, low on amounts
 
 Everything indexed annually. The **structure** — five federal brackets,
@@ -217,9 +195,13 @@ salary pages are withheld and its calculators show the "not live" notice.
    a whole tax year. Real payroll withholds period by period, and contributions
    like CPP and NI stop mid-year once an annual maximum is reached.
 2. **One rate set per year.** Where an authority changed a rate part-way through
-   a year, a single annual figure is used and the ruleset's note says which way
-   it errs. The three known cases are UK NI in 2023/24, Irish PRSI in 2024, and
-   the Canadian federal rate cut in 2025.
+   a year, the closest single annual figure is used and the ruleset's note says
+   which way it errs, so a reader is told rather than misled. This is a
+   deliberate choice: the best available approximation, disclosed, beats
+   refusing to answer. The two live cases are Irish PRSI in 2024 (4% used, so
+   the final quarter is understated) and the Canadian federal rate cut in 2025
+   (a blended 14.5%, right for a full-year salary and wrong for income
+   concentrated in one half of the year).
 3. **One ordinary employment.** No second jobs, benefits in kind, investment
    income, or self-employment.
 4. **Standard tax codes.** Individually issued codes are not modelled.

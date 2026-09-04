@@ -129,7 +129,6 @@ export const REDIRECT_RULES: readonly RedirectRule[] = [
   { from: '/uk/salary', to: '/uk/salary-calculator/', status: 301 },
   { from: '/ireland/salary', to: '/ireland/salary-calculator/', status: 301 },
   { from: '/australia/salary', to: '/australia/salary-calculator/', status: 301 },
-  { from: '/new-zealand/salary', to: '/new-zealand/salary-calculator/', status: 301 },
   { from: '/canada/salary', to: '/canada/salary-calculator/', status: 301 },
   { from: '/mortgage', to: '/mortgage-calculators/', status: 301 },
   { from: '/salary', to: '/salary-tax-calculators/', status: 301 },

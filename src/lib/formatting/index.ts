@@ -11,7 +11,6 @@ const CURRENCY_LOCALES: Record<CurrencyCode, string> = {
   GBP: 'en-GB',
   EUR: 'en-IE',
   AUD: 'en-AU',
-  NZD: 'en-NZ',
   CAD: 'en-CA',
   USD: 'en-US',
 };
@@ -20,7 +19,6 @@ export const CURRENCY_SYMBOLS: Record<CurrencyCode, string> = {
   GBP: '£',
   EUR: '€',
   AUD: '$',
-  NZD: '$',
   CAD: '$',
   USD: '$',
 };

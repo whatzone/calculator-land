@@ -72,8 +72,8 @@ Creates a ruleset with empty rate tables at `status: 'draft'` and
       generic substitute.
 - [ ] Currency, number, and date formatting go through `Intl` with the page
       locale. No hand-formatted currency anywhere.
-- [ ] Pay frequencies match local convention: fortnightly in Australia and New
-      Zealand, bi-weekly in Canada.
+- [ ] Pay frequencies match local convention: fortnightly in Australia,
+      bi-weekly in Canada.
 - [ ] For a non-English market, real translation and local social-contribution
       expertise are in place. Machine-translating the English templates is not
       an acceptable substitute and is explicitly out of scope until then.

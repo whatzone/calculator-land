@@ -33,10 +33,6 @@ const AUSTRALIA_AMOUNTS = [
   40000, 50000, 60000, 70000, 80000, 90000, 100000, 120000, 150000, 200000,
 ] as const;
 
-const NEW_ZEALAND_AMOUNTS = [
-  40000, 50000, 60000, 70000, 80000, 90000, 100000, 120000, 150000, 200000,
-] as const;
-
 const CANADA_AMOUNTS = [
   30000, 40000, 50000, 60000, 70000, 80000, 100000, 120000, 150000, 200000,
 ] as const;
@@ -49,7 +45,6 @@ export const SALARY_PAGE_SPECS: readonly SalaryPageSpec[] = [
 
   { jurisdiction: 'ireland', region: null, regionLabel: null, amounts: IRELAND_AMOUNTS },
   { jurisdiction: 'australia', region: null, regionLabel: null, amounts: AUSTRALIA_AMOUNTS },
-  { jurisdiction: 'new-zealand', region: null, regionLabel: null, amounts: NEW_ZEALAND_AMOUNTS },
 
   // Four provinces at launch. The other nine are added only once their engine
   // tests pass and demand is demonstrated — see docs/ROADMAP.md, phase 2.

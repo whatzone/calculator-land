@@ -36,7 +36,6 @@ Start from the authority, not from a search engine:
 | Scotland       | Scottish Government / HMRC    | Scottish income tax bands and rates. NI is UK-wide — do not re-source it                                                                                                      |
 | Ireland        | Revenue; gov.ie for PRSI      | Income tax bands, personal and employee tax credits, USC bands, PRSI class A                                                                                                  |
 | Australia      | ATO                           | Resident income tax rates, Medicare levy rate and thresholds, applicable offsets, study and training loan repayment rates                                                     |
-| New Zealand    | Inland Revenue                | Individual income tax rates, ACC earners' levy rate and maximum liable earnings, KiwiSaver rates, student loan repayment rate and threshold                                   |
 | Canada         | CRA; Revenu Québec for Quebec | Federal rates and basic personal amount, provincial rates and credits, CPP/QPP rates and maximums, EI/QPIP rates and maximums, and publication T4127 for the payroll formulas |
 
 The candidate URLs already recorded in each ruleset file are a starting point,
@@ -51,8 +50,8 @@ stored as a separate ruleset with its own effective dates; it must not be
 published as current.
 
 The period boundaries themselves (UK 6 April to 5 April, Australia 1 July to
-30 June, New Zealand 1 April to 31 March, Ireland and Canada calendar years) are
-structural and already encoded.
+30 June, Ireland and Canada calendar years) are structural and already
+encoded.
 
 ### 2a. Check the rule shape exists before you start
 
@@ -88,22 +87,22 @@ amount tapers to a minimum and holds there; leaving this at `0` overstates tax
 for high Canadian earners.
 
 **`loanRepayments.method`.** `rate-above-threshold` charges a rate on the excess
-(UK, New Zealand). `banded-rate-on-total` picks a rate from a band and applies
-it to the _whole_ of income (Australia), so one extra pound of income at a band
-edge can cost hundreds. These are not interchangeable and must not be
-substituted for each other.
+(UK). `banded-rate-on-total` picks a rate from a band and applies it to the
+_whole_ of income (Australia), so one extra pound of income at a band edge can
+cost hundreds. These are not interchangeable and must not be substituted for
+each other.
 
 A `selector` on a loan scheme must match the value the form sends:
 `plan-1`, `plan-2`, `plan-4`, `plan-5`, `postgraduate` for the UK; `help` for
-Australia; `student-loan` for New Zealand. A selected scheme with no matching
-entry produces a visible unsupported notice, never a silent zero.
+Australia. A selected scheme with no matching entry produces a visible
+unsupported notice, never a silent zero.
 
 ### 2b. Understand the year table
 
 Each market is **one file holding a table of tax years**, not one file per year.
 `src/data/jurisdictions/uk/index.ts` declares a `UkYear` shape and a `UK_YEARS`
 array, newest first, and a builder turns each entry into a ruleset. Ireland,
-Australia, New Zealand and Canada follow the same pattern.
+Australia and Canada follow the same pattern.
 
 This matters for three reasons:
 
@@ -249,8 +248,8 @@ When a new tax year is announced:
 actually has — checking a payslip, amending a return, comparing an offer against
 last year. It does not earn its place by existing. Three years is the current
 depth; adding a fourth is a decision, not a default, and adding one whose rules
-cannot be modelled honestly (see New Zealand 2024-25 in
-`docs/RATE-AMBIGUITIES.md`) is worse than leaving the gap.
+cannot be modelled honestly is worse than leaving the gap — see **Mid-year
+changes** below for where the line sits.
 
 **Retiring a year.** Setting `status: 'retired'` removes it from the selector
 while keeping the file for auditability. Do that when a year is wrong and cannot
@@ -268,24 +267,37 @@ a confident answer computed from the wrong year's rules.
 A rate that changes part-way through a tax year is the hardest case, because
 neither the old nor the new figure is right for the year as a whole.
 
-Do not average them. Either model the split properly, with the effective dates
-in the ruleset and tests for a salary spanning the change, or mark the affected
-calculation unsupported until you can. An averaged figure is wrong for everyone
-whose income was not spread evenly across the year.
+Model the split properly wherever you can: put the effective dates in the
+ruleset and write a test for a salary spanning the change. That is always the
+better answer.
 
-**The current data breaks this rule in two places, knowingly.** Both are in
-unverified data and both must be resolved before the year they sit in can be
-marked `populated`:
+Where you cannot — because the shape does not exist yet, or because the year is
+already closed and nobody will read a split model — **use the closest single
+annual figure and say so on the page.** The best available approximation, openly
+disclosed, is a better product than refusing to answer, and a much better one
+than a figure presented as exact. What is not acceptable is an averaged figure
+shipped silently.
+
+So the bar for a mid-year approximation is:
+
+1. The ruleset carries a `note` saying what was approximated and **which way it
+   errs** — understated or overstated, and for whom.
+2. That note is rendered on every page built from the year, not just recorded in
+   the source.
+3. `docs/RATE-AMBIGUITIES.md` lists it, so it is visible next to everything else
+   that needs checking.
+
+The two live cases both meet that bar:
 
 - **Canada 2025** uses a blended 14.5% lowest federal rate, because the rate was
   cut from 15% to 14% part-way through the year. Right for a full-year salary,
-  wrong for anyone whose income fell entirely in one half.
+  overstated for income concentrated in the second half.
 - **Ireland 2024** uses 4% PRSI for the whole year, when it rose to 4.1%
   part-way through, so PRSI is understated for the final quarter.
 
-Both say so in the ruleset note, which is rendered on the page, so a reader is
-not misled. That is the minimum bar for shipping a known approximation, and it
-is not a substitute for modelling the split.
+Neither blocks marking the year `populated` once its figures have been checked
+against the source. The approximation is disclosed, not hidden, and that is the
+standard.
 
 ---
 

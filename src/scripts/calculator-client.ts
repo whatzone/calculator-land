@@ -22,7 +22,6 @@ import {
   irelandUnsupportedReasons,
 } from '../lib/calculations/ireland/options.ts';
 import { buildAustraliaOptions } from '../lib/calculations/australia/options.ts';
-import { buildNewZealandOptions } from '../lib/calculations/new-zealand/options.ts';
 import { buildCanadaOptions } from '../lib/calculations/canada/options.ts';
 import { unsupportedResult } from '../lib/calculations/common/engine.ts';
 import {
@@ -223,8 +222,6 @@ function calculateSalaryInBrowser(config: PageConfig, input: CalculationInput) {
     }
     case 'australia':
       return runSalaryCalculation(buildAustraliaOptions(ruleset, input));
-    case 'new-zealand':
-      return runSalaryCalculation(buildNewZealandOptions(ruleset, input));
     case 'canada': {
       const federal = config.rulesets[`federal|${input.taxPeriod}`];
       if (!federal)

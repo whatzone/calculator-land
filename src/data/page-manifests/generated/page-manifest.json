@@ -1,8 +1,8 @@
 {
   "generatedFrom": "src/lib/seo/manifest.ts",
   "summary": {
-    "total": 145,
-    "indexable": 135,
+    "total": 130,
+    "indexable": 120,
     "withheld": 10,
     "byTemplate": {
       "home": {
@@ -26,16 +26,16 @@
         "indexable": 4
       },
       "country-hub": {
-        "total": 5,
-        "indexable": 5
+        "total": 4,
+        "indexable": 4
       },
       "calculator": {
-        "total": 23,
-        "indexable": 23
+        "total": 19,
+        "indexable": 19
       },
       "salary-result": {
-        "total": 102,
-        "indexable": 92
+        "total": 92,
+        "indexable": 82
       }
     },
     "allowIndexing": false
@@ -225,17 +225,6 @@
       "lastModified": "2026-09-03"
     },
     {
-      "path": "/new-zealand/",
-      "template": "country-hub",
-      "title": "New Zealand Salary & Tax Calculators (2026-27)",
-      "description": "Take-home pay, bonus, and pay-rise calculators for New Zealand, with sources and assumptions shown on every result.",
-      "indexable": true,
-      "blockers": [],
-      "inSitemap": true,
-      "jurisdiction": "new-zealand",
-      "lastModified": "2026-09-03"
-    },
-    {
       "path": "/canada/",
       "template": "country-hub",
       "title": "Canadian Salary & Tax Calculators (2026)",
@@ -388,54 +377,6 @@
       "inSitemap": true,
       "calculatorId": "australia-pay-rise",
       "jurisdiction": "australia",
-      "lastModified": "2026-09-03"
-    },
-    {
-      "path": "/new-zealand/salary-calculator/",
-      "template": "calculator",
-      "title": "New Zealand Salary Calculator 2026-27",
-      "description": "Free New Zealand salary calculator for 2026-27. See your take-home pay a year, a month and a week, with an itemised breakdown of every deduction.",
-      "indexable": true,
-      "blockers": [],
-      "inSitemap": true,
-      "calculatorId": "new-zealand-salary",
-      "jurisdiction": "new-zealand",
-      "lastModified": "2026-09-03"
-    },
-    {
-      "path": "/new-zealand/net-to-gross-calculator/",
-      "template": "calculator",
-      "title": "New Zealand Net to Gross Salary Calculator 2026-27",
-      "description": "Work out the gross salary you need in New Zealand to take home a given amount, for 2026-27.",
-      "indexable": true,
-      "blockers": [],
-      "inSitemap": true,
-      "calculatorId": "new-zealand-net-to-gross",
-      "jurisdiction": "new-zealand",
-      "lastModified": "2026-09-03"
-    },
-    {
-      "path": "/new-zealand/bonus-tax-calculator/",
-      "template": "calculator",
-      "title": "New Zealand Bonus Tax Calculator 2026-27",
-      "description": "Work out how much of your bonus you keep in New Zealand after tax and contributions, for 2026-27.",
-      "indexable": true,
-      "blockers": [],
-      "inSitemap": true,
-      "calculatorId": "new-zealand-bonus",
-      "jurisdiction": "new-zealand",
-      "lastModified": "2026-09-03"
-    },
-    {
-      "path": "/new-zealand/pay-rise-calculator/",
-      "template": "calculator",
-      "title": "New Zealand Pay Rise Calculator 2026-27",
-      "description": "See how much extra take-home pay a rise gives you in New Zealand, and how much of it you keep, for 2026-27.",
-      "indexable": true,
-      "blockers": [],
-      "inSitemap": true,
-      "calculatorId": "new-zealand-pay-rise",
-      "jurisdiction": "new-zealand",
       "lastModified": "2026-09-03"
     },
     {
@@ -1243,146 +1184,6 @@
       "inSitemap": true,
       "calculatorId": "australia-salary",
       "jurisdiction": "australia",
-      "region": null,
-      "amount": 200000,
-      "lastModified": "2026-09-03"
-    },
-    {
-      "path": "/new-zealand/salary/40000-after-tax/",
-      "template": "salary-result",
-      "title": "$40,000 After Tax in New Zealand (2026-27)",
-      "description": "A full breakdown of what $40,000 a year is after tax in New Zealand for 2026-27, with every deduction itemised.",
-      "indexable": true,
-      "blockers": [],
-      "inSitemap": true,
-      "calculatorId": "new-zealand-salary",
-      "jurisdiction": "new-zealand",
-      "region": null,
-      "amount": 40000,
-      "lastModified": "2026-09-03"
-    },
-    {
-      "path": "/new-zealand/salary/50000-after-tax/",
-      "template": "salary-result",
-      "title": "$50,000 After Tax in New Zealand (2026-27)",
-      "description": "A full breakdown of what $50,000 a year is after tax in New Zealand for 2026-27, with every deduction itemised.",
-      "indexable": true,
-      "blockers": [],
-      "inSitemap": true,
-      "calculatorId": "new-zealand-salary",
-      "jurisdiction": "new-zealand",
-      "region": null,
-      "amount": 50000,
-      "lastModified": "2026-09-03"
-    },
-    {
-      "path": "/new-zealand/salary/60000-after-tax/",
-      "template": "salary-result",
-      "title": "$60,000 After Tax in New Zealand (2026-27)",
-      "description": "A full breakdown of what $60,000 a year is after tax in New Zealand for 2026-27, with every deduction itemised.",
-      "indexable": true,
-      "blockers": [],
-      "inSitemap": true,
-      "calculatorId": "new-zealand-salary",
-      "jurisdiction": "new-zealand",
-      "region": null,
-      "amount": 60000,
-      "lastModified": "2026-09-03"
-    },
-    {
-      "path": "/new-zealand/salary/70000-after-tax/",
-      "template": "salary-result",
-      "title": "$70,000 After Tax in New Zealand (2026-27)",
-      "description": "A full breakdown of what $70,000 a year is after tax in New Zealand for 2026-27, with every deduction itemised.",
-      "indexable": true,
-      "blockers": [],
-      "inSitemap": true,
-      "calculatorId": "new-zealand-salary",
-      "jurisdiction": "new-zealand",
-      "region": null,
-      "amount": 70000,
-      "lastModified": "2026-09-03"
-    },
-    {
-      "path": "/new-zealand/salary/80000-after-tax/",
-      "template": "salary-result",
-      "title": "$80,000 After Tax in New Zealand (2026-27)",
-      "description": "A full breakdown of what $80,000 a year is after tax in New Zealand for 2026-27, with every deduction itemised.",
-      "indexable": true,
-      "blockers": [],
-      "inSitemap": true,
-      "calculatorId": "new-zealand-salary",
-      "jurisdiction": "new-zealand",
-      "region": null,
-      "amount": 80000,
-      "lastModified": "2026-09-03"
-    },
-    {
-      "path": "/new-zealand/salary/90000-after-tax/",
-      "template": "salary-result",
-      "title": "$90,000 After Tax in New Zealand (2026-27)",
-      "description": "A full breakdown of what $90,000 a year is after tax in New Zealand for 2026-27, with every deduction itemised.",
-      "indexable": true,
-      "blockers": [],
-      "inSitemap": true,
-      "calculatorId": "new-zealand-salary",
-      "jurisdiction": "new-zealand",
-      "region": null,
-      "amount": 90000,
-      "lastModified": "2026-09-03"
-    },
-    {
-      "path": "/new-zealand/salary/100000-after-tax/",
-      "template": "salary-result",
-      "title": "$100,000 After Tax in New Zealand (2026-27)",
-      "description": "A full breakdown of what $100,000 a year is after tax in New Zealand for 2026-27, with every deduction itemised.",
-      "indexable": true,
-      "blockers": [],
-      "inSitemap": true,
-      "calculatorId": "new-zealand-salary",
-      "jurisdiction": "new-zealand",
-      "region": null,
-      "amount": 100000,
-      "lastModified": "2026-09-03"
-    },
-    {
-      "path": "/new-zealand/salary/120000-after-tax/",
-      "template": "salary-result",
-      "title": "$120,000 After Tax in New Zealand (2026-27)",
-      "description": "A full breakdown of what $120,000 a year is after tax in New Zealand for 2026-27, with every deduction itemised.",
-      "indexable": true,
-      "blockers": [],
-      "inSitemap": true,
-      "calculatorId": "new-zealand-salary",
-      "jurisdiction": "new-zealand",
-      "region": null,
-      "amount": 120000,
-      "lastModified": "2026-09-03"
-    },
-    {
-      "path": "/new-zealand/salary/150000-after-tax/",
-      "template": "salary-result",
-      "title": "$150,000 After Tax in New Zealand (2026-27)",
-      "description": "A full breakdown of what $150,000 a year is after tax in New Zealand for 2026-27, with every deduction itemised.",
-      "indexable": true,
-      "blockers": [],
-      "inSitemap": true,
-      "calculatorId": "new-zealand-salary",
-      "jurisdiction": "new-zealand",
-      "region": null,
-      "amount": 150000,
-      "lastModified": "2026-09-03"
-    },
-    {
-      "path": "/new-zealand/salary/200000-after-tax/",
-      "template": "salary-result",
-      "title": "$200,000 After Tax in New Zealand (2026-27)",
-      "description": "A full breakdown of what $200,000 a year is after tax in New Zealand for 2026-27, with every deduction itemised.",
-      "indexable": true,
-      "blockers": [],
-      "inSitemap": true,
-      "calculatorId": "new-zealand-salary",
-      "jurisdiction": "new-zealand",
       "region": null,
       "amount": 200000,
       "lastModified": "2026-09-03"

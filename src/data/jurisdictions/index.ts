@@ -15,14 +15,12 @@ import { byPeriodDescending, defaultPeriod, isCurrentPeriod } from './_years.ts'
 import { ukRulesets } from './uk/index.ts';
 import { irelandRulesets } from './ireland/index.ts';
 import { australiaRulesets } from './australia/index.ts';
-import { newZealandRulesets } from './new-zealand/index.ts';
 import { canadaRulesets } from './canada/index.ts';
 
 export const ALL_RULESETS: readonly Ruleset[] = [
   ...ukRulesets,
   ...irelandRulesets,
   ...australiaRulesets,
-  ...newZealandRulesets,
   ...canadaRulesets,
 ];
 
@@ -169,16 +167,6 @@ export const JURISDICTIONS: readonly JurisdictionMeta[] = [
     slug: 'australia',
     currency: 'AUD',
     locale: 'en-AU',
-    incomeTermPlural: 'salaries',
-    regions: [],
-  },
-  {
-    code: 'new-zealand',
-    name: 'New Zealand',
-    adjective: 'New Zealand',
-    slug: 'new-zealand',
-    currency: 'NZD',
-    locale: 'en-NZ',
     incomeTermPlural: 'salaries',
     regions: [],
   },

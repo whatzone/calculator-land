@@ -22,9 +22,9 @@ export const PAY_FREQUENCIES: readonly PayFrequency[] = [
 ];
 
 /** ISO 4217 codes for the launch markets. */
-export type CurrencyCode = 'GBP' | 'EUR' | 'AUD' | 'NZD' | 'CAD' | 'USD';
+export type CurrencyCode = 'GBP' | 'EUR' | 'AUD' | 'CAD' | 'USD';
 
-export type JurisdictionCode = 'uk' | 'ireland' | 'australia' | 'new-zealand' | 'canada';
+export type JurisdictionCode = 'uk' | 'ireland' | 'australia' | 'canada';
 
 export interface CalculationInput {
   readonly jurisdiction: JurisdictionCode;

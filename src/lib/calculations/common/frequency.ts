@@ -60,6 +60,5 @@ export const JURISDICTION_FREQUENCIES: Record<string, readonly PayFrequency[]> =
   uk: ['annual', 'monthly', 'weekly'],
   ireland: ['annual', 'monthly', 'weekly'],
   australia: ['annual', 'monthly', 'fortnightly', 'weekly'],
-  'new-zealand': ['annual', 'monthly', 'fortnightly', 'weekly'],
   canada: ['annual', 'monthly', 'biweekly', 'weekly'],
 };

@@ -44,7 +44,6 @@ export const NEXT_INCREMENT_BY_JURISDICTION: Record<string, number> = {
   uk: 1000,
   ireland: 1000,
   australia: 1000,
-  'new-zealand': 1000,
   canada: 1000,
 };
 

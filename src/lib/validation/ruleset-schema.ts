@@ -121,8 +121,7 @@ export const surtaxSchema = z.object({
 });
 
 /**
- * An income-contingent loan repayment: UK student loans, Australian HELP,
- * New Zealand student loans.
+ * An income-contingent loan repayment: UK student loans and Australian HELP.
  *
  * The two methods are genuinely different arithmetic and must not be
  * interchanged. `rate-above-threshold` charges a rate on the income above the
@@ -190,7 +189,7 @@ export const DATA_STATUSES = ['awaiting-official-source', 'unverified', 'populat
 export const rulesetSchema = z
   .object({
     id: z.string().regex(/^[a-z0-9-]+$/, 'lowercase kebab-case'),
-    jurisdiction: z.enum(['uk', 'ireland', 'australia', 'new-zealand', 'canada']),
+    jurisdiction: z.enum(['uk', 'ireland', 'australia', 'canada']),
     subJurisdiction: z
       .string()
       .regex(/^[a-z0-9-]+$/)
@@ -206,7 +205,7 @@ export const rulesetSchema = z
       endDate: isoDate,
     }),
 
-    currency: z.enum(['GBP', 'EUR', 'AUD', 'NZD', 'CAD', 'USD']),
+    currency: z.enum(['GBP', 'EUR', 'AUD', 'CAD', 'USD']),
     locale: z.string().min(2),
 
     status: z.enum(RULESET_STATUSES),

@@ -27,12 +27,12 @@ npm run gate         # the full release gate
 ## What works today
 
 Every calculator is live in every market except Quebec: salary, net-to-gross,
-bonus and pay rise across the UK (including Scotland), Ireland, Australia, New
-Zealand and Canada (federal plus Ontario, British Columbia and Alberta), and the
-mortgage and hourly tools everywhere. 135 of 145 pages are indexable.
+bonus and pay rise across the UK (including Scotland), Ireland, Australia and
+Canada (federal plus Ontario, British Columbia and Alberta), and the mortgage
+and hourly tools everywhere. 120 of 130 pages are indexable.
 
-Each salary calculator offers a choice of **tax year** — three years per market,
-two for New Zealand — and recalculates against the year you pick.
+Each salary calculator offers a choice of **tax year** — three per market — and
+recalculates against the year you pick.
 
 **Every rate on the site is unverified.** The figures were entered from general
 knowledge, not read from the authority that publishes them, because the build
@@ -75,7 +75,6 @@ Full detail: `docs/ARCHITECTURE.md`.
 | United Kingdom | 2026/27, 2025/26, 2024/25 | England/Wales/NI, Scotland (separate rulesets) | Unverified      |
 | Ireland        | 2026, 2025, 2024          | —                                              | Unverified      |
 | Australia      | 2026-27, 2025-26, 2024-25 | —                                              | Unverified      |
-| New Zealand    | 2026-27, 2025-26          | —                                              | Unverified      |
 | Canada         | 2026, 2025, 2024          | Federal + Ontario, BC, Alberta                 | Unverified      |
 | Canada, Quebec | —                         | —                                              | Awaiting source |
 
@@ -84,18 +83,20 @@ because their rules differ in structure and not only in numbers.
 
 Each market is one file holding a **table of tax years**, so adding next year is
 a single reviewed entry at the top of an array rather than a new file to keep in
-sync. Which year is current is derived from the period dates, not from a flag.
-New Zealand offers two years rather than three because its thresholds changed
-part-way through 2024-25 and that year cannot be modelled honestly as a single
-rate set — a year we cannot hold correctly is not offered at all, and a request
-for a year we do not hold returns nothing rather than falling back to another.
-`npm run tax:audit` prints the current coverage.
+sync. Which year is current is derived from the period dates, not from a flag. A
+request for a year we do not hold returns nothing rather than falling back to a
+neighbouring year's rates. `npm run tax:audit` prints the current coverage.
+
+New Zealand was launched and then withdrawn: its income tax thresholds changed
+part-way through 2024-25, which left a year that could not be modelled honestly
+as a single rate set, and a market we cannot cover consistently is better absent
+than partial. See D-018.
 
 ## Budgets, measured
 
 |                                     | Budget | Actual  |
 | ----------------------------------- | ------ | ------- |
-| First-party JS, gzipped             | 60 KB  | 15.5 KB |
+| Calculator client bundle, gzipped   | 60 KB  | 15.3 KB |
 | First-party CSS, gzipped            | 30 KB  | 4.7 KB  |
 | Render-blocking third-party scripts | 0      | 0       |
 | Automated accessibility violations  | 0      | 0       |

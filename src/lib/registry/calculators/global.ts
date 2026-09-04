@@ -21,7 +21,6 @@ const CURRENCY_OPTIONS = [
   { value: 'GBP', label: 'Pounds (£)' },
   { value: 'EUR', label: 'Euro (€)' },
   { value: 'AUD', label: 'Australian dollars (A$)' },
-  { value: 'NZD', label: 'New Zealand dollars (NZ$)' },
   { value: 'CAD', label: 'Canadian dollars (C$)' },
   { value: 'USD', label: 'US dollars ($)' },
 ];
@@ -146,13 +145,7 @@ export const hourlyToSalary: CalculatorDefinition<Values, ReturnType<typeof conv
     'Overtime, shift premiums, tips, commission, and bonuses are excluded.',
     'Unpaid breaks are not deducted; enter paid hours only.',
   ],
-  relatedCalculatorIds: [
-    'uk-salary',
-    'ireland-salary',
-    'australia-salary',
-    'new-zealand-salary',
-    'canada-salary',
-  ],
+  relatedCalculatorIds: ['uk-salary', 'ireland-salary', 'australia-salary', 'canada-salary'],
   indexability: { requiresPublishedRuleset: false, rulesetIds: [], indexableWithoutTaxData: true },
   analytics: { toolId: 'global-hourly-to-salary', category: 'general-finance' },
   testFixtures: ['tests/unit/hourly.test.ts'],

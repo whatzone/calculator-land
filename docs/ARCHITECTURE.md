@@ -40,7 +40,7 @@ build time and in the browser.
 
 - `common/money.ts` — decimal money over `big.js`. Never floating point.
 - `common/brackets.ts` — progressive bands, tapers, levies. Knows no rates.
-- `common/engine.ts` — the shared salary engine all five markets compose from.
+- `common/engine.ts` — the shared salary engine every market composes from.
 - `common/scenarios.ts` — bonus, pay rise, net-to-gross, each a real comparison.
 - `common/net-to-gross.ts` — bounded bisection with round-trip verification.
 - `<jurisdiction>/options.ts` — profile handling, no registry dependency.
@@ -111,7 +111,7 @@ result through a live region, and rewrites the query string so the page can be
 shared — while the canonical link keeps pointing at the clean tool path, so
 query variants never become crawlable URLs.
 
-Measured: 14.5 KB of JavaScript gzipped, 3.3 KB of CSS. Budgets are 60 KB and
+Measured: 15.3 KB of JavaScript gzipped, 4.7 KB of CSS. Budgets are 60 KB and
 30 KB.
 
 ## Deliberate absences

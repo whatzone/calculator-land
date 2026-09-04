@@ -132,32 +132,6 @@ const JURISDICTION_EXTRAS: Record<JurisdictionCode, readonly CalculatorFieldDefi
       help: 'Repayments are income-based and start above a threshold.',
     },
   ],
-  'new-zealand': [
-    {
-      name: 'kiwiSaverPercent',
-      label: 'KiwiSaver contribution',
-      type: 'select',
-      required: false,
-      defaultValue: '0',
-      help: 'Employee contributions come out of pay after tax.',
-      options: [
-        { value: '0', label: 'Not a member' },
-        { value: '3', label: '3%' },
-        { value: '4', label: '4%' },
-        { value: '6', label: '6%' },
-        { value: '8', label: '8%' },
-        { value: '10', label: '10%' },
-      ],
-    },
-    {
-      name: 'hasStudentLoan',
-      label: 'I have a student loan',
-      type: 'checkbox',
-      required: false,
-      defaultValue: false,
-      advanced: true,
-    },
-  ],
   canada: [
     {
       name: 'province',

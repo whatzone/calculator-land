@@ -528,3 +528,87 @@ shapes_ between years — not different numbers, but a construct one year has an
 another does not — the builder-per-market pattern would strain, and that market
 would be split into per-year modules behind the same lookup. Nothing in the five
 current markets needs that.
+
+---
+
+## D-018 — New Zealand withdrawn rather than shipped with a hole in its year range
+
+**Date:** 2026-09-04 · **Status:** Active · **Owner:** product
+**Supersedes:** the New Zealand parts of D-001 and D-016.
+
+**Context.** D-017 gave every market a table of tax years and a selector. New
+Zealand could only fill two of the three slots: its income tax thresholds
+changed on 31 July 2024, so the 2024-25 year runs on composite rates that could
+not be derived reliably. The market shipped with 2026-27 and 2025-26 and a
+visible gap where the third year should be.
+
+**Decision.** Remove New Zealand from the site entirely — its rulesets, its
+engine, its ten salary pages, its four calculators, its country hub, its
+redirect, and the NZD currency option on the global mortgage tools.
+
+**Why.** The owner's standard is that the site should carry only what can be
+fully confirmed. A market that cannot be covered consistently across the years
+it offers fails that standard in a way a single stale figure does not: the
+reader is not looking at a number that might be out of date, they are looking at
+a selector that silently cannot answer a question the other four markets can.
+Withdrawing is also cheaper than the alternative, which is a per-market
+explanation of why one year is missing, repeated on every New Zealand page.
+
+**What was deliberately not done.** No fallback, no "nearest year", no
+approximation of the split year. D-017 established that a year we do not hold
+returns nothing; the same principle applied one level up says a market we cannot
+hold properly is not offered.
+
+**NZD went too.** The mortgage and hourly calculators are currency-agnostic
+arithmetic and would have worked fine with a New Zealand dollar option. It was
+removed anyway, so that "New Zealand" does not appear anywhere on a site that no
+longer covers New Zealand. This is the one part of the removal that is purely a
+consistency judgement rather than a correctness one, and it is a two-line
+reversal if the owner wants the currency back.
+
+**Effect.** Four markets. 130 pages, 120 indexable, down from 145 and 135.
+Twenty-five rulesets, down from twenty-seven. 207 unit and integration tests and
+123 e2e tests still pass — nothing tested New Zealand specifically, which is
+itself worth noting: the per-jurisdiction suites test rule _shapes_ through
+whichever market exercises them, so removing a market removed no coverage.
+
+**What would change this.** Sourcing the 31 July 2024 change properly, either as
+a split-year model in the engine or as an officially published composite rate
+for 2024-25. New Zealand would then come back as a market that can fill every
+year it offers.
+
+---
+
+## D-019 — A disclosed mid-year approximation is acceptable; a silent one is not
+
+**Date:** 2026-09-04 · **Status:** Active · **Owner:** product
+**Refines:** the "Mid-year changes" rule in the update runbook.
+
+**Context.** Two years carry a rate that changed part-way through: the Canadian
+federal cut from 15% to 14% during 2025, and Irish PRSI rising from 4% to 4.1%
+during 2024. The runbook's original rule said do not average, and treated both
+as defects blocking publication of those years.
+
+**Decision.** Keep the split model as the preferred answer, but allow a single
+annual figure where the split cannot be modelled — provided the approximation is
+disclosed on the page, states which way it errs, and is listed in
+`docs/RATE-AMBIGUITIES.md`. It no longer blocks marking a year verified.
+
+**Why.** The rule as written would have forced one of two worse outcomes:
+refusing to answer for a whole year that most readers can be answered correctly
+for, or shipping the approximation quietly to avoid the block. The failure being
+guarded against was never averaging as such — it was a reader being given an
+approximate figure they believed was exact. Disclosure addresses that directly,
+and the site already has the machinery: a ruleset note that renders above the
+result, and a build check that fails if it does not.
+
+**The bar.** Three things, all of them: the ruleset note says what was
+approximated and who it errs against; that note reaches the page; the case is
+listed in the ambiguity register. An approximation meeting none of these is the
+thing the original rule was right to forbid.
+
+**Who it errs against, in the two live cases.** Canada 2025 overstates tax for
+someone whose income fell in the second half of the year and understates it for
+the first half. Ireland 2024 understates PRSI for the final quarter. Both are
+correct for a salary held evenly across the year, which is what every figure on
+this site already assumes.
