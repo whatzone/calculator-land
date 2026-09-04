@@ -226,12 +226,49 @@ Three genuine defects were caught by axe and fixed rather than waived:
 
 **Date:** 2026-09-03 · **Status:** Open — needs the owner
 
-`api.cloudflare.com` is unreachable from the build environment and Wrangler
-authentication requires an interactive browser login, so no deployment was made
-and no staging URL exists. Claiming otherwise would be a fabrication.
+Cloudflare, Vercel, and Netlify are all unreachable from the build environment,
+and every one of their CLIs requires an interactive browser login, so no
+deployment was made and no staging URL exists. Claiming otherwise would be a
+fabrication.
 
-What is committed: `wrangler.toml`, `public/_headers` with a reviewed CSP,
-`public/_redirects`, and a GitHub Actions workflow that deploys on a green gate.
-`docs/DEPLOYMENT.md` gives the exact commands. The owner needs to run
-`npx wrangler login` once, or add `CLOUDFLARE_API_TOKEN` and
-`CLOUDFLARE_ACCOUNT_ID` as repository secrets.
+Superseded in part by D-013: the git-integration path removes the need for any
+CLI, so this is no longer blocking the owner.
+
+---
+
+## D-013 — Three hosts, one generated configuration
+
+**Date:** 2026-09-03 · **Status:** Active
+
+**Context.** The owner asked whether Vercel or a similar host could be used. All
+three candidate hosts are blocked from the build environment, but all three
+deploy by pulling from GitHub — so connecting the already-pushed repository in a
+dashboard needs nothing from this environment and no CLI login at all. The
+egress block turned out not to be the obstacle it appeared to be.
+
+**Decision.** Support Cloudflare Pages, Vercel, and Netlify, and generate all
+four config files from a single source at `src/config/hosting.ts`.
+
+**Why generated rather than written three times.** The three hosts read three
+formats describing one policy. Three hand-maintained copies of a
+Content-Security-Policy is three chances for one to be quietly wrong, and the
+failure mode is nasty: a CSP that blocks the calculator script produces a page
+that renders perfectly and calculates nothing. `npm run host:check` verifies the
+committed files still match, and `tests/integration/hosting.test.ts` runs it, so
+hand-editing a generated file fails the build.
+
+**Host recommendation: Cloudflare Pages.** Not for developer experience —
+Vercel is better there — but because the business model is display advertising,
+which means success looks like a large volume of cheap pageviews. Cloudflare
+does not meter bandwidth; Vercel and Netlify both do and bill for overage. A
+programmatic SEO site that works is exactly the traffic shape that becomes
+expensive on a metered plan.
+
+The choice is reversible: switching host is a dashboard change, not a code
+change.
+
+**Detail worth keeping.** `vercel.json` sets `trailingSlash: true` and
+`cleanUrls: false` to match Astro's `trailingSlash: 'always'`. Without it Vercel
+would resolve both `/uk` and `/uk/`, which is precisely the duplicate-content
+problem the URL policy exists to prevent. Cloudflare and Netlify handle this
+natively.

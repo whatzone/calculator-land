@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "npm run manifest:build && astro build && npm run seo:audit",
+    "build": "npm run manifest:build && npm run host:config && astro build && npm run seo:audit",
     "preview": "astro preview",
     "preview:static": "tsx scripts/preview-server.ts",
     "astro": "astro",
@@ -21,6 +21,8 @@
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "manifest:build": "tsx scripts/build-page-manifest.ts",
+    "host:config": "tsx scripts/build-host-config.ts",
+    "host:check": "tsx scripts/build-host-config.ts --check",
     "tax:audit": "tsx scripts/audit-tax-data.ts",
     "seo:audit": "tsx scripts/check-indexability.ts && tsx scripts/check-links.ts",
     "create:calculator": "tsx scripts/create-calculator.ts",

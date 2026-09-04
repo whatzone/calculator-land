@@ -102,9 +102,20 @@ figure is entered. No cookies are set. No ad script is loaded.
 
 ## Deployment
 
-Not deployed. Configuration, headers, redirects, and a CI workflow are
-committed; `api.cloudflare.com` was unreachable and Wrangler needs an
-interactive login. `docs/DEPLOYMENT.md` has the exact commands.
+Not deployed from here — the build environment blocks outbound access to every
+host, and each CLI needs an interactive login. **That does not block you:**
+Cloudflare Pages, Vercel, and Netlify all deploy by pulling from GitHub, and the
+code is pushed. Connect the repository in a host dashboard and it builds; no CLI
+and no token pasted anywhere.
+
+Config for all three is committed and generated from one source
+(`src/config/hosting.ts` → `_headers`, `_redirects`, `vercel.json`,
+`netlify.toml`), so switching host is a dashboard change rather than a code
+change. A test fails the build if the generated files drift apart.
+
+Cloudflare Pages is the recommendation, for one reason: this site is funded by
+display advertising, so success means a large volume of cheap pageviews.
+Cloudflare does not meter bandwidth; the other two do. See `docs/DEPLOYMENT.md`.
 
 ## Licence and status
 

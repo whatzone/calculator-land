@@ -2,58 +2,159 @@
 
 ## Status
 
-**Nothing has been deployed.** `api.cloudflare.com` is unreachable from the
-environment this repository was built in, and Wrangler authentication needs an
-interactive browser login. There is no staging URL, and this document does not
-claim one.
+**Nothing has been deployed from here.** The build environment blocks outbound
+access to Cloudflare, Vercel, and Netlify alike, and every CLI among them needs
+an interactive browser login. There is no staging URL, and this document does
+not claim one.
 
-Everything needed to deploy is committed. The commands below are what to run.
-
----
-
-## What you need first
-
-| Item                  | Why                      | Status                            |
-| --------------------- | ------------------------ | --------------------------------- |
-| Cloudflare account    | Hosting                  | Owner has, or creates free        |
-| A domain              | Canonical URL            | Not supplied — placeholder in use |
-| Contact email address | Legal pages, corrections | Not supplied — placeholder in use |
-| Search Console access | Organic data             | After the domain exists           |
-
-Nothing below asks for a password, a token, or a private key in conversation.
-Wrangler authenticates through your own browser; CI uses a repository secret you
-set yourself.
+That does not block you. **All three hosts deploy by pulling from GitHub**, and
+the code is already pushed. Connecting the repository in a host's dashboard
+needs no CLI, no token pasted anywhere, and nothing from this environment.
 
 ---
 
-## First deployment, to staging
+## Choosing a host
+
+The site is a directory of static files with no server, no database, and no
+serverless functions, so every host below serves it identically. The difference
+is entirely in operations.
+
+|                     | Cloudflare Pages                                      | Vercel                      | Netlify                                   |
+| ------------------- | ----------------------------------------------------- | --------------------------- | ----------------------------------------- |
+| Config file         | `public/_headers`, `public/_redirects`                | `vercel.json`               | `netlify.toml` + `_headers`, `_redirects` |
+| Already committed   | Yes                                                   | Yes                         | Yes                                       |
+| Free-tier bandwidth | Unmetered                                             | 100 GB/month                | 100 GB/month                              |
+| Free-tier builds    | 500/month                                             | 6,000 build-minutes/month   | 300 build-minutes/month                   |
+| Trailing slashes    | Native                                                | Set in `vercel.json` (done) | Native                                    |
+| Best for            | An ad-funded site whose whole cost model is bandwidth | Preview deployments and DX  | `_headers` compatibility with Cloudflare  |
+
+**Recommendation: Cloudflare Pages**, for one reason that matters more than any
+other here. This site's business model is display advertising, which means
+success looks like a large volume of cheap pageviews. Cloudflare does not meter
+bandwidth; Vercel and Netlify both do, and both bill for overage. A programmatic
+SEO site that works is precisely the traffic shape that gets expensive on a
+metered plan.
+
+Vercel is the better developer experience and its per-branch preview
+deployments are genuinely nicer. If you would rather have that, nothing about
+the site resists it — `vercel.json` is committed and correct.
+
+You are not locked in either way. All three configs are generated from
+`src/config/hosting.ts`, so switching host is a dashboard change, not a code
+change.
+
+---
+
+## Deploying by connecting GitHub — no CLI needed
+
+This is the path that works today, on any of the three.
+
+### Vercel
+
+1. <https://vercel.com/new> → import `whatzone/calculator-land`.
+2. Framework preset: **Astro** (detected automatically).
+3. Build command `npm run build`, output directory `dist` — both already set in
+   `vercel.json`, so leave them alone.
+4. Environment variables, **Production scope only**:
+   ```
+   SITE_URL=https://yourdomain.example
+   SITE_NAME=YourBrand
+   SITE_CONTACT_EMAIL=hello@yourdomain.example
+   SITE_ALLOW_INDEXING=true
+   ```
+   Do **not** set `SITE_ALLOW_INDEXING` on Preview. Preview deployments must
+   stay noindex, and leaving it unset is what achieves that.
+5. Deploy. Vercel builds from the branch and gives you a URL.
+
+### Netlify
+
+1. <https://app.netlify.com/start> → import the repository.
+2. Build command and publish directory come from `netlify.toml`.
+3. Site configuration → Environment variables: the same four as above, scoped to
+   production. `netlify.toml` already pins deploy previews and branch deploys to
+   `SITE_ALLOW_INDEXING=false`.
+4. Deploy.
+
+### Cloudflare Pages
+
+1. Dashboard → Workers & Pages → Create → Pages → Connect to Git.
+2. Build command `npm run build`, output directory `dist`.
+3. Environment variables: the same four, on the Production environment only.
+   `wrangler.toml` already sets the preview environment to `false`.
+4. Deploy.
+
+### Verify, on any host
+
+Before announcing anything, check the deployment:
+
+- the home page renders and the mortgage calculator computes;
+- on a **preview** URL, `/robots.txt` says `Disallow: /` and every page's
+  `<meta name="robots">` says `noindex,follow`;
+- on **production**, `robots.txt` allows crawling and names the sitemap;
+- `/sitemap-pages.xml` lists only pages that passed the gate — while rate
+  tables are unpopulated, no salary or tax calculator page may appear in it;
+- headers are present: `curl -sI https://yourdomain.example | sort`.
+
+If a preview URL is indexable, stop: something is overriding the indexing
+switch, and a staging copy of a financial site in the index is a real problem.
+
+---
+
+## Host configuration is generated, not hand-written
+
+`src/config/hosting.ts` is the single source of truth for security headers,
+cache rules, and redirects. `npm run host:config` regenerates all four files
+from it:
+
+```
+public/_headers    Cloudflare Pages and Netlify
+public/_redirects  Cloudflare Pages and Netlify
+vercel.json        Vercel
+netlify.toml       Netlify build settings
+```
+
+`npm run host:check` verifies the committed files still match, and
+`tests/integration/hosting.test.ts` runs that check as part of the suite. Editing
+a generated file by hand fails the build.
+
+This exists because three copies of a Content-Security-Policy is three chances
+for one to be quietly wrong, and a CSP that blocks the calculator script
+produces a page that looks completely finished and does nothing at all.
+
+---
+
+## Deploying from the command line instead
+
+If you would rather not connect the repository, each host has a CLI. Each needs
+an interactive login, which is why none of them could be used from here.
 
 ```bash
 npm ci
-npm run gate          # must pass before anything is deployed
-npx wrangler login    # opens your browser; nothing is typed here
+npm run gate            # must pass before anything is deployed
+
+# Cloudflare
+npx wrangler login
 npx wrangler pages project create clearfigures --production-branch main
 npx wrangler pages deploy dist --project-name=clearfigures
+
+# Vercel
+npx vercel login
+npx vercel --prod
+
+# Netlify
+npx netlify login
+npx netlify deploy --prod --dir=dist
 ```
-
-Wrangler prints a `*.pages.dev` URL. Open it over HTTPS and check:
-
-- the home page renders and the mortgage calculator computes;
-- `/robots.txt` says `Disallow: /` — a staging deployment must not be crawlable;
-- `/sitemap-pages.xml` contains no `<url>` entries;
-- any page's `<meta name="robots">` says `noindex,follow`.
-
-All four follow from `SITE_ALLOW_INDEXING` being unset. If any of them is wrong,
-stop: something is overriding the indexing switch.
 
 ---
 
 ## Going to production
 
+These steps apply on every host; only the menu names differ.
+
 ### 1. Set the real identity
 
-In the Cloudflare Pages project, under Settings → Environment variables, for the
-**Production** environment only:
+Environment variables, **production scope only**:
 
 ```
 SITE_URL=https://yourdomain.example        # no trailing slash
@@ -66,24 +167,29 @@ The indexability audit refuses to allow indexing while `SITE_URL` is still the
 placeholder, so a half-configured production deploy fails the gate rather than
 publishing the wrong canonical host.
 
-Leave the Preview environment's `SITE_ALLOW_INDEXING` at `false`.
+Leave preview and branch environments without `SITE_ALLOW_INDEXING`. That is
+what keeps them noindex, and it is the default in `wrangler.toml` and
+`netlify.toml`.
 
 ### 2. Add the domain
 
-Cloudflare Pages → Custom domains → Set up a domain. Add both the apex and
-`www`, then create a redirect rule from whichever is not canonical to the one
-that is. Pick one and stay with it — serving both is a duplicate-content
-problem that no canonical tag fully solves.
+| Host             | Where                            |
+| ---------------- | -------------------------------- |
+| Cloudflare Pages | Custom domains → Set up a domain |
+| Vercel           | Project → Settings → Domains     |
+| Netlify          | Domain management → Add a domain |
 
-HTTPS and HSTS are handled by Cloudflare; `public/_headers` already sets
-`Strict-Transport-Security`.
+Add both the apex and `www`, then redirect whichever is not canonical to the one
+that is. Pick one and stay with it — serving both is a duplicate-content problem
+that no canonical tag fully solves.
+
+HTTPS and certificate renewal are automatic on all three. HSTS comes from the
+generated header config.
 
 ### 3. Deploy
 
-```bash
-npm run gate
-npx wrangler pages deploy dist --project-name=clearfigures --branch=main
-```
+A push to `main` deploys automatically once the repository is connected. To
+deploy by hand, see the CLI commands above — but run `npm run gate` first.
 
 ### 4. Verify before announcing
 
@@ -92,7 +198,8 @@ npx wrangler pages deploy dist --project-name=clearfigures --branch=main
 - `/sitemap-pages.xml` contains only pages that passed the gate.
 - No tax calculator or salary page appears in any sitemap while rate tables are
   unpopulated. If one does, stop and run `npm run seo:audit`.
-- Canonical links point at the real domain, not `pages.dev`.
+- Canonical links point at the real domain, not `pages.dev`, `vercel.app`, or
+  `netlify.app`.
 - Security headers are present: `curl -sI https://yourdomain.example | sort`.
 
 ### 5. Search Console
@@ -110,8 +217,14 @@ Do not record Search Console as active until ownership is actually verified.
 
 ## Continuous deployment
 
-`.github/workflows/deploy.yml` deploys after the release gate passes on `main`,
-or on demand with an environment choice.
+Connecting the repository in a host dashboard is the simplest option and needs
+nothing from GitHub Actions: the host watches the branch itself. Use that unless
+you specifically want the gate to run before the host builds.
+
+`.github/workflows/deploy.yml` is the alternative, deploying to Cloudflare after
+the release gate passes on `main`. Adapting it to Vercel or Netlify means
+swapping the last step for `vercel deploy --prod` or `netlify deploy --prod`
+with that host's token.
 
 Repository secrets:
 

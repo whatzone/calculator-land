@@ -1,0 +1,31 @@
+# Generated from src/config/hosting.ts by scripts/build-host-config.ts.
+# Do not edit by hand — run `npm run host:config` instead.
+#
+# This file is one of several describing the same policy to different hosts;
+# Netlify reads this one. Hand-editing a single file is how a
+# Content-Security-Policy ends up correct on two hosts and quietly broken on
+# the
+# third, which produces a page that renders perfectly and calculates nothing.
+#
+# Netlify reads public/_headers and public/_redirects natively once they are
+# copied into the publish directory by the build, so headers and redirects are
+# not repeated here.
+
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+  # Indexing is opt-in. Set SITE_ALLOW_INDEXING=true in the Netlify UI, scoped
+  # to production only, so deploy previews stay noindex.
+  SITE_ALLOW_INDEXING = "false"
+
+# Deploy previews and branch deploys are never indexable, belt and braces:
+# the per-page meta robots tag already handles it, and this makes it explicit
+# to anyone reading the config.
+[context.deploy-preview.environment]
+  SITE_ALLOW_INDEXING = "false"
+
+[context.branch-deploy.environment]
+  SITE_ALLOW_INDEXING = "false"
