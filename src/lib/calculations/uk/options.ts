@@ -8,7 +8,7 @@
  */
 import { money } from '../common/money.ts';
 import type { EngineOptions, PreTaxContribution } from '../common/engine.ts';
-import { clampPercent, readNumber, readString, requireScheme } from '../common/profile.ts';
+import { clampPercent, readNumber, readString, resolveLoanScheme } from '../common/profile.ts';
 import type { CalculationInput, ResultNotice } from '../common/types.ts';
 import type { Ruleset } from '../../validation/ruleset-schema.ts';
 
@@ -52,20 +52,23 @@ export function buildUkOptions(ruleset: Ruleset, input: CalculationInput): Engin
     }
   }
 
+  const loanSelectors: string[] = [];
   const studentLoanPlan = readString(input, 'studentLoanPlan', 'none');
   if (studentLoanPlan !== 'none') {
-    const scheme = requireScheme(
+    const scheme = resolveLoanScheme(
       ruleset,
-      `studentLoan.${studentLoanPlan}`,
-      `Student loan ${studentLoanPlan}`,
+      studentLoanPlan,
+      `Student loan ${studentLoanPlan.replace('-', ' ')}`,
     );
-    if (!scheme.ok) notices.push(scheme.notice);
+    if (scheme.ok) loanSelectors.push(scheme.selector);
+    else notices.push(scheme.notice);
   }
 
   return {
     ruleset,
     input: { ...input, subJurisdiction: region },
     preTaxContributions,
+    loanSelectors,
     extraNotices: notices,
   };
 }

@@ -70,6 +70,33 @@ export function requireScheme(
   };
 }
 
+/**
+ * Resolve a selected loan repayment scheme against the ruleset.
+ *
+ * Returns the selector for the engine to compute, or a notice explaining that
+ * the rules for it have not been sourced. The one outcome this must never
+ * produce is a silent zero: a reader who ticks "I have a student loan" and sees
+ * no deduction would reasonably conclude they owe nothing.
+ */
+export function resolveLoanScheme(
+  ruleset: Ruleset,
+  selector: string,
+  requestedLabel: string,
+):
+  | { readonly ok: true; readonly selector: string }
+  | { readonly ok: false; readonly notice: ResultNotice } {
+  const found = ruleset.rules.loanRepayments.some((scheme) => scheme.selector === selector);
+  if (found) return { ok: true, selector };
+
+  return {
+    ok: false,
+    notice: {
+      severity: 'unsupported',
+      message: `${requestedLabel} was selected, but the ${ruleset.taxPeriod.label} ruleset does not yet carry verified repayment thresholds for it. It has been left out of this calculation rather than estimated, so your real take-home pay will be lower than shown.`,
+    },
+  };
+}
+
 export function clampPercent(value: number, max = 100): number {
   if (!Number.isFinite(value) || value < 0) return 0;
   return value > max ? max : value;

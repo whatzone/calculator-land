@@ -135,6 +135,8 @@ export const ${varName}${options.period.replace(/[^a-zA-Z0-9]/g, '_')}: Ruleset 
     credits: [],
     levies: [],
     contributions: [],
+    surtaxes: [],
+    loanRepayments: [],
     optionalSchemes: {},
     rounding: { taxableIncome: 'none', taxDue: 'half-up-to-minor', note: 'TODO(scaffold): confirm against the authority.' },
   },
@@ -152,6 +154,9 @@ export const ${varName}Rulesets: readonly Ruleset[] = [${varName}${options.perio
        import { ${varName}Rulesets } from './${options.code}/index.ts';
      and add it to ALL_RULESETS and JURISDICTIONS.
   2. Work through docs/COUNTRY-ONBOARDING.md. It is a checklist, not a summary.
+  2a. Read "Check the rule shape exists before you start" in
+     docs/TAX-DATA-UPDATE-RUNBOOK.md. If a rule does not fit an existing shape,
+     extend the schema rather than approximating with the nearest one.
   3. Populate rules ONLY from the official source, recording the URL and the
      date you read it against every figure.
   4. Add golden fixtures from the authority's own worked examples, plus

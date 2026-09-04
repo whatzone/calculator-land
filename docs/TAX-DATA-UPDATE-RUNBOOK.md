@@ -54,6 +54,50 @@ The period boundaries themselves (UK 6 April to 5 April, Australia 1 July to
 30 June, New Zealand 1 April to 31 March, Ireland and Canada calendar years) are
 structural and already encoded.
 
+### 2a. Check the rule shape exists before you start
+
+The engine expresses rules through a fixed set of shapes. Before entering
+anything, confirm the rule you are looking at fits one of them. If it does not,
+**stop and extend the schema** — approximating it with the nearest shape is how
+a calculator ends up confidently wrong.
+
+| Shape            | Use it for                                   | Key fields                                                                                   |
+| ---------------- | -------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `incomeTaxBands` | Progressive income tax                       | `from`, `to`, `ratePercent`                                                                  |
+| `allowances`     | Deducted from income _before_ bands          | `amount`, `taperThreshold`, `taperWithdrawnPerUnit`, `taperFloorAmount`                      |
+| `credits`        | Deducted from tax _after_ bands              | `amount`, `kind`, `ratePercent`                                                              |
+| `levies`         | A charge alongside income tax                | `ratePercent`, `basis`, `exemptBelow`, `phaseInTo`, `phaseInRatePercent`, `floor`, `ceiling` |
+| `contributions`  | Social insurance with its own bands and caps | `bands`, `exemptBelow`, `maximumEarnings`, `maximumContribution`                             |
+| `surtaxes`       | A charge on the **tax due**, not on income   | `bands` measured in units of tax                                                             |
+| `loanRepayments` | Income-contingent student and study loans    | `selector`, `method`, `threshold`, `ratePercent`, `bands`                                    |
+
+Four of these repay careful reading, because getting them wrong is silent:
+
+**`levies.basis`.** `whole-income` charges the rate on all of income once you
+are liable; `above-floor` charges only on the part above `floor`. Australia's
+Medicare levy is the first kind. Modelling it as the second understates it at
+every income, by an amount that grows with the threshold.
+
+**`levies.phaseInTo` / `phaseInRatePercent`.** The shade-in band between "exempt"
+and "fully liable", where a higher rate applies to the excess only. Omitting it
+overstates the levy for everyone inside the band.
+
+**`allowances.taperFloorAmount`.** Where the taper stops. The UK personal
+allowance tapers to nothing, so this stays `0`. Canada's federal basic personal
+amount tapers to a minimum and holds there; leaving this at `0` overstates tax
+for high Canadian earners.
+
+**`loanRepayments.method`.** `rate-above-threshold` charges a rate on the excess
+(UK, New Zealand). `banded-rate-on-total` picks a rate from a band and applies
+it to the _whole_ of income (Australia), so one extra pound of income at a band
+edge can cost hundreds. These are not interchangeable and must not be
+substituted for each other.
+
+A `selector` on a loan scheme must match the value the form sends:
+`plan-1`, `plan-2`, `plan-4`, `plan-5`, `postgraduate` for the UK; `help` for
+Australia; `student-loan` for New Zealand. A selected scheme with no matching
+entry produces a visible unsupported notice, never a silent zero.
+
 ### 3. Enter the data
 
 Edit the jurisdiction file under `src/data/jurisdictions/`. For each figure:

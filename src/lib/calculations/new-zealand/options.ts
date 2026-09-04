@@ -1,7 +1,7 @@
 /** New Zealand profile handling. Registry-free; see ../uk/options.ts for why. */
 import { money, percentOf, roundToMinorUnit } from '../common/money.ts';
 import type { EngineOptions, ExtraDeduction } from '../common/engine.ts';
-import { clampPercent, readBoolean, readNumber, requireScheme } from '../common/profile.ts';
+import { clampPercent, readBoolean, readNumber, resolveLoanScheme } from '../common/profile.ts';
 import type { CalculationInput, ResultNotice } from '../common/types.ts';
 import type { Ruleset } from '../../validation/ruleset-schema.ts';
 
@@ -32,10 +32,12 @@ export function buildNewZealandOptions(ruleset: Ruleset, input: CalculationInput
     });
   }
 
+  const loanSelectors: string[] = [];
   if (readBoolean(input, 'hasStudentLoan', false)) {
-    const scheme = requireScheme(ruleset, 'studentLoan', 'A student loan');
-    if (!scheme.ok) notices.push(scheme.notice);
+    const scheme = resolveLoanScheme(ruleset, 'student-loan', 'A student loan');
+    if (scheme.ok) loanSelectors.push(scheme.selector);
+    else notices.push(scheme.notice);
   }
 
-  return { ruleset, input, extraDeductions, extraNotices: notices };
+  return { ruleset, input, extraDeductions, loanSelectors, extraNotices: notices };
 }

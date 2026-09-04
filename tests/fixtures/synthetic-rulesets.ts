@@ -175,3 +175,87 @@ export const syntheticWithCredits: Ruleset = parseRuleset({
     rounding: { taxableIncome: 'none', taxDue: 'half-up-to-minor', note: 'synthetic' },
   },
 });
+
+/**
+ * A ruleset exercising every rule shape at once: a tapered allowance with a
+ * floor, a whole-income levy with a shade-in, a capped contribution, a surtax
+ * on the tax due, and a loan repayment.
+ *
+ * This is the shape a real populated jurisdiction takes. It exists so that the
+ * full pipeline can be proved end to end before any real rates are sourced.
+ */
+export const syntheticFullFeatured: Ruleset = parseRuleset({
+  ...BASE,
+  id: 'synthetic-full-featured',
+  subJurisdiction: null,
+  subJurisdictionLabel: null,
+  rules: {
+    incomeTaxBands: [
+      { label: 'Lower', from: 0, to: 20000, ratePercent: 10 },
+      { label: 'Middle', from: 20000, to: 50000, ratePercent: 20 },
+      { label: 'Upper', from: 50000, to: null, ratePercent: 40 },
+    ],
+    allowances: [
+      {
+        id: 'basic',
+        label: 'Basic allowance',
+        amount: 10000,
+        taperThreshold: 80000,
+        taperWithdrawnPerUnit: 0.5,
+        taperFloorAmount: 4000,
+        sourceIds: ['synthetic-source'],
+      },
+    ],
+    credits: [],
+    levies: [
+      {
+        id: 'health',
+        label: 'Health levy',
+        ratePercent: 2,
+        basis: 'whole-income',
+        floor: 0,
+        ceiling: null,
+        exemptBelow: 25000,
+        phaseInTo: 30000,
+        phaseInRatePercent: 10,
+        sourceIds: ['synthetic-source'],
+      },
+    ],
+    contributions: [
+      {
+        id: 'social',
+        label: 'Social contribution',
+        bands: [{ label: 'Main', from: 12000, to: null, ratePercent: 8 }],
+        exemptBelow: 12000,
+        maximumContribution: null,
+        maximumEarnings: 60000,
+        sourceIds: ['synthetic-source'],
+      },
+    ],
+    surtaxes: [
+      {
+        id: 'surtax',
+        label: 'Surtax',
+        bands: [
+          { label: 'None', from: 0, to: 6000, ratePercent: 0 },
+          { label: 'Surtax', from: 6000, to: null, ratePercent: 25 },
+        ],
+        sourceIds: ['synthetic-source'],
+      },
+    ],
+    loanRepayments: [
+      {
+        id: 'study-loan',
+        label: 'Study loan repayment',
+        selector: 'plan-a',
+        method: 'rate-above-threshold',
+        threshold: 25000,
+        ratePercent: 9,
+        bands: [],
+        sourceIds: ['synthetic-source'],
+      },
+    ],
+    optionalSchemes: {},
+    rounding: { taxableIncome: 'none', taxDue: 'half-up-to-minor', note: 'synthetic' },
+  },
+});

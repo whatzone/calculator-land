@@ -328,3 +328,58 @@ exactly one word.
 **Verification.** Axe over ten templates in both themes — twenty runs, zero
 violations. 164 unit and integration tests, 109 end-to-end tests. CSS 4.7 KB
 gzipped against a 30 KB budget; JavaScript 15.7 KB against 60 KB.
+
+---
+
+## D-015 — Four rule shapes added, because data entry alone would not have worked
+
+**Date:** 2026-09-03 · **Status:** Active
+
+**Context.** Asked what it would take to get the calculators live, the obvious
+answer was "source and enter the rates". Checking the engine against what the
+five markets actually do showed that was wrong: four real rules could not be
+expressed by any existing shape, so entering data would have produced confidently
+wrong figures rather than correct ones.
+
+**The four gaps, each verified in the code before being fixed.**
+
+1. **Levies were rate-on-income-above-a-floor only.** Australia's Medicare levy
+   is a rate on the _whole_ of taxable income once liable, with a shade-in band
+   between exempt and fully liable. Setting `floor` to the threshold understates
+   it at every income; setting it to zero charges people who are exempt. Neither
+   is right. Added `basis`, `exemptBelow`, `phaseInTo`, `phaseInRatePercent`.
+
+2. **Allowance tapers always ended at zero.** Canada's federal basic personal
+   amount tapers to a minimum and holds there. Added `taperFloorAmount`,
+   defaulting to zero so the UK behaviour is unchanged.
+
+3. **No tax-on-tax construct existed.** Ontario charges surtaxes as a percentage
+   of provincial tax above set amounts of _tax_. No income-based shape can
+   express that. Added `surtaxes`, applied to the tax due for their own layer
+   and itemised as their own deduction line.
+
+4. **Loan repayments were dead code.** `requireScheme` returned the scheme when
+   present, and nothing consumed it — so selecting a UK student loan, Australian
+   HELP or New Zealand student loan deducted nothing, silently, even with data
+   in place. A reader ticking "I have a student loan" and seeing no deduction
+   would reasonably conclude they owe nothing. Added `loanRepayments` with two
+   methods and `resolveLoanScheme`, which either computes or raises a visible
+   notice.
+
+**On the two loan methods.** `rate-above-threshold` charges on the excess (UK,
+New Zealand). `banded-rate-on-total` picks a rate from a band and applies it to
+the whole of income (Australia), so one extra pound at a band edge can cost
+hundreds. They are not interchangeable, and a test pins the step change
+specifically so nobody later "simplifies" one into the other.
+
+**Verification.** 25 new tests, including a synthetic ruleset that exercises
+every shape at once — tapered allowance with a floor, whole-income levy with a
+shade-in, capped contribution, surtax, and loan repayment — with every expected
+figure worked longhand in a comment. 189 unit and integration tests and 109
+end-to-end tests pass.
+
+**What this changes about going live.** Sourcing and entering the rates is now
+genuinely the only remaining work for the tax calculators. Before this, it was
+data entry _plus_ four engine changes that would have been discovered
+mid-research, most likely after some figures had already been entered against
+the wrong shape.

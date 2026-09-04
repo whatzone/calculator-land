@@ -5,7 +5,7 @@
  * any rate or threshold, which is what allows a single tested implementation to
  * serve five tax systems.
  */
-import { type Money, money, ZERO, clampAtZero, minOf, percentOf, sum } from './money.ts';
+import { type Money, money, ZERO, clampAtZero, maxOf, minOf, percentOf, sum } from './money.ts';
 import type { DeductionWorking } from './types.ts';
 
 export interface Band {
@@ -123,17 +123,89 @@ export function validateBands(bands: readonly Band[]): string[] {
  * Withdraw an allowance above a threshold, at `withdrawnPerUnit` of allowance
  * per unit of excess income. The UK personal-allowance taper is 1 per 2, i.e.
  * `withdrawnPerUnit` of 0.5.
+ *
+ * `floorAmount` is where the taper stops. The UK allowance tapers to nothing;
+ * Canada's federal basic personal amount tapers down to a minimum and stays
+ * there, so a taper that always ends at zero would overstate tax at high
+ * Canadian incomes.
  */
 export function taperAllowance(
   allowance: Money,
   income: Money,
   threshold: Money,
   withdrawnPerUnit: Money,
+  floorAmount: Money = ZERO,
 ): Money {
   if (income.lte(threshold)) return allowance;
   const excess = income.minus(threshold);
   const withdrawn = excess.times(withdrawnPerUnit);
-  return clampAtZero(allowance.minus(withdrawn));
+  return maxOf(clampAtZero(allowance.minus(withdrawn)), clampAtZero(floorAmount));
+}
+
+/**
+ * A levy charged alongside income tax, in the shape real levies actually take.
+ *
+ * Three regimes, in order:
+ *  - at or below `exemptBelow`, nothing is charged;
+ *  - inside the shade-in band, a higher rate applies to the excess only;
+ *  - above it, the ordinary rate applies to the basis, which for several
+ *    systems is the whole of income rather than the part above a threshold.
+ */
+export function levyAmount(input: {
+  readonly income: Money;
+  readonly ratePercent: Money;
+  readonly basis: 'above-floor' | 'whole-income';
+  readonly floor: Money;
+  readonly ceiling: Money | null;
+  readonly exemptBelow: Money;
+  readonly phaseInTo: Money | null;
+  readonly phaseInRatePercent: Money | null;
+}): Money {
+  const { income, exemptBelow, phaseInTo, phaseInRatePercent } = input;
+
+  if (income.lte(exemptBelow)) return ZERO;
+
+  if (phaseInTo !== null && phaseInRatePercent !== null && income.lt(phaseInTo)) {
+    return percentOf(income.minus(exemptBelow), phaseInRatePercent);
+  }
+
+  const capped = input.ceiling === null ? income : minOf(income, input.ceiling);
+  const base = input.basis === 'whole-income' ? capped : clampAtZero(capped.minus(input.floor));
+
+  return percentOf(base, input.ratePercent);
+}
+
+/**
+ * Apply surtax bands to an amount of tax already due.
+ *
+ * The bands are measured in units of tax, not units of income, which is the
+ * whole point: a surtax is a charge on a tax bill.
+ */
+export function applySurtax(taxDue: Money, bands: readonly Band[]): BandApplication {
+  return applyBands(taxDue, bands);
+}
+
+/**
+ * An income-contingent loan repayment.
+ *
+ * The two methods are different arithmetic and are not interchangeable.
+ * `banded-rate-on-total` applies the band's rate to the whole of income, so
+ * crossing a boundary steps the repayment up sharply; `rate-above-threshold`
+ * charges only on the excess and never steps.
+ */
+export function loanRepaymentAmount(input: {
+  readonly income: Money;
+  readonly method: 'rate-above-threshold' | 'banded-rate-on-total';
+  readonly threshold: Money;
+  readonly ratePercent: Money;
+  readonly bands: readonly Band[];
+}): Money {
+  if (input.method === 'rate-above-threshold') {
+    return percentOf(clampAtZero(input.income.minus(input.threshold)), input.ratePercent);
+  }
+
+  const rate = marginalBandRatePercent(input.income, input.bands);
+  return percentOf(input.income, rate);
 }
 
 /** Apply a flat rate above a floor, optionally capped at a ceiling of income. */

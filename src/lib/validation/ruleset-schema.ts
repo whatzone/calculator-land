@@ -36,15 +36,39 @@ export const allowanceSchema = z.object({
   amount: numeric,
   taperThreshold: numeric.nullable().default(null),
   taperWithdrawnPerUnit: numeric.nullable().default(null),
+  /**
+   * The amount the taper stops at. The UK personal allowance tapers to nothing;
+   * Canada's federal basic personal amount tapers down to a floor and stays
+   * there. Defaulting to zero preserves the UK behaviour.
+   */
+  taperFloorAmount: numeric.default(0),
   sourceIds: z.array(z.string()).default([]),
 });
 
+/**
+ * A levy charged alongside income tax.
+ *
+ * `basis` matters more than it looks. Australia's Medicare levy is a rate on
+ * the *whole* of taxable income once you are liable, not a rate on the income
+ * above the threshold — modelling it the second way understates it at every
+ * income. The shade-in fields describe the band between "exempt" and "fully
+ * liable", where a different, higher rate applies to the excess only.
+ */
 export const levySchema = z.object({
   id: z.string().min(1),
   label: z.string().min(1),
   ratePercent: numeric,
+  /** 'whole-income' charges the rate on all income once liable. */
+  basis: z.enum(['above-floor', 'whole-income']).default('above-floor'),
+  /** Only used by the 'above-floor' basis. */
   floor: numeric.default(0),
   ceiling: numeric.nullable().default(null),
+  /** No levy at all at or below this income. */
+  exemptBelow: numeric.default(0),
+  /** Upper edge of the shade-in band. Null means there is no shade-in. */
+  phaseInTo: numeric.nullable().default(null),
+  /** Rate applied to income above `exemptBelow` while inside the shade-in. */
+  phaseInRatePercent: numeric.nullable().default(null),
   sourceIds: z.array(z.string()).default([]),
 });
 
@@ -73,6 +97,44 @@ export const creditSchema = z.object({
   sourceIds: z.array(z.string()).default([]),
 });
 
+/**
+ * A surtax: tax charged on tax, not on income.
+ *
+ * Ontario charges its surtax as a percentage of provincial income tax above
+ * fixed amounts of tax. No income-based shape can express that, which is why it
+ * needs its own.
+ */
+export const surtaxSchema = z.object({
+  id: z.string().min(1),
+  label: z.string().min(1),
+  /** Bands measured in units of tax already due, not units of income. */
+  bands: z.array(bandSchema).default([]),
+  sourceIds: z.array(z.string()).default([]),
+});
+
+/**
+ * An income-contingent loan repayment: UK student loans, Australian HELP,
+ * New Zealand student loans.
+ *
+ * The two methods are genuinely different arithmetic and must not be
+ * interchanged. `rate-above-threshold` charges a rate on the income above the
+ * threshold. `banded-rate-on-total` picks a rate from a band and applies it to
+ * the whole of the income — so crossing a band boundary produces a step change
+ * in the amount repaid, which the first method never does.
+ */
+export const loanRepaymentSchema = z.object({
+  id: z.string().min(1),
+  label: z.string().min(1),
+  /** Matched against the value of the profile option that selects this scheme. */
+  selector: z.string().min(1),
+  method: z.enum(['rate-above-threshold', 'banded-rate-on-total']),
+  threshold: numeric.default(0),
+  ratePercent: numeric.default(0),
+  /** Used by 'banded-rate-on-total'; each band's rate applies to all income. */
+  bands: z.array(bandSchema).default([]),
+  sourceIds: z.array(z.string()).default([]),
+});
+
 /** The rule payload. Every collection defaults to empty, never to a guess. */
 export const rulesSchema = z.object({
   incomeTaxBands: z.array(bandSchema).default([]),
@@ -80,6 +142,8 @@ export const rulesSchema = z.object({
   credits: z.array(creditSchema).default([]),
   levies: z.array(levySchema).default([]),
   contributions: z.array(contributionSchema).default([]),
+  surtaxes: z.array(surtaxSchema).default([]),
+  loanRepayments: z.array(loanRepaymentSchema).default([]),
   /** Jurisdiction-specific extras (student loans, KiwiSaver, HELP, etc.). */
   optionalSchemes: z.record(z.string(), z.unknown()).default({}),
   /** Rounding policy applied at each documented stage. */
@@ -218,6 +282,8 @@ export type SourceReference = z.infer<typeof sourceReferenceSchema>;
 export type RulesetBand = z.infer<typeof bandSchema>;
 export type Allowance = z.infer<typeof allowanceSchema>;
 export type Levy = z.infer<typeof levySchema>;
+export type Surtax = z.infer<typeof surtaxSchema>;
+export type LoanRepayment = z.infer<typeof loanRepaymentSchema>;
 export type Contribution = z.infer<typeof contributionSchema>;
 export type Credit = z.infer<typeof creditSchema>;
 export type Rules = z.infer<typeof rulesSchema>;

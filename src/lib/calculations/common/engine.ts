@@ -22,7 +22,15 @@ import {
   Rounding,
   sum,
 } from './money.ts';
-import { applyBands, taperAllowance, toBands, type Band } from './brackets.ts';
+import {
+  applyBands,
+  applySurtax,
+  levyAmount,
+  loanRepaymentAmount,
+  taperAllowance,
+  toBands,
+  type Band,
+} from './brackets.ts';
 import { averageDeductionRate, measureMarginalRate, nextIncrementFor } from './marginal.ts';
 import { perPeriod, perHour } from './frequency.ts';
 import type {
@@ -57,6 +65,12 @@ export interface ExtraDeduction {
 
 export interface EngineOptions {
   readonly ruleset: Ruleset;
+  /**
+   * Loan repayment schemes the reader has selected, matched against each
+   * scheme's `selector`. A selector with no matching scheme in the ruleset
+   * produces a visible unsupported notice from the adapter, never a silent zero.
+   */
+  readonly loanSelectors?: readonly string[];
   /** Additional rulesets composed into this one, e.g. Canadian federal tax. */
   readonly composedRulesets?: readonly Ruleset[];
   readonly input: CalculationInput;
@@ -110,10 +124,10 @@ function incomeTaxFor(
   ruleset: Ruleset,
   incomeAfterPreTax: Money,
   labelPrefix: string,
-): { line: DeductionLine | null; taxableIncome: Money } {
+): { line: DeductionLine | null; taxableIncome: Money; taxDue: Money } {
   const bands = bandsOf(ruleset);
   if (bands.length === 0) {
-    return { line: null, taxableIncome: ZERO };
+    return { line: null, taxableIncome: ZERO, taxDue: ZERO };
   }
 
   let allowanceTotal = ZERO;
@@ -127,6 +141,7 @@ function incomeTaxFor(
         incomeAfterPreTax,
         money(allowance.taperThreshold),
         money(allowance.taperWithdrawnPerUnit),
+        money(allowance.taperFloorAmount),
       );
       if (!tapered.eq(amount)) {
         allowanceNotes.push(
@@ -173,13 +188,16 @@ function incomeTaxFor(
     ...allowanceNotes,
   ].filter((part) => part !== '');
 
+  const taxAfterCredits = roundTax(clampAtZero(afterCredits), ruleset);
+
   return {
+    taxDue: taxAfterCredits,
     line: {
       id: `${labelPrefix}-income-tax`,
       label: ruleset.subJurisdictionLabel
         ? `${ruleset.subJurisdictionLabel} income tax`
         : 'Income tax',
-      annualAmount: roundTax(clampAtZero(afterCredits), ruleset),
+      annualAmount: taxAfterCredits,
       explanation: explanationParts.join(' '),
       sourceIds,
       workings: applied.workings,
@@ -190,20 +208,97 @@ function incomeTaxFor(
 
 function leviesFor(ruleset: Ruleset, income: Money, prefix: string): DeductionLine[] {
   return ruleset.rules.levies.map((levy) => {
-    const upper = levy.ceiling === null ? income : minOf(income, money(levy.ceiling));
-    const chargeable = clampAtZero(upper.minus(money(levy.floor)));
-    const amount = percentOf(chargeable, money(levy.ratePercent));
+    const amount = levyAmount({
+      income,
+      ratePercent: money(levy.ratePercent),
+      basis: levy.basis,
+      floor: money(levy.floor),
+      ceiling: levy.ceiling === null ? null : money(levy.ceiling),
+      exemptBelow: money(levy.exemptBelow),
+      phaseInTo: levy.phaseInTo === null ? null : money(levy.phaseInTo),
+      phaseInRatePercent: levy.phaseInRatePercent === null ? null : money(levy.phaseInRatePercent),
+    });
+
+    const inPhaseIn =
+      levy.phaseInTo !== null &&
+      income.gt(money(levy.exemptBelow)) &&
+      income.lt(money(levy.phaseInTo));
+
+    const explanation = inPhaseIn
+      ? `${levy.label} is being phased in: at this income it is charged at ` +
+        `${money(levy.phaseInRatePercent ?? 0).toString()}% of the amount above ` +
+        `${money(levy.exemptBelow).toString()}, rather than the full rate.`
+      : `${levy.label} is charged at ${money(levy.ratePercent).toString()}% of ` +
+        (levy.basis === 'whole-income'
+          ? 'your whole taxable income'
+          : `income above ${money(levy.floor).toString()}`) +
+        (money(levy.exemptBelow).gt(0)
+          ? `, and is not charged at all below ${money(levy.exemptBelow).toString()}`
+          : '') +
+        (levy.ceiling === null ? '.' : `, up to a ceiling of ${money(levy.ceiling).toString()}.`);
+
     return {
       id: `${prefix}-${levy.id}`,
       label: levy.label,
       annualAmount: roundTax(amount, ruleset),
-      explanation:
-        `${levy.label} is charged at ${money(levy.ratePercent).toString()}% on income above ` +
-        `${money(levy.floor).toString()}` +
-        (levy.ceiling === null ? '.' : `, up to a ceiling of ${money(levy.ceiling).toString()}.`),
+      explanation,
       sourceIds: levy.sourceIds.length > 0 ? levy.sourceIds : ruleset.sources.map((s) => s.id),
     };
   });
+}
+
+/** Surtaxes are charged on the tax already due, not on income. */
+function surtaxesFor(ruleset: Ruleset, taxDue: Money, prefix: string): DeductionLine[] {
+  return ruleset.rules.surtaxes
+    .map((surtax) => {
+      const applied = applySurtax(taxDue, toBands(surtax.bands));
+      return {
+        id: `${prefix}-${surtax.id}`,
+        label: surtax.label,
+        annualAmount: roundTax(applied.total, ruleset),
+        explanation:
+          `${surtax.label} is charged on the income tax itself rather than on income, ` +
+          `at the rates that apply above set amounts of tax due.`,
+        sourceIds:
+          surtax.sourceIds.length > 0 ? surtax.sourceIds : ruleset.sources.map((s) => s.id),
+        workings: applied.workings,
+      };
+    })
+    .filter((line) => line.annualAmount.gt(0));
+}
+
+/** Income-contingent loan repayments selected by the reader's profile. */
+function loanRepaymentsFor(
+  ruleset: Ruleset,
+  income: Money,
+  selectors: readonly string[],
+  prefix: string,
+): DeductionLine[] {
+  return ruleset.rules.loanRepayments
+    .filter((scheme) => selectors.includes(scheme.selector))
+    .map((scheme) => {
+      const amount = loanRepaymentAmount({
+        income,
+        method: scheme.method,
+        threshold: money(scheme.threshold),
+        ratePercent: money(scheme.ratePercent),
+        bands: toBands(scheme.bands),
+      });
+
+      return {
+        id: `${prefix}-${scheme.id}`,
+        label: scheme.label,
+        annualAmount: roundTax(amount, ruleset),
+        explanation:
+          scheme.method === 'rate-above-threshold'
+            ? `Repaid at ${money(scheme.ratePercent).toString()}% of income above ` +
+              `${money(scheme.threshold).toString()}. Nothing is repaid below that.`
+            : 'The repayment rate is set by which band your income falls in, and that rate ' +
+              'applies to your whole income — so crossing a band raises the repayment sharply.',
+        sourceIds:
+          scheme.sourceIds.length > 0 ? scheme.sourceIds : ruleset.sources.map((s) => s.id),
+      };
+    });
 }
 
 function contributionsFor(ruleset: Ruleset, income: Money, prefix: string): DeductionLine[] {
@@ -280,25 +375,26 @@ function deductionsAt(options: EngineOptions, gross: Money): DeductionPass {
   // Composed layers first (e.g. Canadian federal tax before provincial).
   let taxableIncome = ZERO;
   for (const layer of composedRulesets) {
-    const layerTax = incomeTaxFor(layer, incomeForTax, layer.subJurisdiction ?? 'federal');
+    const prefix = layer.subJurisdiction ?? 'federal';
+    const layerTax = incomeTaxFor(layer, incomeForTax, prefix);
     if (layerTax.line) lines.push(layerTax.line);
     taxableIncome = layerTax.taxableIncome;
-    lines.push(...leviesFor(layer, incomeForTax, layer.subJurisdiction ?? 'federal'));
-    lines.push(...contributionsFor(layer, contributionBase, layer.subJurisdiction ?? 'federal'));
+    // A surtax is charged on the tax just computed, so it has to follow it.
+    lines.push(...surtaxesFor(layer, layerTax.taxDue, prefix));
+    lines.push(...leviesFor(layer, incomeForTax, prefix));
+    lines.push(...contributionsFor(layer, contributionBase, prefix));
+    lines.push(...loanRepaymentsFor(layer, gross, options.loanSelectors ?? [], prefix));
   }
 
-  const primary = incomeTaxFor(
-    ruleset,
-    incomeForTax,
-    ruleset.subJurisdiction ?? ruleset.jurisdiction,
-  );
+  const primaryPrefix = ruleset.subJurisdiction ?? ruleset.jurisdiction;
+  const primary = incomeTaxFor(ruleset, incomeForTax, primaryPrefix);
   if (primary.line) lines.push(primary.line);
   if (composedRulesets.length === 0) taxableIncome = primary.taxableIncome;
 
-  lines.push(...leviesFor(ruleset, incomeForTax, ruleset.subJurisdiction ?? ruleset.jurisdiction));
-  lines.push(
-    ...contributionsFor(ruleset, contributionBase, ruleset.subJurisdiction ?? ruleset.jurisdiction),
-  );
+  lines.push(...surtaxesFor(ruleset, primary.taxDue, primaryPrefix));
+  lines.push(...leviesFor(ruleset, incomeForTax, primaryPrefix));
+  lines.push(...contributionsFor(ruleset, contributionBase, primaryPrefix));
+  lines.push(...loanRepaymentsFor(ruleset, gross, options.loanSelectors ?? [], primaryPrefix));
 
   // Pre-tax contributions are shown as deduction lines because the user does
   // not receive them as take-home pay, even though they are not tax.
