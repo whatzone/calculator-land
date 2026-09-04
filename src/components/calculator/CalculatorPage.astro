@@ -48,7 +48,7 @@ const related = calculator.relatedCalculatorIds
 // When the ruleset is unpopulated, DataStatusNotice carries the full
 // explanation, so the engine's shorter version is suppressed above it.
 const awaitingSource =
-  primaryRuleset !== null && primaryRuleset.provenance.dataStatus !== 'populated';
+  primaryRuleset !== null && primaryRuleset.provenance.dataStatus === 'awaiting-official-source';
 
 const clientConfig = {
   calculatorId: calculator.id,
@@ -62,13 +62,13 @@ const clientConfig = {
 
 <CalculatorForm calculator={calculator} values={values} actionPath={path} />
 
-<ResultPanel view={view} suppressUnsupportedNotices={awaitingSource} />
-
 {
   primaryRuleset && (
     <DataStatusNotice ruleset={primaryRuleset} jurisdictionName={jurisdictionName} />
   )
 }
+
+<ResultPanel view={view} suppressUnsupportedNotices={awaitingSource} />
 
 <AdSlot slot="post-result" />
 

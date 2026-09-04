@@ -4,13 +4,17 @@ Transparent salary, tax, and mortgage calculators. Every deduction itemised,
 every rule linked to the authority that publishes it, and every assumption shown
 next to the result rather than buried in a legal page.
 
-> **Read this first.** All five tax jurisdictions currently ship with **empty
-> rate tables**. The environment this was built in could not reach any tax
-> authority's website, and populating the tables from memory or from third-party
-> summaries would have meant publishing confident wrong numbers about people's
-> pay. The engines are complete and tested; the data is not. 127 of 146 pages
-> are held out of the index as a result — automatically, by the quality gate.
-> See `docs/DECISIONS.md` (D-001) and `docs/TAX-DATA-UPDATE-RUNBOOK.md`.
+> **Read this first.** The tax rates on this site have **not been checked
+> against the authorities that publish them**. They were entered from general
+> knowledge because the official websites were unreachable from the build
+> environment. The calculations are tested and sound; the specific figures may
+> be out of date.
+>
+> This is a deliberate, owner-approved state, and it is enforced rather than
+> assumed: no ruleset can claim a check that did not happen, every affected page
+> renders a provenance notice above its result, and the build fails if one does
+> not. `docs/RATE-AMBIGUITIES.md` lists what is least certain, in the order it
+> should be corrected. `docs/DECISIONS.md` (D-016) records the reasoning.
 
 ## Quick start
 

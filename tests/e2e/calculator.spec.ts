@@ -84,18 +84,30 @@ test.describe('mortgage payment calculator', () => {
 });
 
 test.describe('the site as a whole', () => {
-  test('holds tax calculator pages out of the index', async ({ page }) => {
+  test('warns on every page built from unverified figures', async ({ page }) => {
     await page.goto('/uk/salary-calculator/');
-    await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex,follow');
-    await expect(page.locator('.notice--unsupported')).toBeVisible();
+    const notice = page.locator('[data-provenance="unverified"]');
+    await expect(notice).toBeVisible();
+    await expect(notice).toContainText('not been checked against the official source');
   });
 
-  test('explains, rather than guesses, on an unsourced salary page', async ({ page }) => {
+  test('shows a real result on a prefilled salary page, with the warning beside it', async ({
+    page,
+  }) => {
     await page.goto('/uk/salary/50000-after-tax/');
     await expect(page.getByRole('heading', { level: 1 })).toContainText('after tax');
-    await expect(page.locator('.notice--unsupported').first()).toContainText(
-      'not been verified against the official source',
-    );
+
+    // £50,000 with a £12,570 allowance: £7,486 income tax and £2,994.40
+    // National Insurance, leaving £39,520 (displayed without pennies).
+    await expect(page.locator('[data-headline] .headline__value')).toContainText('39,520');
+    await expect(page.locator('[data-provenance="unverified"]')).toBeVisible();
+  });
+
+  test('holds a jurisdiction whose rules cannot be modelled out of the index', async ({ page }) => {
+    // Quebec: registered so its reasoning is visible, but never published.
+    await page.goto('/canada/quebec/salary/50000-after-tax/');
+    await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex,follow');
+    await expect(page.locator('[data-provenance="awaiting-official-source"]')).toBeVisible();
   });
 
   test('serves exactly one h1 and one canonical per page', async ({ page }) => {

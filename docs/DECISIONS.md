@@ -383,3 +383,67 @@ genuinely the only remaining work for the tax calculators. Before this, it was
 data entry _plus_ four engine changes that would have been discovered
 mid-research, most likely after some figures had already been entered against
 the wrong shape.
+
+---
+
+## D-016 — Publishing unverified rates, with the warning wired into the build
+
+**Date:** 2026-09-03 · **Status:** Active · **Owner decision**
+
+**Context.** The owner asked for working calculators using whatever rates could
+be had, with the ambiguities flagged for correction. They had already been told
+twice that the official sources were unreachable. This supersedes the practical
+effect of D-001, though not its reasoning.
+
+**Decision.** Populate the rulesets from model knowledge and publish, under a
+third provenance state that is honest about where the figures came from.
+
+**What was not done.** The obvious shortcut was to set `dataStatus: 'populated'`
+and `checkedOn: '2026-09-03'` and be finished. That would have been a
+fabrication — asserting a check that nobody performed — and it is the one thing
+this project said it would never do. Instead:
+
+- `dataStatus` gained a third value, `unverified`, between empty and verified;
+- the schema **rejects** an unverified ruleset that carries a `checkedOn` date,
+  so the assertion cannot be made by accident or in haste;
+- the schema rejects `status: 'verified-against-source'` on unverified data;
+- an unverified ruleset must carry a note of at least 60 characters explaining
+  where its figures came from and what is uncertain;
+- source entries keep `checkedOn: null`, and the site renders "not yet checked"
+  against each one.
+
+**How the warning is guaranteed to reach the reader.** `DataStatusNotice`
+renders **above** the result — an earlier arrangement put it below, which meant
+most readers would have seen the figure and never the caveat.
+`scripts/check-indexability.ts` reads the built HTML and fails the build if any
+page using unverified figures ships without the notice. That check was verified
+by removing the marker and watching 117 pages fail.
+
+**What is live.** 135 of 145 pages: the UK including Scotland, Ireland,
+Australia, New Zealand, and Canada federal plus Ontario, British Columbia and
+Alberta.
+
+**What is held back, and why it is a different reason.** Quebec's ten salary
+pages. Not stale data — unmodellable rules. Quebec collects its own provincial
+tax, runs QPP instead of CPP, adds QPIP, and reduces federal tax by the Quebec
+abatement, and that last is a reduction of _another layer's_ tax, for which the
+engine has no construct. Publishing it in the shape used for other provinces
+would be wrong by thousands of dollars rather than slightly out of date.
+
+**Deliberate omissions, each declared on-page.** UK student loans and Australian
+HELP (thresholds move every year and would have been guesses); the Ontario
+Health Premium; New Zealand's Independent Earner Tax Credit; Ireland's tapered
+PRSI credit.
+
+**Where the figures were checked.** Every jurisdiction's output was verified by
+hand against longhand arithmetic before commit — UK £50,000 to £39,519.60,
+Ireland €50,000 to €7,200 tax plus €1,046 USC plus €2,050 PRSI, Australia
+$50,000 to $5,270 after the low income tax offset, Ontario $120,000 including a
+$1,064.49 surtax. That confirms the _engine_ composes correctly. It says nothing
+about whether the input rates are current, which is exactly the gap the notice
+describes.
+
+**The correction path.** `docs/RATE-AMBIGUITIES.md` ranks every figure by how
+likely it is to be wrong. Correcting one is editing a line of data; when a
+jurisdiction is fully checked, setting `dataStatus: 'populated'` with a
+`checkedOn` date removes its warning automatically.

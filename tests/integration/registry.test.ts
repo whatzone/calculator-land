@@ -149,11 +149,21 @@ describe('page manifest', () => {
     expect(sitemapPages()).toEqual([]);
   });
 
-  it('holds back every salary page while rate tables are unpopulated', () => {
+  it('builds a salary page for every curated entry', () => {
     const salaryPages = buildPageManifest().filter((entry) => entry.template === 'salary-result');
     expect(salaryPages.length).toBe(salaryPageEntries().length);
-    for (const entry of salaryPages) {
-      expect(entry.indexable, entry.path).toBe(false);
+  });
+
+  it('holds back salary pages whose ruleset carries no figures at all', () => {
+    // Quebec is the case: its rules cannot be modelled correctly, so it is
+    // registered but unpublished, and every page depending on it is withheld.
+    const withheld = buildPageManifest().filter(
+      (entry) => entry.template === 'salary-result' && !entry.indexable,
+    );
+    expect(withheld.length).toBeGreaterThan(0);
+    for (const entry of withheld) {
+      const ruleset = findRuleset(entry.jurisdiction as never, entry.region ?? null);
+      expect(ruleset?.provenance.dataStatus, entry.path).toBe('awaiting-official-source');
     }
   });
 
@@ -189,10 +199,19 @@ describe('rulesets', () => {
     expect(new Set(ids).size).toBe(ids.length);
   });
 
-  it('never marks an unpopulated ruleset as publishable', () => {
+  it('never marks a ruleset with no figures as publishable', () => {
     for (const ruleset of ALL_RULESETS) {
-      if (ruleset.provenance.dataStatus !== 'populated') {
+      if (ruleset.provenance.dataStatus === 'awaiting-official-source') {
         expect(isPublishable(ruleset), ruleset.id).toBe(false);
+      }
+    }
+  });
+
+  it('never lets an unverified ruleset masquerade as verified', () => {
+    for (const ruleset of ALL_RULESETS) {
+      if (ruleset.provenance.dataStatus === 'unverified') {
+        expect(ruleset.status, ruleset.id).not.toBe('verified-against-source');
+        expect(ruleset.provenance.checkedOn, ruleset.id).toBeNull();
       }
     }
   });

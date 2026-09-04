@@ -106,6 +106,30 @@ const sortedReasons = [...reasons.entries()].sort((a, b) => b[1] - a[1]);
 
   <section aria-labelledby="log-heading">
     <h2 id="log-heading">Change log</h2>
+    <h3>3 September 2026 — rates entered, unverified</h3>
+    <p>
+      Rates were entered for the United Kingdom (including Scotland), Ireland, Australia, New
+      Zealand and Canada (federal, Ontario, British Columbia and Alberta), and those calculators
+      were switched on. <strong
+        >None of these figures has been checked against the authority that publishes it.</strong
+      > They were entered from general knowledge because the official websites were unreachable from the
+      build environment. Every affected page says so, and the full list of what is least certain is kept
+      in the repository at <code>docs/RATE-AMBIGUITIES.md</code>.
+    </p>
+    <p>
+      Quebec was deliberately not switched on. Its rules cannot be modelled correctly yet: it
+      collects its own provincial tax, runs QPP in place of CPP, adds QPIP, and reduces federal tax
+      by the Quebec abatement — and that last one is a reduction of another layer's tax, which the
+      engine has no construct for. Publishing it in the shape used for other provinces would be
+      wrong by thousands of dollars rather than merely out of date.
+    </p>
+    <p>
+      Four calculation shapes were added at the same time, because without them the figures could
+      not have been entered faithfully: levies charged on whole income with a shade-in band,
+      allowance and credit tapers that stop at a floor, surtaxes charged on tax rather than income,
+      and income-contingent loan repayments.
+    </p>
+
     <h3>3 September 2026 — initial build</h3>
     <p>
       The calculation engines, tests, page templates, and quality gate were built and verified for

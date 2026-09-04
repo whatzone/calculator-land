@@ -159,7 +159,18 @@ function incomeTaxFor(
   // Non-refundable credits reduce tax but never below zero.
   let creditTotal = ZERO;
   for (const credit of ruleset.rules.credits) {
-    const base = money(credit.amount);
+    let base = money(credit.amount);
+
+    if (credit.taperThreshold !== null && credit.taperWithdrawnPerUnit !== null) {
+      base = taperAllowance(
+        base,
+        incomeAfterPreTax,
+        money(credit.taperThreshold),
+        money(credit.taperWithdrawnPerUnit),
+        money(credit.taperFloorAmount),
+      );
+    }
+
     const value = credit.ratePercent === null ? base : percentOf(base, money(credit.ratePercent));
     creditTotal = creditTotal.plus(value);
   }
@@ -194,9 +205,11 @@ function incomeTaxFor(
     taxDue: taxAfterCredits,
     line: {
       id: `${labelPrefix}-income-tax`,
-      label: ruleset.subJurisdictionLabel
-        ? `${ruleset.subJurisdictionLabel} income tax`
-        : 'Income tax',
+      label:
+        ruleset.incomeTaxLabel ??
+        (ruleset.subJurisdictionLabel
+          ? `${ruleset.subJurisdictionLabel} income tax`
+          : 'Income tax'),
       annualAmount: taxAfterCredits,
       explanation: explanationParts.join(' '),
       sourceIds,

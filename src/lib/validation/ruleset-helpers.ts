@@ -13,10 +13,24 @@ import type { Ruleset } from './ruleset-schema.ts';
 /** Complete enough to run a calculation at all. */
 export function isCalculable(ruleset: Ruleset): boolean {
   return (
-    ruleset.provenance.dataStatus === 'populated' &&
+    ruleset.provenance.dataStatus !== 'awaiting-official-source' &&
     ruleset.status !== 'retired' &&
     ruleset.rules.incomeTaxBands.length > 0
   );
+}
+
+/**
+ * True only when a person has compared every figure against the authority that
+ * publishes it. Anything else must carry a visible health warning, which
+ * `check-indexability.ts` enforces on the built HTML.
+ */
+export function isVerified(ruleset: Ruleset): boolean {
+  return ruleset.provenance.dataStatus === 'populated' && ruleset.provenance.checkedOn !== null;
+}
+
+/** Figures are present but nobody has checked them against an official source. */
+export function isUnverified(ruleset: Ruleset): boolean {
+  return ruleset.provenance.dataStatus === 'unverified';
 }
 
 /** Complete enough to back an indexable page. */

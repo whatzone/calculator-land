@@ -78,11 +78,26 @@ export function marginalBandRatePercent(amount: Money, bands: readonly Band[]): 
   return rate;
 }
 
+export interface BandValidationOptions {
+  /**
+   * Whether the highest band must be unbounded above.
+   *
+   * True for income tax, where income has no ceiling. False for a contribution
+   * that stops at a maximum earnings figure — CPP and Employment Insurance both
+   * end at a bounded band, and that ceiling is the point of them.
+   */
+  readonly requireUnboundedTop?: boolean;
+}
+
 /**
  * Validate that bands are contiguous, ascending, and non-overlapping.
  * A ruleset that fails this cannot be published; the audit surfaces it.
  */
-export function validateBands(bands: readonly Band[]): string[] {
+export function validateBands(
+  bands: readonly Band[],
+  options: BandValidationOptions = {},
+): string[] {
+  const requireUnboundedTop = options.requireUnboundedTop ?? true;
   const problems: string[] = [];
   if (bands.length === 0) return ['no bands defined'];
 
@@ -112,7 +127,7 @@ export function validateBands(bands: readonly Band[]): string[] {
   }
 
   const last = bands[bands.length - 1];
-  if (last && last.to !== null) {
+  if (requireUnboundedTop && last && last.to !== null) {
     problems.push(`highest band "${last.label}" must be unbounded above`);
   }
 

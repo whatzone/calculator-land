@@ -103,7 +103,7 @@ const liveCountWord = WORDS[liveCount] ?? String(liveCount);
                   {meta.regions.length > 0 &&
                     ` Includes ${meta.regions.map((region) => region.label).join(', ')}.`}
                 </p>
-                {pending && <span class="pill pill--pending">Awaiting official source</span>}
+                {pending && <span class="pill pill--pending">Not available yet</span>}
               </a>
             </li>
           );
@@ -113,16 +113,23 @@ const liveCountWord = WORDS[liveCount] ?? String(liveCount);
   </section>
 
   <section class="card" aria-labelledby="why-heading">
-    <h2 id="why-heading" style="margin-top:0;">Why some of this is deliberately switched off</h2>
+    <h2 id="why-heading" style="margin-top:0;">Read this before you rely on a number</h2>
     <p>
-      A take-home figure is only worth having if it is right. Every rate and threshold here has to
-      be read from the tax authority that publishes it and checked by a person before it goes live.
-      Until that has happened for a country, its pages show the official sources and an explanation
-      rather than a number — and they are kept out of search results entirely.
+      The tax rates on this site have <strong
+        >not been checked against the authorities that publish them</strong
+      >. They were entered from general knowledge. The calculations themselves are tested and sound
+      — which bands apply, how allowances taper, how contributions are capped — but the specific
+      figures may be out of date, and thresholds usually change at the start of each tax year.
+    </p>
+    <p>
+      So: useful for sanity-checking a payslip or comparing two salaries, not for a decision that
+      turns on the exact figure. Every calculator page says the same, and links to the official
+      source so you can check it yourself.
     </p>
     <p style="margin-bottom:0;">
-      {summary.withheld} of {summary.total} pages are held back on that basis today. You can see exactly
-      which, and why, on the <a href="/tax-data-updates/">tax data update log</a>.
+      {summary.withheld} of {summary.total} pages are held back entirely, because their rules cannot yet
+      be modelled correctly. The <a href="/tax-data-updates/">tax data update log</a> shows which, and
+      why.
     </p>
   </section>
 </BaseLayout>

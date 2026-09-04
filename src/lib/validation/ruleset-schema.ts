@@ -94,6 +94,14 @@ export const creditSchema = z.object({
   kind: z.enum(['refundable', 'non-refundable']),
   /** Non-refundable credits in some systems are a % of a base amount. */
   ratePercent: numeric.nullable().default(null),
+  /**
+   * Credits that withdraw as income rises. Australia's low income tax offset
+   * does this in two stages, which is expressed as two credits with different
+   * thresholds rather than as one credit with a compound rule.
+   */
+  taperThreshold: numeric.nullable().default(null),
+  taperWithdrawnPerUnit: numeric.nullable().default(null),
+  taperFloorAmount: numeric.default(0),
   sourceIds: z.array(z.string()).default([]),
 });
 
@@ -164,7 +172,20 @@ export const RULESET_STATUSES = [
   'published',
   'retired',
 ] as const;
-export const DATA_STATUSES = ['awaiting-official-source', 'populated'] as const;
+/**
+ * How the figures in a ruleset came to be there.
+ *
+ *  - `awaiting-official-source` — no figures at all. Nothing can be calculated.
+ *  - `unverified` — figures are present but NOBODY HAS CHECKED THEM against the
+ *    authority that publishes them. Calculators run, and every page carrying
+ *    them must display a permanent notice saying so. This state exists because
+ *    a working calculator with an honest health warning is more useful than a
+ *    blank page. It is not a substitute for verification and must never be
+ *    presented as one.
+ *  - `populated` — a person has opened each official source, compared every
+ *    figure, and recorded the date.
+ */
+export const DATA_STATUSES = ['awaiting-official-source', 'unverified', 'populated'] as const;
 
 export const rulesetSchema = z
   .object({
@@ -176,6 +197,8 @@ export const rulesetSchema = z
       .nullable()
       .default(null),
     subJurisdictionLabel: z.string().nullable().default(null),
+    /** How the income tax line is named on a result. Defaults to "Income tax". */
+    incomeTaxLabel: z.string().nullable().default(null),
 
     taxPeriod: z.object({
       label: z.string().min(1),
@@ -218,20 +241,52 @@ export const rulesetSchema = z
     const publishable =
       ruleset.status === 'published' || ruleset.status === 'verified-against-source';
 
-    if (publishable && ruleset.provenance.dataStatus !== 'populated') {
+    if (publishable && ruleset.provenance.dataStatus === 'awaiting-official-source') {
       ctx.addIssue({
         code: 'custom',
         path: ['status'],
-        message: `Ruleset "${ruleset.id}" claims status "${ruleset.status}" but its data status is "${ruleset.provenance.dataStatus}". Unpopulated data can never be published.`,
+        message: `Ruleset "${ruleset.id}" claims status "${ruleset.status}" but has no figures at all. Empty data can never be published.`,
       });
     }
 
-    if (publishable && ruleset.provenance.checkedOn === null) {
+    // 'verified-against-source' is a claim that a person checked. Only fully
+    // populated data is entitled to make it.
+    if (
+      ruleset.status === 'verified-against-source' &&
+      ruleset.provenance.dataStatus !== 'populated'
+    ) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['status'],
+        message: `Ruleset "${ruleset.id}" claims to be verified against its source, but its data status is "${ruleset.provenance.dataStatus}". That claim requires a completed check.`,
+      });
+    }
+
+    if (ruleset.provenance.dataStatus === 'populated' && ruleset.provenance.checkedOn === null) {
       ctx.addIssue({
         code: 'custom',
         path: ['provenance', 'checkedOn'],
-        message: `Ruleset "${ruleset.id}" cannot be published without a date on which a human checked it against the official source.`,
+        message: `Ruleset "${ruleset.id}" is marked populated but carries no date on which a human checked it against the official source.`,
       });
+    }
+
+    // An unverified ruleset must state, in its own data, where the figures came
+    // from and what is uncertain. The site renders that to every reader.
+    if (ruleset.provenance.dataStatus === 'unverified') {
+      if (ruleset.provenance.checkedOn !== null) {
+        ctx.addIssue({
+          code: 'custom',
+          path: ['provenance', 'checkedOn'],
+          message: `Ruleset "${ruleset.id}" is unverified, so it must not carry a checked-on date. A date here asserts a check that did not happen.`,
+        });
+      }
+      if (ruleset.provenance.note.trim().length < 60) {
+        ctx.addIssue({
+          code: 'custom',
+          path: ['provenance', 'note'],
+          message: `Ruleset "${ruleset.id}" is unverified and must explain, in its note, where its figures came from and what is uncertain about them.`,
+        });
+      }
     }
 
     if (publishable && ruleset.sources.length === 0) {
@@ -242,11 +297,15 @@ export const rulesetSchema = z
       });
     }
 
-    if (publishable && ruleset.sources.every((source) => source.checkedOn === null)) {
+    if (
+      publishable &&
+      ruleset.provenance.dataStatus === 'populated' &&
+      ruleset.sources.every((source) => source.checkedOn === null)
+    ) {
       ctx.addIssue({
         code: 'custom',
         path: ['sources'],
-        message: `Ruleset "${ruleset.id}" cannot be published until at least one source carries a checked-on date.`,
+        message: `Ruleset "${ruleset.id}" is marked populated but no source carries a checked-on date.`,
       });
     }
 
@@ -306,4 +365,10 @@ export function parseRuleset(input: unknown): Ruleset {
 // The predicates live in ./ruleset-helpers.ts so that the calculation engine can
 // use them without pulling Zod into the browser bundle. Re-exported here so
 // callers that already validate against this module keep one import.
-export { isCalculable, isPublishable, isExpired } from './ruleset-helpers.ts';
+export {
+  isCalculable,
+  isPublishable,
+  isExpired,
+  isVerified,
+  isUnverified,
+} from './ruleset-helpers.ts';

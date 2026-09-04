@@ -50,17 +50,28 @@ function auditRuleset(ruleset: Ruleset): Finding[] {
   }
 
   const awaitingSource = ruleset.provenance.dataStatus === 'awaiting-official-source';
+  const unverified = ruleset.provenance.dataStatus === 'unverified';
   const gapSeverity = awaitingSource && ruleset.status === 'draft' ? 'expected-gap' : 'error';
 
-  if (ruleset.provenance.dataStatus !== 'populated') {
+  if (awaitingSource) {
     findings.push({
       severity: gapSeverity,
       rulesetId: id,
-      message: `Rate tables are empty (${ruleset.provenance.dataStatus}).`,
+      message: 'Rate tables are empty.',
     });
   }
 
-  if (ruleset.provenance.checkedOn === null) {
+  if (unverified) {
+    findings.push({
+      severity: 'expected-gap',
+      rulesetId: id,
+      message:
+        'PUBLISHED WITH UNVERIFIED FIGURES. Nobody has compared these against the authority ' +
+        'that publishes them. Every affected page renders a provenance notice saying so.',
+    });
+  }
+
+  if (ruleset.provenance.checkedOn === null && !awaitingSource && !unverified) {
     findings.push({
       severity: gapSeverity,
       rulesetId: id,
@@ -75,7 +86,7 @@ function auditRuleset(ruleset: Ruleset): Finding[] {
   for (const source of ruleset.sources) {
     if (source.checkedOn === null) {
       findings.push({
-        severity: awaitingSource ? 'expected-gap' : 'error',
+        severity: awaitingSource || unverified ? 'expected-gap' : 'error',
         rulesetId: id,
         message: `Source "${source.id}" has never been checked: ${source.url}`,
       });
@@ -106,9 +117,21 @@ function auditRuleset(ruleset: Ruleset): Finding[] {
     }
   }
 
+  for (const surtax of ruleset.rules.surtaxes) {
+    for (const problem of validateBands(toBands(surtax.bands))) {
+      findings.push({
+        severity: 'error',
+        rulesetId: id,
+        message: `Surtax "${surtax.id}": ${problem}`,
+      });
+    }
+  }
+
   for (const contribution of ruleset.rules.contributions) {
     if (contribution.bands.length === 0) continue;
-    const problems = validateBands(toBands(contribution.bands));
+    // Contributions may end on a bounded band: CPP and EI both stop at a
+    // maximum earnings figure.
+    const problems = validateBands(toBands(contribution.bands), { requireUnboundedTop: false });
     for (const problem of problems) {
       findings.push({
         severity: 'error',
@@ -146,9 +169,11 @@ function main(): void {
   console.log('\nTax data audit');
   console.log('='.repeat(70));
   console.log(`Rulesets registered: ${ALL_RULESETS.length}`);
+  const count = (status: string) =>
+    ALL_RULESETS.filter((r) => r.provenance.dataStatus === status).length;
   console.log(
-    `Populated: ${ALL_RULESETS.filter((r) => r.provenance.dataStatus === 'populated').length} | ` +
-      `Awaiting source: ${ALL_RULESETS.filter((r) => r.provenance.dataStatus === 'awaiting-official-source').length}`,
+    `Verified: ${count('populated')} | Unverified: ${count('unverified')} | ` +
+      `Awaiting source: ${count('awaiting-official-source')}`,
   );
   console.log(
     `Pages withheld from the index: ${manifest.filter((e) => !e.indexable).length} of ${manifest.length}`,
@@ -180,7 +205,7 @@ function main(): void {
   if (gaps.length > 0) {
     console.log(
       `No blocking issues.\n\n` +
-        `${gaps.length} finding(s) relate to rulesets still awaiting an official source.\n` +
+        `${gaps.length} finding(s) relate to rulesets that are unverified or awaiting a source.\n` +
         'Those are tracked, not ignored: every page depending on them is held out\n' +
         'of the index and out of the sitemap by the indexability gate, which is\n' +
         'verified separately by `npm run seo:audit`. Follow\n' +

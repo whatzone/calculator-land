@@ -37,6 +37,28 @@ export const AWAITING_SOURCE_NOTE =
   `ruleset could be verified against an authority. Populating this file from memory or from ` +
   `third-party summaries is prohibited — see docs/TAX-DATA-UPDATE-RUNBOOK.md.`;
 
+/**
+ * The provenance note carried by every ruleset populated from model knowledge
+ * rather than from the authority that publishes the figures.
+ *
+ * The owner asked for working calculators knowing the figures could not be
+ * verified from this environment. That is a legitimate choice — a calculator
+ * with an honest health warning is more useful than a blank page — but it is
+ * only legitimate while the warning is impossible to miss. Hence: this note is
+ * required by the schema, rendered on every affected page, and the build fails
+ * if a page carrying unverified figures omits the banner.
+ */
+export function unverifiedNote(specifics: string): string {
+  return (
+    'Figures entered from general knowledge, NOT read from the official source. ' +
+    'No person has compared them against the authority that publishes them, and ' +
+    'the official domains were unreachable from the build environment on ' +
+    `${EGRESS_BLOCK_DATE}. ${specifics} ` +
+    'Verify against the linked sources before relying on any figure. ' +
+    'See docs/RATE-AMBIGUITIES.md for the full list of what is uncertain.'
+  );
+}
+
 export const CANDIDATE_SOURCE_NOTE =
   `Candidate entry point recorded to save research time. NOT verified: checkedOn is null and ` +
   `must stay null until a human opens the page and compares every figure.`;

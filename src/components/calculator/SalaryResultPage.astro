@@ -73,7 +73,7 @@ const amountLabel = formatAmountForTitle(amount, currency);
 
 // See CalculatorPage: DataStatusNotice is the fuller explanation, so the
 // engine's shorter one is suppressed rather than shown alongside it.
-const awaitingSource = ruleset.provenance.dataStatus !== 'populated';
+const awaitingSource = ruleset.provenance.dataStatus === 'awaiting-official-source';
 
 // The threshold immediately ahead is the single most useful fact a reader at a
 // given salary can be told, so it gets its own paragraph rather than a table row.
@@ -103,9 +103,9 @@ const clientConfig = {
   </p>
 </div>
 
-<ResultPanel view={view} suppressUnsupportedNotices={awaitingSource} />
-
 <DataStatusNotice ruleset={ruleset} jurisdictionName={jurisdictionName} />
+
+<ResultPanel view={view} suppressUnsupportedNotices={awaitingSource} />
 
 {
   result.supported && (

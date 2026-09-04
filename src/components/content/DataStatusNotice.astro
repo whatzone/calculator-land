@@ -1,12 +1,16 @@
 ---
 /**
- * The honest explanation shown wherever a jurisdiction's rules are not yet
- * verified.
+ * The provenance notice shown wherever a jurisdiction's figures are not
+ * verified against the authority that publishes them.
  *
- * This is the most important component on the site right now. It replaces a
- * confident wrong number with a plain account of what is missing, why, and what
- * the reader can do instead — which is the only defensible thing to show when
- * the rules could not be confirmed against the authority that sets them.
+ * This is the most important component on the site. The owner asked for working
+ * calculators knowing the rates could not be checked from the build
+ * environment. That is a defensible choice — a working calculator with an
+ * honest health warning is more useful than a blank page — but it is only
+ * defensible while the warning is impossible to miss and impossible to remove
+ * by accident. So this renders above the result, it is not dismissible, and
+ * `scripts/check-indexability.ts` fails the build if a page carrying unverified
+ * figures ships without it.
  */
 import { formatDate } from '../../lib/formatting/index.ts';
 import type { Ruleset } from '../../lib/validation/ruleset-schema.ts';
@@ -17,28 +21,65 @@ interface Props {
 }
 const { ruleset, jurisdictionName } = Astro.props;
 
-const awaiting = ruleset.provenance.dataStatus !== 'populated';
+const status = ruleset.provenance.dataStatus;
 ---
 
 {
-  awaiting && (
-    <div class="notice notice--unsupported" role="note">
+  status === 'awaiting-official-source' && (
+    <div class="notice notice--unsupported" role="note" data-provenance="awaiting-official-source">
       <p class="notice__title">This calculator is not live yet</p>
       <p>
-        The {ruleset.taxPeriod.label} rules for {jurisdictionName} have not been verified against
-        the official source, so this page will not show you a figure. Publishing a take-home number
-        that nobody has checked against the tax authority would be worse than showing none at all.
+        The {ruleset.taxPeriod.label} rules for {jurisdictionName} have not been entered, so this
+        page will not show you a figure. Publishing a take-home number that nobody has checked
+        against the tax authority would be worse than showing none at all.
       </p>
-      <p>
-        Every source it needs is listed below, with links straight to the authority. Until each one
-        has been read and compared by a person, this page stays out of search results and out of the
-        sitemap.
-      </p>
-      <p class="small muted" style="margin-bottom:0;">
-        Tax period {ruleset.taxPeriod.label} runs from {formatDate(ruleset.taxPeriod.startDate)} to{' '}
-        {formatDate(ruleset.taxPeriod.endDate)}. Status: {ruleset.status}, data{' '}
-        {ruleset.provenance.dataStatus}.
+      <p style="margin-bottom:0;">
+        Every source it needs is listed below, with links straight to the authority.
       </p>
     </div>
+  )
+}
+
+{
+  status === 'unverified' && (
+    <div class="notice notice--warning" role="note" data-provenance="unverified">
+      <p class="notice__title">These figures have not been checked against the official source</p>
+      <p>
+        The {ruleset.taxPeriod.label} rates used on this page were entered from general knowledge,
+        not read from {jurisdictionName === 'the UK' ? 'HMRC' : 'the tax authority'}. No person has
+        compared them against the authority that publishes them.
+      </p>
+      <p>
+        <strong>
+          Treat the result as an estimate to sanity-check, not as a figure to rely on.
+        </strong>{' '}
+        The structure of the calculation — which bands apply, how allowances taper, how
+        contributions are capped — is tested and sound. It is the specific numbers that may be out
+        of date, and thresholds usually change at the start of each tax year.
+      </p>
+      <p style="margin-bottom:0;">
+        The official sources are linked below. If you spot an error, please{' '}
+        <a href="/corrections/">tell us</a> — corrections are logged and dated.
+      </p>
+    </div>
+  )
+}
+
+{
+  status === 'unverified' && ruleset.exclusions.length > 0 && (
+    <details class="advanced">
+      <summary>What this calculation leaves out for {jurisdictionName}</summary>
+      <div>
+        <ul>
+          {ruleset.exclusions.map((item) => (
+            <li>{item}</li>
+          ))}
+        </ul>
+        <p class="small muted" style="margin-bottom:0;">
+          Tax period {ruleset.taxPeriod.label} runs {formatDate(ruleset.taxPeriod.startDate)} to{' '}
+          {formatDate(ruleset.taxPeriod.endDate)}.
+        </p>
+      </div>
+    </details>
   )
 }

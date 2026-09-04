@@ -102,12 +102,24 @@ function gateCalculator(calculator: AnyCalculatorDefinition): string[] {
     blockers.push('No test fixtures are referenced.');
   }
 
-  // Tax tools must cite a source that a human has actually checked.
+  // Every tax tool must cite its sources. A checked-on date is required only
+  // once the ruleset claims to be verified — an unverified ruleset publishes
+  // with a visible health warning instead, which the built HTML is checked for.
   if (!calculator.indexability.indexableWithoutTaxData) {
     if (calculator.sources.length === 0) {
       blockers.push('No official source is cited.');
-    } else if (calculator.sources.every((source) => source.checkedOn === null)) {
-      blockers.push('No cited source carries a checked-on date.');
+    } else {
+      const jurisdiction = (calculator.jurisdictions as readonly string[])[0];
+      const ruleset =
+        jurisdiction && jurisdiction !== 'global'
+          ? findRuleset(jurisdiction as JurisdictionCode)
+          : undefined;
+      if (
+        ruleset?.provenance.dataStatus === 'populated' &&
+        calculator.sources.every((source) => source.checkedOn === null)
+      ) {
+        blockers.push('Ruleset claims to be verified but no source carries a checked-on date.');
+      }
     }
   }
 
@@ -164,16 +176,13 @@ function salaryEntries(): PageManifestEntry[] {
     if (!ruleset) {
       blockers.push(`No ruleset for ${entry.jurisdiction}/${entry.region ?? 'default'}.`);
     } else {
-      if (ruleset.provenance.dataStatus !== 'populated') {
+      if (ruleset.provenance.dataStatus === 'awaiting-official-source') {
         blockers.push(
           `The ${ruleset.taxPeriod.label} ruleset has empty rate tables, so no static result can be rendered.`,
         );
       }
       if (ruleset.status !== 'published') {
         blockers.push(`Ruleset status is "${ruleset.status}", not "published".`);
-      }
-      if (ruleset.provenance.checkedOn === null) {
-        blockers.push('The ruleset has no checked-on date.');
       }
       if (isExpired(ruleset)) {
         blockers.push(`The ruleset expired on ${ruleset.expiresOn}.`);

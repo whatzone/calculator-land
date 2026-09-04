@@ -1,26 +1,31 @@
 /**
  * New Zealand ruleset for the 2026-27 tax year (1 April to 31 March).
  *
- * Rate tables are empty. See ../_shared.ts for why.
+ * PROVENANCE: unverified. See `unverifiedNote` in ../_shared.ts.
  */
 import type { Ruleset } from '../../../lib/validation/ruleset-schema.ts';
-import { AWAITING_SOURCE_NOTE, defineAwaitingSourceRuleset } from '../_shared.ts';
+import { defineAwaitingSourceRuleset, unverifiedNote } from '../_shared.ts';
 
 export const newZealand2026_27: Ruleset = defineAwaitingSourceRuleset({
   id: 'new-zealand-2026-27',
   jurisdiction: 'new-zealand',
   subJurisdiction: null,
   subJurisdictionLabel: null,
+  incomeTaxLabel: 'Income Tax (PAYE)',
   currency: 'NZD',
   locale: 'en-NZ',
-  status: 'draft',
+  status: 'published',
   taxPeriod: { label: '2026-27', startDate: '2026-04-01', endDate: '2027-03-31' },
   expiresOn: '2027-03-31',
   provenance: {
-    dataStatus: 'awaiting-official-source',
+    dataStatus: 'unverified',
     checkedOn: null,
     checkedBy: null,
-    note: AWAITING_SOURCE_NOTE,
+    note: unverifiedNote(
+      'The income tax thresholds are those that took full effect from the 2025-26 year and are ' +
+        'reasonably stable. The ACC earners’ levy rate and its maximum liable earnings are reset ' +
+        'every year and are the figures here most likely to be wrong.',
+    ),
   },
   sources: [
     {
@@ -38,6 +43,13 @@ export const newZealand2026_27: Ruleset = defineAwaitingSourceRuleset({
       checkedOn: null,
     },
     {
+      id: 'ird-student-loans',
+      title: 'Student loan repayments',
+      publisher: 'Inland Revenue (Te Tari Taake)',
+      url: 'https://www.ird.govt.nz/student-loans',
+      checkedOn: null,
+    },
+    {
       id: 'ird-kiwisaver',
       title: 'KiwiSaver contribution rates',
       publisher: 'Inland Revenue (Te Tari Taake)',
@@ -52,30 +64,63 @@ export const newZealand2026_27: Ruleset = defineAwaitingSourceRuleset({
     employmentType: 'Employee on PAYE, primary employment',
   },
   assumptions: [
-    'The ordinary primary-employment tax code is assumed; secondary and special codes are not modelled.',
+    'The ordinary primary-employment tax code is assumed. Secondary and special codes are not modelled.',
     'The ACC earners’ levy is applied up to the maximum liable earnings cap.',
-    'KiwiSaver, where selected, is treated as an employee contribution deducted from after-tax pay.',
-    'Independent Earner Tax Credit and Working for Families entitlements are not modelled.',
+    'KiwiSaver, where selected, is deducted from pay after tax, which is how employee contributions work.',
+    'The Independent Earner Tax Credit and Working for Families entitlements are not modelled.',
   ],
   exclusions: [
-    'Secondary tax codes and multiple jobs',
+    'Independent Earner Tax Credit',
     'Working for Families tax credits',
+    'Secondary tax codes and multiple jobs',
     'Student loan special deduction rates',
     'Schedular payments and contractors',
     'Non-residents and transitional residents',
   ],
   changeNotes: [],
   rules: {
-    incomeTaxBands: [],
+    incomeTaxBands: [
+      { label: 'First band', from: 0, to: 15600, ratePercent: 10.5 },
+      { label: 'Second band', from: 15600, to: 53500, ratePercent: 17.5 },
+      { label: 'Third band', from: 53500, to: 78100, ratePercent: 30 },
+      { label: 'Fourth band', from: 78100, to: 180000, ratePercent: 33 },
+      { label: 'Top band', from: 180000, to: null, ratePercent: 39 },
+    ],
     allowances: [],
     credits: [],
-    levies: [],
+    levies: [
+      {
+        id: 'acc-earners-levy',
+        label: 'ACC earners’ levy',
+        ratePercent: 1.67,
+        basis: 'above-floor',
+        floor: 0,
+        ceiling: 152790,
+        exemptBelow: 0,
+        phaseInTo: null,
+        phaseInRatePercent: null,
+        sourceIds: ['acc-earners-levy'],
+      },
+    ],
     contributions: [],
+    surtaxes: [],
+    loanRepayments: [
+      {
+        id: 'student-loan',
+        label: 'Student loan repayment',
+        selector: 'student-loan',
+        method: 'rate-above-threshold',
+        threshold: 24128,
+        ratePercent: 12,
+        bands: [],
+        sourceIds: ['ird-student-loans'],
+      },
+    ],
     optionalSchemes: {},
     rounding: {
       taxableIncome: 'none',
       taxDue: 'half-up-to-minor',
-      note: 'Rounding policy must be confirmed against Inland Revenue guidance before publication.',
+      note: 'Rounding policy not confirmed against Inland Revenue guidance.',
     },
   },
 });

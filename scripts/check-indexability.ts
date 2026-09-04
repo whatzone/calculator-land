@@ -16,6 +16,7 @@ import {
   withheldPages,
 } from '../src/lib/seo/manifest.ts';
 import { SITE } from '../src/config/site.ts';
+import { findRuleset } from '../src/data/jurisdictions/index.ts';
 
 const DIST = resolve('dist');
 
@@ -43,6 +44,25 @@ function checkBuiltHtml(): Problem[] {
     }
     if (entry.indexable && SITE.allowIndexing && isNoindex) {
       problems.push({ path: entry.path, message: 'Page passed the gate but was emitted noindex.' });
+    }
+
+    // A page carrying unverified figures must carry the notice that says so.
+    // This is the check that makes publishing unverified rates defensible: the
+    // build fails rather than shipping a bare number nobody has checked.
+    if (entry.jurisdiction) {
+      const ruleset = findRuleset(entry.jurisdiction, entry.region ?? null);
+      const showsFigures = entry.template === 'salary-result' || entry.template === 'calculator';
+
+      if (ruleset && ruleset.provenance.dataStatus === 'unverified' && showsFigures) {
+        if (!html.includes('data-provenance="unverified"')) {
+          problems.push({
+            path: entry.path,
+            message:
+              'Page uses unverified tax figures but does not render the provenance notice. ' +
+              'Never publish an unchecked number without the warning beside it.',
+          });
+        }
+      }
     }
 
     const canonicalCount = (html.match(/rel=["']canonical["']/g) ?? []).length;
@@ -127,6 +147,19 @@ function main(): void {
   );
   console.log(`Sitemap entries: ${sitemapPages().length}`);
   console.log(`SITE_ALLOW_INDEXING: ${SITE.allowIndexing}`);
+
+  const unverified = buildPageManifest().filter((entry) => {
+    if (!entry.jurisdiction) return false;
+    const ruleset = findRuleset(entry.jurisdiction, entry.region ?? null);
+    return ruleset?.provenance.dataStatus === 'unverified' && entry.indexable;
+  });
+  if (unverified.length > 0) {
+    console.log(
+      `\n${unverified.length} indexable page(s) carry figures that have NOT been checked against` +
+        '\nan official source. Each one renders the provenance notice, which this audit has' +
+        '\njust verified. See docs/RATE-AMBIGUITIES.md.',
+    );
+  }
 
   if (SITE.isPlaceholderDomain && SITE.allowIndexing) {
     console.error('\nRefusing to allow indexing while SITE_URL is still the placeholder domain.');

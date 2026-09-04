@@ -7,6 +7,8 @@ import {
   isCalculable,
   isExpired,
   isPublishable,
+  isUnverified,
+  isVerified,
   type Ruleset,
 } from '../../lib/validation/ruleset-schema.ts';
 import { ukRulesets } from './uk/index.ts';
@@ -149,5 +151,5 @@ export function getJurisdiction(code: JurisdictionCode): JurisdictionMeta {
   return meta;
 }
 
-export { isCalculable, isPublishable, isExpired };
+export { isCalculable, isPublishable, isExpired, isVerified, isUnverified };
 export type { Ruleset };

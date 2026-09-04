@@ -264,13 +264,27 @@ describe('audit trail', () => {
 });
 
 describe('refusal to guess', () => {
-  it('returns unsupported for a ruleset that has no verified data', async () => {
-    const { ukEnglandWalesNi } = await import('../../src/data/jurisdictions/uk/index.ts');
-    const result = runSalaryCalculation({ ruleset: ukEnglandWalesNi, input: input(50000) });
+  it('returns unsupported for a ruleset that carries no figures', async () => {
+    // Quebec: registered so its sources and reasoning are visible, but not
+    // publishable, because its rules cannot yet be modelled correctly.
+    const { canadaQuebec2026 } = await import('../../src/data/jurisdictions/canada/index.ts');
+    const result = runSalaryCalculation({ ruleset: canadaQuebec2026, input: input(50000) });
     expect(result.supported).toBe(false);
     expect(result.netAnnual.toString()).toBe('0');
     expect(result.notices[0]?.severity).toBe('unsupported');
     expect(result.notices[0]?.message).toMatch(/not yet been verified against the official source/);
+  });
+
+  it('does calculate from an unverified ruleset, which is the published state', async () => {
+    // Unverified figures are published deliberately, with a visible warning on
+    // every page. The engine must produce a figure; the honesty is the UI's job
+    // and is enforced separately against the built HTML.
+    const { ukEnglandWalesNi } = await import('../../src/data/jurisdictions/uk/index.ts');
+    const result = runSalaryCalculation({ ruleset: ukEnglandWalesNi, input: input(50000) });
+    expect(result.supported).toBe(true);
+    // £50,000: allowance £12,570, so £37,430 taxable at 20% = £7,486 tax,
+    // plus National Insurance of 8% on the same £37,430 = £2,994.40.
+    expect(result.netAnnual.toString()).toBe('39519.6');
   });
 
   it('rejects negative gross pay', () => {
