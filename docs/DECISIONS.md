@@ -761,3 +761,82 @@ that people adjust more when the figure moves live, that the bar is used to
 reach the breakdown — is reasoned, not observed. `result_bar_opened` is
 instrumented so the second one, at least, becomes a fact rather than an
 argument.
+
+---
+
+## D-022 — Student loans are calculated, because withholding them was the inconsistency
+
+**Date:** 2026-09-04 · **Status:** Active · **Owner:** engineering
+**Supersedes:** the student-loan and HELP exclusions in D-016.
+
+**Context.** The owner: "Why haven't you calculated the student loan
+contributions for each plan? That's fundamental for the UK." Correct, and the
+reasoning that led there does not survive inspection.
+
+D-001 blocked every rate because no official source was reachable. D-016 then
+published income tax bands, National Insurance rates, Medicare thresholds, CPP
+ceilings and provincial brackets — all entered from general knowledge and
+labelled unverified. Student loan thresholds were held back on the grounds that
+they "change every April and could not be sourced". So does the personal
+allowance. So do the Medicare thresholds. The same rule was applied to one kind
+of figure and not another, and the effect was not caution: it was a take-home
+figure overstated by up to £2,250 a year for the roughly one in four UK earners
+repaying a student loan, with the shortfall explained in a sentence most readers
+would never open.
+
+The engine has supported `loanRepayments` since D-015. The tables were simply
+empty.
+
+**Decision.** Populate them, to the same standard and with the same labelling as
+every other figure on the site.
+
+- **UK:** Plans 1, 2, 4 and 5 at 9% above their own thresholds, and the
+  postgraduate loan at 6% above its own, across all three years.
+- **Australia:** HELP across all three years.
+- **Ireland and Canada:** nothing, because neither withholds student loan
+  repayments through payroll. That is a fact about those systems, not a gap.
+
+**Two things this exposed that were more than data entry.**
+
+_A postgraduate loan is charged on top of an undergraduate plan, not instead of
+one._ The form offered both in a single select, which forced a choice that does
+not exist and understated take-home pay for everyone holding both — a common
+combination. It is now a plan select plus a separate tick. The engine already
+took an array of selectors, so only the form and the profile mapping changed.
+
+_Australia changed the shape of HELP, not just its numbers._ Until 30 June 2025
+a rate was read from a nineteen-band table and applied to the **whole** of
+income, so one extra dollar at a band edge could cost hundreds. From 1 July 2025
+it is marginal above a threshold. No existing method could express the second
+without approximating, and approximating here is worth thousands of dollars a
+year at A$100,000, so `marginal-bands` was added to the schema and the engine
+alongside the two that existed. Both eras are modelled as they actually worked;
+the method is stored per year, because that is what changed.
+
+**Confidence.** UK thresholds: medium, and the 2026/27 set is carried forward
+unchanged so it is the first thing to check. Australian HELP: **the least
+certain figures on the site**, because the risk is structural — if the marginal
+system did not take effect on 1 July 2025, two years are wrong by thousands
+rather than slightly. Both are in `docs/RATE-AMBIGUITIES.md`, and HELP is now
+row 5 of the correct-these-first table.
+
+**What is asserted rather than assumed.** `tests/unit/student-loans.test.ts`
+carries 16 tests with the arithmetic written out longhand: every plan at
+£50,000, the threshold edge (£1 above Plan 2's threshold repays 9p), concurrent
+undergraduate and postgraduate repayment, the year-on-year threshold move, Plan
+4 working in both UK regions, and — the important one — the three methods given
+the same income, the same threshold and the same rates producing three
+different answers. That last test exists so nobody can quietly swap one for
+another.
+
+**What is still not modelled.** UK repayments are annualised like National
+Insurance, so a mid-year salary change gives a different real total, and a loan
+cleared part-way through the year keeps being deducted. Australian repayments
+are calculated on salary alone, where the ATO uses repayment income — which adds
+back reportable fringe benefits, super contributions and investment losses — so
+a real repayment can be higher. Both are stated on the page.
+
+**The general lesson.** "I could not source it" was true of every figure on this
+site. Once the owner decided that unverified-and-labelled beats absent, that
+decision applied to all of it. Applying it selectively produced the worst
+outcome available: a number that looks complete and is not.

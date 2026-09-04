@@ -203,20 +203,35 @@ export function applySurtax(taxDue: Money, bands: readonly Band[]): BandApplicat
 /**
  * An income-contingent loan repayment.
  *
- * The two methods are different arithmetic and are not interchangeable.
- * `banded-rate-on-total` applies the band's rate to the whole of income, so
- * crossing a boundary steps the repayment up sharply; `rate-above-threshold`
- * charges only on the excess and never steps.
+ * The three methods are different arithmetic and are not interchangeable.
+ *
+ * - `rate-above-threshold` charges one rate on the income above a threshold.
+ *   UK student loans work this way, and the repayment never steps.
+ * - `banded-rate-on-total` picks a rate from a band and applies it to the
+ *   *whole* of income, so crossing a boundary steps the repayment up sharply.
+ *   Australia's HELP worked this way until 30 June 2025.
+ * - `marginal-bands` charges each band's rate on the slice of income inside
+ *   it, above a threshold — the same shape as progressive income tax.
+ *   Australia's HELP moved to this from 1 July 2025.
+ *
+ * The last two are the pair most easily confused, and confusing them is silent:
+ * at A$100,000 the difference between them is thousands of dollars a year.
  */
 export function loanRepaymentAmount(input: {
   readonly income: Money;
-  readonly method: 'rate-above-threshold' | 'banded-rate-on-total';
+  readonly method: 'rate-above-threshold' | 'banded-rate-on-total' | 'marginal-bands';
   readonly threshold: Money;
   readonly ratePercent: Money;
   readonly bands: readonly Band[];
 }): Money {
   if (input.method === 'rate-above-threshold') {
     return percentOf(clampAtZero(input.income.minus(input.threshold)), input.ratePercent);
+  }
+
+  if (input.method === 'marginal-bands') {
+    // Bands are measured from the threshold, so a band running 0 to 58,000
+    // means the first 58,000 of income *above* the threshold.
+    return applyBands(clampAtZero(input.income.minus(input.threshold)), input.bands).total;
   }
 
   const rate = marginalBandRatePercent(input.income, input.bands);

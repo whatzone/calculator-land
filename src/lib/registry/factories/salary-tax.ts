@@ -72,16 +72,26 @@ const JURISDICTION_EXTRAS: Record<JurisdictionCode, readonly CalculatorFieldDefi
       type: 'select',
       required: false,
       defaultValue: 'none',
-      advanced: true,
-      help: 'Repayments only start above the threshold for your plan.',
+      help: 'Repayments are 9% of income above your plan’s threshold, and nothing below it.',
       options: [
         { value: 'none', label: 'No student loan' },
-        { value: 'plan-1', label: 'Plan 1' },
-        { value: 'plan-2', label: 'Plan 2' },
-        { value: 'plan-4', label: 'Plan 4 (Scotland)' },
-        { value: 'plan-5', label: 'Plan 5' },
-        { value: 'postgraduate', label: 'Postgraduate loan' },
+        { value: 'plan-1', label: 'Plan 1 — started before September 2012' },
+        { value: 'plan-2', label: 'Plan 2 — started September 2012 to July 2023' },
+        { value: 'plan-4', label: 'Plan 4 — studied in Scotland' },
+        { value: 'plan-5', label: 'Plan 5 — started August 2023 or later' },
       ],
+    },
+    {
+      // A postgraduate loan is charged on top of an undergraduate plan, not
+      // instead of it, and holding both is common. Offering the two in one
+      // select forced a choice that does not exist and quietly understated
+      // take-home pay for anyone with both.
+      name: 'hasPostgraduateLoan',
+      label: 'I also have a postgraduate loan',
+      type: 'checkbox',
+      required: false,
+      defaultValue: false,
+      help: 'Repaid at 6% above its own threshold, on top of any undergraduate plan.',
     },
   ],
   ireland: [

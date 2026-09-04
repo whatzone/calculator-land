@@ -42,8 +42,36 @@ interface UkYear {
   /** Employee Class 1 National Insurance, on gross pay. */
   readonly niBands: readonly Band[];
   readonly niThreshold: number;
+  /**
+   * Annual student loan repayment thresholds, by plan.
+   *
+   * Every undergraduate plan repays 9% of income above its own threshold; the
+   * postgraduate loan repays 6% above its own, and is charged *in addition* to
+   * an undergraduate plan rather than instead of one. The rates have been
+   * stable for years; it is the thresholds that move, which is why only they
+   * are held per year.
+   */
+  readonly studentLoanThresholds: {
+    readonly 'plan-1': number;
+    readonly 'plan-2': number;
+    readonly 'plan-4': number;
+    readonly 'plan-5': number;
+    readonly postgraduate: number;
+  };
   readonly note?: string;
 }
+
+/** Repayment rates, unchanged across every year held. */
+const UNDERGRADUATE_RATE_PERCENT = 9;
+const POSTGRADUATE_RATE_PERCENT = 6;
+
+const STUDENT_LOAN_LABELS: Record<string, string> = {
+  'plan-1': 'Plan 1 student loan',
+  'plan-2': 'Plan 2 student loan',
+  'plan-4': 'Plan 4 student loan (Scotland)',
+  'plan-5': 'Plan 5 student loan',
+  postgraduate: 'Postgraduate loan',
+};
 
 /**
  * Newest first. The personal allowance and the rest-of-UK thresholds have been
@@ -76,6 +104,13 @@ const UK_YEARS: readonly UkYear[] = [
       { label: 'Above the upper earnings limit', from: 50270, to: null, ratePercent: 2 },
     ],
     niThreshold: 12570,
+    studentLoanThresholds: {
+      'plan-1': 26065,
+      'plan-2': 28470,
+      'plan-4': 32745,
+      'plan-5': 25000,
+      postgraduate: 21000,
+    },
     note: 'The Scottish bands here are carried forward unchanged from 2025/26 and should be checked first — Scotland uprates them more often than the rest of the UK.',
   },
   {
@@ -103,6 +138,13 @@ const UK_YEARS: readonly UkYear[] = [
       { label: 'Above the upper earnings limit', from: 50270, to: null, ratePercent: 2 },
     ],
     niThreshold: 12570,
+    studentLoanThresholds: {
+      'plan-1': 26065,
+      'plan-2': 28470,
+      'plan-4': 32745,
+      'plan-5': 25000,
+      postgraduate: 21000,
+    },
   },
   {
     label: '2024/25',
@@ -131,6 +173,13 @@ const UK_YEARS: readonly UkYear[] = [
       { label: 'Above the upper earnings limit', from: 50270, to: null, ratePercent: 2 },
     ],
     niThreshold: 12570,
+    studentLoanThresholds: {
+      'plan-1': 24990,
+      'plan-2': 27295,
+      'plan-4': 31395,
+      'plan-5': 25000,
+      postgraduate: 21000,
+    },
     note: 'The employee National Insurance main rate was cut to 8% at the start of this year, having been 10% for the last quarter of 2023/24.',
   },
 ];
@@ -152,6 +201,14 @@ const SOURCES = [
   },
 ] as const;
 
+const STUDENT_LOAN_SOURCE = {
+  id: 'gov-uk-student-loan-repayment',
+  title: 'Repaying your student loan: what you pay',
+  publisher: 'Student Loans Company / HM Revenue & Customs (GOV.UK)',
+  url: 'https://www.gov.uk/repaying-your-student-loan/what-you-pay',
+  checkedOn: null,
+} as const;
+
 const SCOTLAND_SOURCE = {
   id: 'scotgov-income-tax',
   title: 'Scottish Income Tax rates and bands',
@@ -165,11 +222,11 @@ const ASSUMPTIONS = [
   'Income is from a single employment held for the whole tax year.',
   'No taxable benefits in kind, dividends, savings income, or self-employment profits are included.',
   'National Insurance is shown annualised. Real payroll assesses it per pay period, so a mid-year change of salary produces a different actual total.',
-  'Student loan repayments are not included, because their thresholds change every April and could not be sourced.',
+  'Student loan repayments are shown annualised, like National Insurance. Real payroll assesses them per pay period, so a mid-year change of salary produces a different actual total.',
+  'Repayments assume the loan is still outstanding for the whole year. A loan cleared part-way through the year stops being deducted at that point.',
 ];
 
 const EXCLUSIONS = [
-  'Student loan and postgraduate loan repayments',
   'Marriage Allowance and Blind Person’s Allowance',
   'Multiple concurrent employments',
   'Salary sacrifice arrangements other than the simple pension option',
@@ -202,6 +259,7 @@ function buildUkRuleset(year: UkYear, region: Region): Ruleset {
     expiresOn: year.endDate,
     sources: [
       ...SOURCES.map((source) => ({ ...source })),
+      { ...STUDENT_LOAN_SOURCE },
       ...(isScotland ? [{ ...SCOTLAND_SOURCE }] : []),
     ],
     provenance: {
@@ -255,7 +313,20 @@ function buildUkRuleset(year: UkYear, region: Region): Ruleset {
         },
       ],
       surtaxes: [],
-      loanRepayments: [],
+      // Every plan is offered in both regions: which plan someone repays is
+      // set by where and when they studied, not by where they now live, so a
+      // Plan 4 borrower living in England still repays Plan 4.
+      loanRepayments: Object.entries(year.studentLoanThresholds).map(([plan, threshold]) => ({
+        id: `student-loan-${plan}`,
+        label: STUDENT_LOAN_LABELS[plan] ?? plan,
+        selector: plan,
+        method: 'rate-above-threshold' as const,
+        threshold,
+        ratePercent:
+          plan === 'postgraduate' ? POSTGRADUATE_RATE_PERCENT : UNDERGRADUATE_RATE_PERCENT,
+        bands: [],
+        sourceIds: ['gov-uk-student-loan-repayment'],
+      })),
       optionalSchemes: {},
       rounding: ROUNDING,
     },

@@ -123,18 +123,20 @@ export const surtaxSchema = z.object({
 /**
  * An income-contingent loan repayment: UK student loans and Australian HELP.
  *
- * The two methods are genuinely different arithmetic and must not be
- * interchanged. `rate-above-threshold` charges a rate on the income above the
+ * The three methods are genuinely different arithmetic and must not be
+ * interchanged. `rate-above-threshold` charges one rate on the income above the
  * threshold. `banded-rate-on-total` picks a rate from a band and applies it to
  * the whole of the income — so crossing a band boundary produces a step change
- * in the amount repaid, which the first method never does.
+ * in the amount repaid, which the other two never do. `marginal-bands` charges
+ * each band's rate on the slice of income inside it, measured from the
+ * threshold, the same way progressive income tax works.
  */
 export const loanRepaymentSchema = z.object({
   id: z.string().min(1),
   label: z.string().min(1),
   /** Matched against the value of the profile option that selects this scheme. */
   selector: z.string().min(1),
-  method: z.enum(['rate-above-threshold', 'banded-rate-on-total']),
+  method: z.enum(['rate-above-threshold', 'banded-rate-on-total', 'marginal-bands']),
   threshold: numeric.default(0),
   ratePercent: numeric.default(0),
   /** Used by 'banded-rate-on-total'; each band's rate applies to all income. */

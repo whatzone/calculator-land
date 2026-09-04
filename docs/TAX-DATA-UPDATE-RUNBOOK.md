@@ -30,13 +30,13 @@ you investigate why.
 
 Start from the authority, not from a search engine:
 
-| Jurisdiction   | Authority                     | What you need                                                                                                                                                                 |
-| -------------- | ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| United Kingdom | HMRC (gov.uk)                 | Income tax rates and personal allowance, the allowance taper, National Insurance class 1 employee rates and thresholds, student loan plan thresholds and rates                |
-| Scotland       | Scottish Government / HMRC    | Scottish income tax bands and rates. NI is UK-wide — do not re-source it                                                                                                      |
-| Ireland        | Revenue; gov.ie for PRSI      | Income tax bands, personal and employee tax credits, USC bands, PRSI class A                                                                                                  |
-| Australia      | ATO                           | Resident income tax rates, Medicare levy rate and thresholds, applicable offsets, study and training loan repayment rates                                                     |
-| Canada         | CRA; Revenu Québec for Quebec | Federal rates and basic personal amount, provincial rates and credits, CPP/QPP rates and maximums, EI/QPIP rates and maximums, and publication T4127 for the payroll formulas |
+| Jurisdiction   | Authority                            | What you need                                                                                                                                                                                               |
+| -------------- | ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| United Kingdom | HMRC (gov.uk); Student Loans Company | Income tax rates and personal allowance, the allowance taper, National Insurance class 1 employee rates and thresholds, student loan Plan 1/2/4/5 and postgraduate thresholds and rates                     |
+| Scotland       | Scottish Government / HMRC           | Scottish income tax bands and rates. NI is UK-wide — do not re-source it                                                                                                                                    |
+| Ireland        | Revenue; gov.ie for PRSI             | Income tax bands, personal and employee tax credits, USC bands, PRSI class A                                                                                                                                |
+| Australia      | ATO                                  | Resident income tax rates, Medicare levy rate and thresholds, applicable offsets, and the study and training loan repayment scale — **confirm which method is in force for the year**, not only the numbers |
+| Canada         | CRA; Revenu Québec for Quebec        | Federal rates and basic personal amount, provincial rates and credits, CPP/QPP rates and maximums, EI/QPIP rates and maximums, and publication T4127 for the payroll formulas                               |
 
 The candidate URLs already recorded in each ruleset file are a starting point,
 not an answer. Every one carries `checkedOn: null`, which means nobody has
@@ -86,16 +86,34 @@ allowance tapers to nothing, so this stays `0`. Canada's federal basic personal
 amount tapers to a minimum and holds there; leaving this at `0` overstates tax
 for high Canadian earners.
 
-**`loanRepayments.method`.** `rate-above-threshold` charges a rate on the excess
-(UK). `banded-rate-on-total` picks a rate from a band and applies it to the
-_whole_ of income (Australia), so one extra pound of income at a band edge can
-cost hundreds. These are not interchangeable and must not be substituted for
-each other.
+**`loanRepayments.method`.** Three shapes, none interchangeable:
+
+| Method                 | Charges                                               | Used by                          |
+| ---------------------- | ----------------------------------------------------- | -------------------------------- |
+| `rate-above-threshold` | One rate on the income above the threshold            | UK student loans, all plans      |
+| `banded-rate-on-total` | The band's rate on the **whole** of income            | Australian HELP to 30 June 2025  |
+| `marginal-bands`       | Each band's rate on its own slice above the threshold | Australian HELP from 1 July 2025 |
+
+The last two are the pair most easily confused, and confusing them is silent: at
+A$100,000 the difference is thousands of dollars a year. Under
+`banded-rate-on-total` one extra dollar at a band edge can cost hundreds — that
+is not a bug in the model, it is what the old scale did, and it is asserted in
+`tests/unit/student-loans.test.ts`. Under the other two the repayment never
+steps.
+
+For `marginal-bands`, the bands are measured **from the threshold**: a band
+running 0 to 58,000 means the first 58,000 of income _above_ it, not the first
+58,000 of income.
 
 A `selector` on a loan scheme must match the value the form sends:
-`plan-1`, `plan-2`, `plan-4`, `plan-5`, `postgraduate` for the UK; `help` for
+`plan-1`, `plan-2`, `plan-4`, `plan-5` and `postgraduate` for the UK; `help` for
 Australia. A selected scheme with no matching entry produces a visible
 unsupported notice, never a silent zero.
+
+**Concurrent loans.** A UK postgraduate loan is repaid _alongside_ an
+undergraduate plan, against its own threshold, so the engine takes an array of
+selectors rather than one. Any jurisdiction where two schemes can run at once
+works the same way.
 
 ### 2b. Understand the year table
 

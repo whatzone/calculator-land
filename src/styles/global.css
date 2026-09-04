@@ -1228,9 +1228,13 @@ table.data .detail {
   }
 
   /* The bar floats over the page, so the last section needs room to clear it
-     or its final line is unreachable. */
+     or its final line is unreachable. The bar's height moves with its content
+     and with the platform's font metrics, and CSS cannot measure a fixed
+     element, so this carries deliberate headroom rather than a figure tuned to
+     one rendering — the first version cleared by a quarter of a pixel on one
+     device and not at all on another. */
   body:has(.result-bar:not([hidden])) .site-footer {
-    padding-bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px));
+    padding-bottom: calc(7.5rem + env(safe-area-inset-bottom, 0px));
   }
 }
 

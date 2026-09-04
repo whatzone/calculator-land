@@ -57,7 +57,7 @@ engine cannot yet express. Its ten salary pages are withheld from the index.
 | `npm run dev`                 | Development server                                                |
 | `npm run build`               | Manifest, build, then the indexability and link audits            |
 | `npm run gate`                | Format, lint, typecheck, test, tax audit, build                   |
-| `npm run test`                | Unit and integration tests (207)                                  |
+| `npm run test`                | Unit and integration tests (223)                                  |
 | `npm run test:e2e`            | Playwright: desktop, mobile, no-JavaScript, axe (145)             |
 | `npm run tax:audit`           | Years offered, sources, succession. `-- --strict` to fail on gaps |
 | `npm run seo:audit`           | Indexability and internal links, against the built output         |

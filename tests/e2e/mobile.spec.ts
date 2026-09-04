@@ -70,7 +70,9 @@ test.describe('the pinned result bar', () => {
         .getBoundingClientRect();
       return bar.top - last.bottom;
     });
-    expect(clear).toBeGreaterThanOrEqual(0);
+    // A visible gap, not merely a non-overlap: clearing by a fraction of a
+    // pixel is the same bug waiting for a different font metric.
+    expect(clear).toBeGreaterThanOrEqual(8);
   });
 });
 

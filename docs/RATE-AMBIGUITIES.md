@@ -47,16 +47,17 @@ to be revisited each time an authority uprates something.
 
 ---
 
-## Start here: the four most likely to be wrong
+## Start here: the five most likely to be wrong
 
-All four are in the **newest** year of their market.
+All are in the **newest** year of their market.
 
-| #   | Figure                                             | Where                | Why it is doubtful                                                                                                                                                               |
-| --- | -------------------------------------------------- | -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | **Ireland 2026 — standard rate band (€44,000)**    | `ireland/index.ts`   | Carried forward from 2025 unchanged. Ireland moves this most Budgets, so if Budget 2026 raised it, every 2026 Irish result is wrong.                                             |
-| 2   | **Ireland 2026 — PRSI rate (4.1%)**                | `ireland/index.ts`   | Was on a schedule of stepped annual increases. 2026 may be higher.                                                                                                               |
-| 3   | **Australia 2026-27 — lowest marginal rate (15%)** | `australia/index.ts` | Legislated to fall from 16% on 1 July 2026. Confirm it actually took effect before anything else in that year.                                                                   |
-| 4   | **Canada 2026 — all indexed amounts**              | `canada/index.ts`    | Brackets, basic personal amounts and the CPP/EI maximums are carried forward from 2025 and are indexed every year. The structure is right; the numbers are almost certainly out. |
+| #   | Figure                                             | Where                | Why it is doubtful                                                                                                                                                                                           |
+| --- | -------------------------------------------------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 1   | **Ireland 2026 — standard rate band (€44,000)**    | `ireland/index.ts`   | Carried forward from 2025 unchanged. Ireland moves this most Budgets, so if Budget 2026 raised it, every 2026 Irish result is wrong.                                                                         |
+| 2   | **Ireland 2026 — PRSI rate (4.1%)**                | `ireland/index.ts`   | Was on a schedule of stepped annual increases. 2026 may be higher.                                                                                                                                           |
+| 3   | **Australia 2026-27 — lowest marginal rate (15%)** | `australia/index.ts` | Legislated to fall from 16% on 1 July 2026. Confirm it actually took effect before anything else in that year.                                                                                               |
+| 4   | **Canada 2026 — all indexed amounts**              | `canada/index.ts`    | Brackets, basic personal amounts and the CPP/EI maximums are carried forward from 2025 and are indexed every year. The structure is right; the numbers are almost certainly out.                             |
+| 5   | **Australia — the HELP method from 1 July 2025**   | `australia/index.ts` | Modelled as marginal above $67,000 from 2025-26, replacing the old whole-income band scale. That is a change of shape, so if it did not take effect the figures are wrong by thousands rather than slightly. |
 
 ---
 
@@ -84,9 +85,26 @@ someone updates only one year, the test fails.
 having been 10% for the final quarter of 2023/24. Within 2024/25 itself 8% holds
 for the whole year, so this is a note about the year before, not a defect.
 
-**Omitted deliberately:** student loan repayments. Plan 1, 2, 4, 5 and
-postgraduate thresholds change every April and I would have been guessing. The
-option appears in the form and produces a visible "not carried" notice.
+### UK student loans — medium confidence, and they move every April
+
+Rates have been stable for years; the thresholds are what move. All five are now
+calculated. Plan 4 is offered in both regions, because which plan someone repays
+is set by where and when they studied, not by where they live now.
+
+| Plan         | Rate     | 2026/27 and 2025/26 | 2024/25 | Confidence for the current year                 |
+| ------------ | -------- | ------------------- | ------- | ----------------------------------------------- |
+| Plan 1       | 9% above | £26,065             | £24,990 | Medium — uprated most years                     |
+| Plan 2       | 9% above | £28,470             | £27,295 | Medium                                          |
+| Plan 4       | 9% above | £32,745             | £31,395 | Medium                                          |
+| Plan 5       | 9% above | £25,000             | £25,000 | Medium-high — fixed for several years by design |
+| Postgraduate | 6% above | £21,000             | £21,000 | Medium-high — unchanged for years               |
+
+**Check 2026/27 first.** Those thresholds are carried forward from 2025/26
+unchanged, and most of them are uprated each April.
+
+**A postgraduate loan is charged on top of an undergraduate plan**, not instead
+of one, so the form offers a plan and a separate postgraduate tick. Someone on
+Plan 2 with a postgraduate loan at £50,000 repays £1,937.70 plus £1,740.
 
 ### Scotland — medium confidence, and the band edges move
 
@@ -145,8 +163,28 @@ above the threshold is not modelled, so PRSI is slightly overstated near it.
 thresholds are carried forward from 2025-26 and are indexed annually, so they are
 almost certainly slightly out even if the rate cut is confirmed.
 
-**Omitted deliberately:** HELP and study loan repayments. Their bands change
-every July.
+### Australian HELP — the method changed, not just the numbers
+
+This is the least certain thing on the site, because getting it wrong is
+structural rather than a stale figure.
+
+| Year             | Method                        | Threshold | Rates                             |
+| ---------------- | ----------------------------- | --------- | --------------------------------- |
+| 2026-27, 2025-26 | Marginal above a threshold    | $67,000   | 15% on the next $58,000, then 17% |
+| 2024-25          | Band rate on **whole** income | $54,435   | 1% rising to 10% across 19 bands  |
+
+**What to check, in order.** First that the marginal system took effect from
+1 July 2025 at all — that is a change of shape, and if it did not happen the
+2025-26 and 2026-27 figures are wrong by thousands of dollars, not by a little.
+Then the threshold and the two marginal rates. Then the 2024-25 band table,
+which has nineteen edges and is the most transcription-prone table on the site.
+
+**Confidence: low** for 2025-26 and 2026-27, **medium** for 2024-25.
+
+**Simplification:** repayments are calculated on salary alone. The ATO assesses
+them on _repayment income_, which adds back reportable fringe benefits, super
+contributions and investment losses, so a real repayment can be higher than
+shown. This is stated on the page.
 
 ### Canada — medium confidence on structure, low on amounts
 
@@ -189,6 +227,15 @@ salary pages are withheld and its calculators show the "not live" notice.
 
 ---
 
+### Ireland and Canada carry no student loan deduction
+
+Not an omission. Neither deducts student loan repayments through payroll the way
+the UK and Australia do — Irish student contributions are paid up front, and
+Canadian student loans are repaid on a fixed schedule directly to the lender,
+not as a share of income withheld by an employer. There is nothing to model.
+
+---
+
 ## Simplifications that apply everywhere
 
 1. **Annualised, not per-period.** Every figure assumes the salary was held for
@@ -222,6 +269,8 @@ The arithmetic is tested independently of the rates, so these are not in doubt:
 - contributions with floors, ceilings and second ceilings;
 - surtaxes charged on tax rather than on income;
 - marginal rates measured by re-running the calculation, not read off a table;
+- the three income-contingent loan methods, which are genuinely different
+  arithmetic and are tested against each other so they cannot be substituted;
 - bonus and pay-rise figures computed as real year-on-year differences;
 - year selection: a request for a year that is not held returns nothing rather
   than falling back to a different year's rates;

@@ -280,6 +280,31 @@ function surtaxesFor(ruleset: Ruleset, taxDue: Money, prefix: string): Deduction
     .filter((line) => line.annualAmount.gt(0));
 }
 
+/**
+ * How a repayment was worked out, in the reader's terms.
+ *
+ * Each method behaves differently at a band edge, and that difference is the
+ * thing worth saying: one steps, the others do not.
+ */
+function explainLoanMethod(scheme: Ruleset['rules']['loanRepayments'][number]): string {
+  if (scheme.method === 'rate-above-threshold') {
+    return (
+      `Repaid at ${money(scheme.ratePercent).toString()}% of income above ` +
+      `${money(scheme.threshold).toString()}. Nothing is repaid below that.`
+    );
+  }
+  if (scheme.method === 'marginal-bands') {
+    return (
+      `Nothing is repaid below ${money(scheme.threshold).toString()}. Above it each rate ` +
+      'applies only to the slice of income inside its band, the same way income tax works.'
+    );
+  }
+  return (
+    'The repayment rate is set by which band your income falls in, and that rate ' +
+    'applies to your whole income — so crossing a band raises the repayment sharply.'
+  );
+}
+
 /** Income-contingent loan repayments selected by the reader's profile. */
 function loanRepaymentsFor(
   ruleset: Ruleset,
@@ -302,12 +327,7 @@ function loanRepaymentsFor(
         id: `${prefix}-${scheme.id}`,
         label: scheme.label,
         annualAmount: roundTax(amount, ruleset),
-        explanation:
-          scheme.method === 'rate-above-threshold'
-            ? `Repaid at ${money(scheme.ratePercent).toString()}% of income above ` +
-              `${money(scheme.threshold).toString()}. Nothing is repaid below that.`
-            : 'The repayment rate is set by which band your income falls in, and that rate ' +
-              'applies to your whole income — so crossing a band raises the repayment sharply.',
+        explanation: explainLoanMethod(scheme),
         sourceIds:
           scheme.sourceIds.length > 0 ? scheme.sourceIds : ruleset.sources.map((s) => s.id),
       };

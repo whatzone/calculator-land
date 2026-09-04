@@ -8,21 +8,27 @@
  */
 import { money } from '../common/money.ts';
 import type { EngineOptions, PreTaxContribution } from '../common/engine.ts';
-import { clampPercent, readNumber, readString, resolveLoanScheme } from '../common/profile.ts';
+import {
+  clampPercent,
+  readBoolean,
+  readNumber,
+  readString,
+  resolveLoanScheme,
+} from '../common/profile.ts';
 import type { CalculationInput, ResultNotice } from '../common/types.ts';
 import type { Ruleset } from '../../validation/ruleset-schema.ts';
 
 export const UK_REGIONS = ['england-wales-ni', 'scotland'] as const;
 export type UkRegion = (typeof UK_REGIONS)[number];
 
-export const UK_STUDENT_LOAN_PLANS = [
-  'none',
-  'plan-1',
-  'plan-2',
-  'plan-4',
-  'plan-5',
-  'postgraduate',
-] as const;
+export const UK_STUDENT_LOAN_PLANS = ['none', 'plan-1', 'plan-2', 'plan-4', 'plan-5'] as const;
+
+const PLAN_LABELS: Record<string, string> = {
+  'plan-1': 'Plan 1 student loan',
+  'plan-2': 'Plan 2 student loan',
+  'plan-4': 'Plan 4 student loan',
+  'plan-5': 'Plan 5 student loan',
+};
 
 /** Translate the user's profile choices into engine options. */
 export function buildUkOptions(ruleset: Ruleset, input: CalculationInput): EngineOptions {
@@ -52,14 +58,21 @@ export function buildUkOptions(ruleset: Ruleset, input: CalculationInput): Engin
     }
   }
 
+  // An undergraduate plan and a postgraduate loan are repaid concurrently, each
+  // against its own threshold, so both selectors can be active at once.
   const loanSelectors: string[] = [];
   const studentLoanPlan = readString(input, 'studentLoanPlan', 'none');
   if (studentLoanPlan !== 'none') {
     const scheme = resolveLoanScheme(
       ruleset,
       studentLoanPlan,
-      `Student loan ${studentLoanPlan.replace('-', ' ')}`,
+      PLAN_LABELS[studentLoanPlan] ?? `Student loan ${studentLoanPlan.replace('-', ' ')}`,
     );
+    if (scheme.ok) loanSelectors.push(scheme.selector);
+    else notices.push(scheme.notice);
+  }
+  if (readBoolean(input, 'hasPostgraduateLoan', false)) {
+    const scheme = resolveLoanScheme(ruleset, 'postgraduate', 'Postgraduate loan');
     if (scheme.ok) loanSelectors.push(scheme.selector);
     else notices.push(scheme.notice);
   }
