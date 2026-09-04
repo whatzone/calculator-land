@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { SITE } from '../config/site.ts';
-import { JURISDICTIONS, findRuleset } from '../data/jurisdictions/index.ts';
+import { JURISDICTIONS, findRuleset, isCalculable } from '../data/jurisdictions/index.ts';
 import {
   calculatorPath,
   globalCalculatorList,
@@ -90,7 +90,7 @@ const liveCountWord = WORDS[liveCount] ?? String(liveCount);
       {
         JURISDICTIONS.map((meta) => {
           const ruleset = findRuleset(meta.code);
-          const pending = ruleset?.provenance.dataStatus !== 'populated';
+          const pending = !ruleset || !isCalculable(ruleset);
           return (
             <li>
               <a

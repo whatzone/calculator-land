@@ -12,13 +12,13 @@ import { findRuleset } from '../../../data/jurisdictions/index.ts';
 
 export function calculateUkSalary(input: CalculationInput): CalculationResult {
   const region = (input.subJurisdiction ?? 'england-wales-ni') as UkRegion;
-  const ruleset = findRuleset('uk', region);
+  const ruleset = findRuleset('uk', region, input.taxPeriod);
 
   if (!ruleset) {
-    const fallback = findRuleset('uk');
+    const fallback = findRuleset('uk', region) ?? findRuleset('uk');
     if (!fallback) throw new Error('No UK ruleset is registered.');
     return unsupportedResult(fallback, input, [
-      `No ruleset exists for UK region "${region}". Scottish and rest-of-UK rules are held separately and neither may stand in for the other.`,
+      `No rules are held for ${region === 'scotland' ? 'Scotland' : 'the UK'} for the ${input.taxPeriod} tax year. Scottish and rest-of-UK rules are held separately, and one tax year's rules may never stand in for another's.`,
     ]);
   }
 

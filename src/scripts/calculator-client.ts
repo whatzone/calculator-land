@@ -175,29 +175,42 @@ function buildSalaryInput(config: PageConfig, values: Values, grossKey: string):
   const profile: Record<string, string | number | boolean> = {};
   for (const [key, value] of Object.entries(values)) {
     if (key === grossKey || key === 'payFrequency' || key === 'region') continue;
+    if (key === 'taxPeriod') continue;
     profile[key] = value;
   }
+
+  const period =
+    typeof values['taxPeriod'] === 'string' && values['taxPeriod'].length > 0
+      ? values['taxPeriod']
+      : config.context.taxPeriodLabel;
 
   return {
     jurisdiction,
     ...(region ? { subJurisdiction: region } : {}),
-    taxPeriod: config.context.taxPeriodLabel,
+    taxPeriod: period,
     grossAnnualIncome: money(values[grossKey] ? String(values[grossKey]) : '0'),
     payFrequency: (values['payFrequency'] as PayFrequency) ?? 'annual',
     profile,
   };
 }
 
-/** Resolve the ruleset for this input from the page's embedded set. */
+/**
+ * Resolve the ruleset for this input from the page's embedded set.
+ *
+ * Keyed by region and tax year together. A miss returns null rather than
+ * falling back to another year, because answering a request for 2024/25 with
+ * this year's rules under last year's label would be worse than refusing.
+ */
 function resolveRuleset(config: PageConfig, input: CalculationInput): Ruleset | null {
-  const key = input.subJurisdiction ?? 'default';
-  return config.rulesets[key] ?? config.rulesets['default'] ?? null;
+  const region =
+    input.subJurisdiction && input.subJurisdiction.length > 0 ? input.subJurisdiction : 'default';
+  return config.rulesets[`${region}|${input.taxPeriod}`] ?? null;
 }
 
 function calculateSalaryInBrowser(config: PageConfig, input: CalculationInput) {
   const ruleset = resolveRuleset(config, input);
   if (!ruleset) {
-    throw new Error('No ruleset was embedded in this page.');
+    throw new Error(`No rules are held for the ${input.taxPeriod} tax year.`);
   }
 
   switch (config.jurisdiction as JurisdictionCode) {
@@ -213,7 +226,7 @@ function calculateSalaryInBrowser(config: PageConfig, input: CalculationInput) {
     case 'new-zealand':
       return runSalaryCalculation(buildNewZealandOptions(ruleset, input));
     case 'canada': {
-      const federal = config.rulesets['federal'];
+      const federal = config.rulesets[`federal|${input.taxPeriod}`];
       if (!federal)
         return unsupportedResult(ruleset, input, ['The federal ruleset is not available.']);
       return runSalaryCalculation(
@@ -369,6 +382,19 @@ function renderView(target: HTMLElement, view: ResultViewModel): void {
   target.innerHTML = parts.join('');
 }
 
+/**
+ * Keep the provenance notice's tax year in step with the selector.
+ *
+ * The notice is server-rendered with the page's default year. Leaving it stale
+ * after the reader picks another year would attach the wrong year's health
+ * warning to the figure on screen.
+ */
+function syncProvenancePeriod(period: string | boolean | undefined): void {
+  if (typeof period !== 'string' || period.length === 0) return;
+  const node = document.querySelector('[data-provenance-period]');
+  if (node) node.textContent = period;
+}
+
 function init(): void {
   const config = readConfig();
   const form = document.querySelector<HTMLFormElement>('form[data-calculator]');
@@ -408,16 +434,37 @@ function init(): void {
     let view: ResultViewModel;
     try {
       view = computeView(config, values);
-    } catch {
+    } catch (error) {
+      // Never fail silently. A reader who presses Calculate and sees the page
+      // sit there has no way to know whether it worked, and would reasonably
+      // read the stale figure above as their answer.
       track('calculation_completed', {
         ...analyticsBase,
         interaction_type: 'submit',
         validation_state: 'unsupported',
       });
+      renderView(result, {
+        headline: { label: 'Result', value: 'Not available' },
+        summaryRows: [],
+        breakdownRows: [],
+        frequencyRows: [],
+        notices: [
+          {
+            severity: 'unsupported',
+            message:
+              error instanceof Error
+                ? error.message
+                : 'This calculation could not be completed in your browser.',
+          },
+        ],
+        assumptions: [],
+        supported: false,
+      });
       return;
     }
 
     renderView(result, view);
+    syncProvenancePeriod(values['taxPeriod']);
     track('calculation_completed', {
       ...analyticsBase,
       interaction_type: 'submit',

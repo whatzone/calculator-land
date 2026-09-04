@@ -11,6 +11,7 @@ import {
   isVerified,
   type Ruleset,
 } from '../../lib/validation/ruleset-schema.ts';
+import { byPeriodDescending, defaultPeriod, isCurrentPeriod } from './_years.ts';
 import { ukRulesets } from './uk/index.ts';
 import { irelandRulesets } from './ireland/index.ts';
 import { australiaRulesets } from './australia/index.ts';
@@ -38,20 +39,73 @@ export function requireRulesetById(id: string): Ruleset {
 }
 
 /**
- * Resolve the ruleset for a jurisdiction and optional sub-jurisdiction.
- * Falls back to the jurisdiction-level ruleset only where one genuinely exists
- * (Ireland, Australia, New Zealand); never silently substitutes one region's
- * rules for another's.
+ * Resolve the ruleset for a jurisdiction, region and tax year.
+ *
+ * Never silently substitutes one region's rules for another's, and never
+ * substitutes one year's rules for another's: an unknown tax period returns
+ * undefined so the caller can say so, rather than quietly answering with the
+ * current year's figures under a previous year's label.
  */
 export function findRuleset(
   jurisdiction: JurisdictionCode,
   subJurisdiction?: string | null,
+  taxPeriod?: string | null,
 ): Ruleset | undefined {
-  const candidates = ALL_RULESETS.filter((ruleset) => ruleset.jurisdiction === jurisdiction);
+  let candidates = ALL_RULESETS.filter((ruleset) => ruleset.jurisdiction === jurisdiction);
+
   if (subJurisdiction) {
-    return candidates.find((ruleset) => ruleset.subJurisdiction === subJurisdiction);
+    candidates = candidates.filter((ruleset) => ruleset.subJurisdiction === subJurisdiction);
+  } else {
+    const national = candidates.filter((ruleset) => ruleset.subJurisdiction === null);
+    if (national.length > 0) candidates = national;
   }
-  return candidates.find((ruleset) => ruleset.subJurisdiction === null) ?? candidates[0];
+
+  if (candidates.length === 0) return undefined;
+
+  if (taxPeriod) {
+    return candidates.find((ruleset) => ruleset.taxPeriod.label === taxPeriod);
+  }
+
+  const preferred = defaultPeriod(candidates);
+  return candidates.find((ruleset) => ruleset.taxPeriod.label === preferred) ?? candidates[0];
+}
+
+/** Every tax year offered for a jurisdiction and region, newest first. */
+export function taxPeriodsFor(
+  jurisdiction: JurisdictionCode,
+  subJurisdiction?: string | null,
+): { label: string; isCurrent: boolean }[] {
+  const candidates = ALL_RULESETS.filter(
+    (ruleset) =>
+      ruleset.jurisdiction === jurisdiction &&
+      (subJurisdiction
+        ? ruleset.subJurisdiction === subJurisdiction
+        : ruleset.subJurisdiction === null || ruleset.subJurisdiction !== null) &&
+      isCalculable(ruleset),
+  );
+
+  const seen = new Map<string, Ruleset>();
+  for (const ruleset of candidates) {
+    if (!seen.has(ruleset.taxPeriod.label)) seen.set(ruleset.taxPeriod.label, ruleset);
+  }
+
+  return [...seen.values()]
+    .sort(byPeriodDescending)
+    .map((ruleset) => ({ label: ruleset.taxPeriod.label, isCurrent: isCurrentPeriod(ruleset) }));
+}
+
+/** The tax year a calculator should open on for this jurisdiction. */
+export function currentPeriodFor(
+  jurisdiction: JurisdictionCode,
+  subJurisdiction?: string | null,
+): string | null {
+  const candidates = ALL_RULESETS.filter(
+    (ruleset) =>
+      ruleset.jurisdiction === jurisdiction &&
+      (subJurisdiction ? ruleset.subJurisdiction === subJurisdiction : true) &&
+      isCalculable(ruleset),
+  );
+  return defaultPeriod(candidates);
 }
 
 export function rulesetsFor(jurisdiction: JurisdictionCode): readonly Ruleset[] {
@@ -152,4 +206,5 @@ export function getJurisdiction(code: JurisdictionCode): JurisdictionMeta {
 }
 
 export { isCalculable, isPublishable, isExpired, isVerified, isUnverified };
+export { isCurrentPeriod, byPeriodDescending, defaultPeriod } from './_years.ts';
 export type { Ruleset };

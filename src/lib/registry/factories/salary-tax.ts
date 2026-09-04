@@ -19,7 +19,13 @@ import {
   calculatePayRise,
 } from '../../calculations/common/scenarios.ts';
 import { JURISDICTION_FREQUENCIES } from '../../calculations/common/frequency.ts';
-import { findRuleset, getJurisdiction, rulesetsFor } from '../../../data/jurisdictions/index.ts';
+import {
+  currentPeriodFor,
+  findRuleset,
+  getJurisdiction,
+  rulesetsFor,
+  taxPeriodsFor,
+} from '../../../data/jurisdictions/index.ts';
 import { CURRENCY_SYMBOLS } from '../../formatting/index.ts';
 import { presentBonus, presentNetToGross, presentPayRise, presentSalary } from '../presenters.ts';
 import type {
@@ -195,6 +201,34 @@ const FREQUENCY_LABELS: Record<string, string> = {
   hourly: 'An hour',
 };
 
+/**
+ * The tax year selector.
+ *
+ * Options come from the years actually held for the market, so a year can never
+ * be offered that the engine cannot answer. The live year is labelled and is
+ * the default; the others are marked as previous years so nobody mistakes an
+ * archived result for a current one.
+ */
+function taxYearField(jurisdiction: JurisdictionCode): CalculatorFieldDefinition[] {
+  const periods = taxPeriodsFor(jurisdiction);
+  if (periods.length <= 1) return [];
+
+  return [
+    {
+      name: 'taxPeriod',
+      label: 'Tax year',
+      type: 'select',
+      required: true,
+      defaultValue: currentPeriodFor(jurisdiction) ?? periods[0]?.label ?? '',
+      help: 'Rates and thresholds change between years. Previous years are kept so you can check an old payslip.',
+      options: periods.map((period) => ({
+        value: period.label,
+        label: period.isCurrent ? `${period.label} (current)` : `${period.label} (previous year)`,
+      })),
+    },
+  ];
+}
+
 function frequencyField(jurisdiction: JurisdictionCode): CalculatorFieldDefinition {
   const frequencies = JURISDICTION_FREQUENCIES[jurisdiction] ?? ['annual', 'monthly', 'weekly'];
   return {
@@ -268,17 +302,19 @@ function toCalculationInput(
   const profile: Record<string, string | number | boolean> = {};
   for (const [key, value] of Object.entries(values)) {
     if (key === grossKey || key === 'payFrequency' || key === 'region') continue;
+    if (key === 'taxPeriod') continue;
     if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
       profile[key] = value;
     }
   }
 
-  const ruleset = findRuleset(jurisdiction, region || null);
+  const requested = typeof values['taxPeriod'] === 'string' ? values['taxPeriod'] : undefined;
+  const ruleset = findRuleset(jurisdiction, region || null, requested);
 
   return {
     jurisdiction,
     ...(region ? { subJurisdiction: region } : {}),
-    taxPeriod: ruleset?.taxPeriod.label ?? 'unknown',
+    taxPeriod: requested ?? ruleset?.taxPeriod.label ?? 'unknown',
     grossAnnualIncome: money(String(values[grossKey] ?? 0)),
     payFrequency: 'annual',
     profile,
@@ -312,7 +348,12 @@ export function buildSalaryToolSet(jurisdiction: JurisdictionCode): SalaryToolSe
     indexableWithoutTaxData: false,
   } as const;
 
-  const commonFields = [...regionField(jurisdiction), frequencyField(jurisdiction), ...extras];
+  const commonFields = [
+    ...regionField(jurisdiction),
+    ...taxYearField(jurisdiction),
+    frequencyField(jurisdiction),
+    ...extras,
+  ];
 
   const assumptionsFor = (extra: readonly string[] = []) => [
     ...(primary?.assumptions ?? []).map((text, index) => ({ id: `assumption-${index}`, text })),

@@ -26,15 +26,23 @@ npm run gate         # the full release gate
 
 ## What works today
 
-| Live                                   | Held back                                                |
-| -------------------------------------- | -------------------------------------------------------- |
-| Mortgage payment and amortisation      | UK salary, net-to-gross, bonus, pay rise                 |
-| Mortgage overpayment comparison        | Ireland, Australia, New Zealand, Canada — same four each |
-| Hourly-to-salary conversion            | 102 curated salary result pages                          |
-| Methodology, sources, editorial, legal | 5 country hubs                                           |
+Every calculator is live in every market except Quebec: salary, net-to-gross,
+bonus and pay rise across the UK (including Scotland), Ireland, Australia, New
+Zealand and Canada (federal plus Ontario, British Columbia and Alberta), and the
+mortgage and hourly tools everywhere. 135 of 145 pages are indexable.
 
-The live tools are arithmetic that is the same in every country, so they need no
-tax data. The held-back pages are built, tested, and one runbook away.
+Each salary calculator offers a choice of **tax year** — three years per market,
+two for New Zealand — and recalculates against the year you pick.
+
+**Every rate on the site is unverified.** The figures were entered from general
+knowledge, not read from the authority that publishes them, because the build
+environment cannot reach any official tax domain. That is not a caveat buried in
+a footer: each affected page renders a notice above its result, and the build
+fails if one ships without it. `docs/RATE-AMBIGUITIES.md` ranks every figure by
+how likely it is to be wrong, so the corrections can be made in priority order.
+
+**Quebec is held back for a different reason** — not stale data, but rules the
+engine cannot yet express. Its ten salary pages are withheld from the index.
 
 ## Commands
 
@@ -43,9 +51,9 @@ tax data. The held-back pages are built, tested, and one runbook away.
 | `npm run dev`                 | Development server                                                |
 | `npm run build`               | Manifest, build, then the indexability and link audits            |
 | `npm run gate`                | Format, lint, typecheck, test, tax audit, build                   |
-| `npm run test`                | Unit and integration tests (147)                                  |
-| `npm run test:e2e`            | Playwright: desktop, mobile, no-JavaScript, axe (85)              |
-| `npm run tax:audit`           | Ruleset freshness, sources, expiry. `-- --strict` to fail on gaps |
+| `npm run test`                | Unit and integration tests (207)                                  |
+| `npm run test:e2e`            | Playwright: desktop, mobile, no-JavaScript, axe (123)             |
+| `npm run tax:audit`           | Years offered, sources, succession. `-- --strict` to fail on gaps |
 | `npm run seo:audit`           | Indexability and internal links, against the built output         |
 | `npm run create:calculator`   | Scaffold a calculator                                             |
 | `npm run create:jurisdiction` | Scaffold a jurisdiction                                           |
@@ -62,23 +70,33 @@ Full detail: `docs/ARCHITECTURE.md`.
 
 ## Supported markets
 
-| Market         | Tax period | Regions                                        | State           |
-| -------------- | ---------- | ---------------------------------------------- | --------------- |
-| United Kingdom | 2026/27    | England/Wales/NI, Scotland (separate rulesets) | Awaiting source |
-| Ireland        | 2026       | —                                              | Awaiting source |
-| Australia      | 2026-27    | —                                              | Awaiting source |
-| New Zealand    | 2026-27    | —                                              | Awaiting source |
-| Canada         | 2026       | Federal + Ontario, BC, Alberta, Quebec         | Awaiting source |
+| Market         | Tax years offered         | Regions                                        | State           |
+| -------------- | ------------------------- | ---------------------------------------------- | --------------- |
+| United Kingdom | 2026/27, 2025/26, 2024/25 | England/Wales/NI, Scotland (separate rulesets) | Unverified      |
+| Ireland        | 2026, 2025, 2024          | —                                              | Unverified      |
+| Australia      | 2026-27, 2025-26, 2024-25 | —                                              | Unverified      |
+| New Zealand    | 2026-27, 2025-26          | —                                              | Unverified      |
+| Canada         | 2026, 2025, 2024          | Federal + Ontario, BC, Alberta                 | Unverified      |
+| Canada, Quebec | —                         | —                                              | Awaiting source |
 
 Scotland and Quebec are modelled as their own rulesets rather than as flags,
 because their rules differ in structure and not only in numbers.
+
+Each market is one file holding a **table of tax years**, so adding next year is
+a single reviewed entry at the top of an array rather than a new file to keep in
+sync. Which year is current is derived from the period dates, not from a flag.
+New Zealand offers two years rather than three because its thresholds changed
+part-way through 2024-25 and that year cannot be modelled honestly as a single
+rate set — a year we cannot hold correctly is not offered at all, and a request
+for a year we do not hold returns nothing rather than falling back to another.
+`npm run tax:audit` prints the current coverage.
 
 ## Budgets, measured
 
 |                                     | Budget | Actual  |
 | ----------------------------------- | ------ | ------- |
-| First-party JS, gzipped             | 60 KB  | 14.5 KB |
-| First-party CSS, gzipped            | 30 KB  | 3.3 KB  |
+| First-party JS, gzipped             | 60 KB  | 15.5 KB |
+| First-party CSS, gzipped            | 30 KB  | 4.7 KB  |
 | Render-blocking third-party scripts | 0      | 0       |
 | Automated accessibility violations  | 0      | 0       |
 

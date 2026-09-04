@@ -97,8 +97,8 @@ export function indexabilityBlockers(calculator: AnyCalculatorDefinition): strin
       blockers.push(`No ruleset registered for ${jurisdiction}.`);
       continue;
     }
-    if (ruleset.provenance.dataStatus !== 'populated') {
-      blockers.push(`${jurisdiction}: rate tables are empty (${ruleset.provenance.dataStatus}).`);
+    if (ruleset.provenance.dataStatus === 'awaiting-official-source') {
+      blockers.push(`${jurisdiction}: no rates have been entered.`);
     } else if (ruleset.status !== 'published') {
       blockers.push(`${jurisdiction}: ruleset status is "${ruleset.status}", not "published".`);
     }

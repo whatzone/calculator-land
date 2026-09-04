@@ -71,7 +71,7 @@ const families = CALCULATOR_FAMILIES.filter((family) =>
                       </td>
                       <td style="text-align:left;">
                         {live ? (
-                          'Live'
+                          <span class="pill pill--live">Live</span>
                         ) : (
                           <span class="pill pill--pending">{blockers[0] ?? 'Not published'}</span>
                         )}

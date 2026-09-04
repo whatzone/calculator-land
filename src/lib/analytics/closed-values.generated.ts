@@ -10,6 +10,12 @@ import type { AnalyticsProperty } from '../../config/analytics.ts';
 
 export const DERIVED_CLOSED_VALUES: Partial<Record<AnalyticsProperty, readonly string[]>> = {
   "tax_period": [
+    "2024",
+    "2024-25",
+    "2024/25",
+    "2025",
+    "2025-26",
+    "2025/26",
     "2026",
     "2026-27",
     "2026/27"

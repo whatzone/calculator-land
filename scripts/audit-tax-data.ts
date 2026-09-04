@@ -9,7 +9,7 @@
  * This script never fetches a source and never edits a rate. Updating tax data
  * is a human job with a runbook: docs/TAX-DATA-UPDATE-RUNBOOK.md.
  */
-import { ALL_RULESETS, isExpired } from '../src/data/jurisdictions/index.ts';
+import { ALL_RULESETS } from '../src/data/jurisdictions/index.ts';
 import { validateBands, toBands } from '../src/lib/calculations/common/brackets.ts';
 import { buildPageManifest } from '../src/lib/seo/manifest.ts';
 import type { Ruleset } from '../src/lib/validation/ruleset-schema.ts';
@@ -93,22 +93,8 @@ function auditRuleset(ruleset: Ruleset): Finding[] {
     }
   }
 
-  if (isExpired(ruleset)) {
-    findings.push({
-      severity: 'error',
-      rulesetId: id,
-      message: `Expired on ${ruleset.expiresOn}. Pages using it must not be indexed.`,
-    });
-  } else {
-    const remaining = daysUntil(ruleset.expiresOn);
-    if (remaining <= EXPIRY_WARNING_DAYS) {
-      findings.push({
-        severity: 'warning',
-        rulesetId: id,
-        message: `Expires in ${remaining} day(s) on ${ruleset.expiresOn}. Start the update runbook now.`,
-      });
-    }
-  }
+  // Expiry is checked per jurisdiction in auditSuccession, not here. A past tax
+  // year being past its end date is the point of keeping it, not a fault.
 
   if (ruleset.rules.incomeTaxBands.length > 0) {
     const problems = validateBands(toBands(ruleset.rules.incomeTaxBands));
@@ -144,8 +130,57 @@ function auditRuleset(ruleset: Ruleset): Finding[] {
   return findings;
 }
 
+/**
+ * The real staleness risk, now that past years are kept deliberately.
+ *
+ * A historical ruleset sitting past its end date is expected. What is not
+ * expected is the *newest* ruleset for a jurisdiction having ended with no
+ * successor — that is the state in which the site quietly serves last year's
+ * rates as though they were current.
+ */
+function auditSuccession(): Finding[] {
+  const findings: Finding[] = [];
+
+  const groups = new Map<string, Ruleset[]>();
+  for (const ruleset of ALL_RULESETS) {
+    if (ruleset.status === 'retired') continue;
+    const key = `${ruleset.jurisdiction}/${ruleset.subJurisdiction ?? 'national'}`;
+    groups.set(key, [...(groups.get(key) ?? []), ruleset]);
+  }
+
+  for (const [key, rulesets] of groups) {
+    const newest = [...rulesets].sort((a, b) =>
+      b.taxPeriod.startDate.localeCompare(a.taxPeriod.startDate),
+    )[0];
+    if (!newest) continue;
+
+    const remaining = daysUntil(newest.taxPeriod.endDate);
+
+    if (remaining < 0) {
+      findings.push({
+        severity: 'error',
+        rulesetId: key,
+        message:
+          `The newest tax year held is ${newest.taxPeriod.label}, which ended on ` +
+          `${newest.taxPeriod.endDate}. There is no successor, so the calculator is offering a ` +
+          'finished year as though it were current. Add the new year.',
+      });
+    } else if (remaining <= EXPIRY_WARNING_DAYS) {
+      findings.push({
+        severity: 'warning',
+        rulesetId: key,
+        message:
+          `The current tax year ${newest.taxPeriod.label} ends in ${remaining} day(s). ` +
+          'Start the update runbook so the next year is ready before it does.',
+      });
+    }
+  }
+
+  return findings;
+}
+
 function main(): void {
-  const findings = ALL_RULESETS.flatMap(auditRuleset);
+  const findings = [...ALL_RULESETS.flatMap(auditRuleset), ...auditSuccession()];
 
   // A page that claims to be indexable must not rest on an unpublished ruleset.
   const manifest = buildPageManifest();
@@ -178,6 +213,24 @@ function main(): void {
   console.log(
     `Pages withheld from the index: ${manifest.filter((e) => !e.indexable).length} of ${manifest.length}`,
   );
+  console.log('');
+
+  // Which years each market currently offers. This is the line a maintainer
+  // reads once a year to see what still needs the new year adding.
+  const years = new Map<string, Set<string>>();
+  for (const ruleset of ALL_RULESETS) {
+    const key = ruleset.subJurisdiction
+      ? `${ruleset.jurisdiction}/${ruleset.subJurisdiction}`
+      : ruleset.jurisdiction;
+    const set = years.get(key) ?? new Set<string>();
+    set.add(ruleset.taxPeriod.label);
+    years.set(key, set);
+  }
+  console.log('Tax years offered');
+  for (const key of [...years.keys()].sort()) {
+    const labels = [...(years.get(key) ?? [])].sort().reverse();
+    console.log(`  ${key.padEnd(28)} ${labels.join(', ')}`);
+  }
   console.log('');
 
   for (const [label, list] of [

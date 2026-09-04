@@ -447,3 +447,84 @@ describes.
 likely it is to be wrong. Correcting one is editing a line of data; when a
 jurisdiction is fully checked, setting `dataStatus: 'populated'` with a
 `checkedOn` date removes its warning automatically.
+
+---
+
+## D-017 — Each market is a table of tax years, and the reader picks one
+
+**Date:** 2026-09-04 · **Status:** Active · **Owner:** engineering
+
+**Context.** D-016 shipped one ruleset per market: the current year, and only
+the current year. Two problems followed. A reader checking an old payslip or
+amending a return had nowhere to go. And the annual update was shaped as "copy
+the file, edit the copy", which is the shape that lets two years drift apart
+silently. Separately, the home page was marking every calculator "not available
+yet" because it tested `dataStatus !== 'populated'` — a test that was correct
+when the only alternative to populated was empty, and wrong the moment
+`unverified` existed.
+
+**Decision.** Restructure each jurisdiction as a **year table**: one file
+declaring a year shape and an array of year entries, newest first, with a
+builder that turns each entry into a ruleset. Expose the year as a form control
+on every salary calculator. Fix the home page to ask whether a ruleset is
+_calculable_ rather than whether it is _verified_.
+
+**Why a table rather than a file per year.**
+
+- Adding next year is one reviewed entry at the top of an array. That is the
+  smallest possible diff for the job that must happen every April, July,
+  January and so on.
+- A year-on-year diff is readable. A threshold that moved is obvious, and a
+  threshold that did not is visibly deliberate rather than possibly forgotten.
+  Three identical UK years is the threshold freeze made legible, and there is a
+  test asserting that switching year does not change the rest-of-UK answer, so
+  the day the freeze ends, a half-done update fails rather than ships.
+- Genuinely shared material — the source register, the assumption list, band
+  structures that have not changed, Ontario's surtax thresholds — is written
+  once and cannot drift between years.
+
+**What is derived rather than declared.** Which year is _current_ comes from
+comparing today against the period's start and end dates, never from a flag
+somebody has to remember to move. A year becomes current, and stops being
+current, on its own. Nothing needs touching on 6 April.
+
+**Confidence is per year, and it reaches the reader.** Each entry carries
+`settled`, `likely` or `uncertain`, mapped in `_years.ts` to wording rendered on
+every page built from that year. This is the honest form of the D-016 warning:
+"unverified" is true of everything, but a completed year whose rules can no
+longer change and the newest year whose thresholds may already have been uprated
+do not deserve the same sentence. It also orders the correction work — a settled
+year verified once is verified forever.
+
+**A missing year returns nothing.** `findRuleset` does not fall back to a
+neighbouring year when asked for one it does not hold. Silent substitution is
+the worst available failure here: a confident answer computed from the wrong
+year's rules, with a label saying otherwise. New Zealand 2024-25 is the live
+case — its thresholds changed on 31 July 2024 and the composite rates for that
+split year could not be derived reliably, so the option simply does not exist.
+
+**What the audit checks now.** The per-ruleset expiry check had to go: it
+started erroring on seventeen archived years that are past their end date
+_on purpose_. It is replaced by a succession check, which errors only when the
+**newest** year held for a market has ended with nothing following it. That is
+the actual staleness risk. The audit also prints the years each market offers,
+so the annual gap is visible in one line rather than inferred.
+
+**No new URLs.** `/uk/salary-calculator/` carries every year we hold and lets
+the reader choose. `/uk/salary-calculator-2024-25/` would split the page's
+history and its links to answer a question a select element already answers, and
+it is exactly the near-identical-page pattern the project forbids.
+
+**Cost.** Twenty-seven rulesets instead of nine, embedded per page for the
+client-side recalculation. The heaviest page is Canada, carrying twelve
+rulesets; measured, they add 3.7 KB gzipped, and the JS budget holds at 15.5 KB.
+
+**Depth.** Three years per market, except New Zealand at two. A year earns its
+place by answering a question someone has, not by existing. A fourth year is a
+decision, not a default.
+
+**What would change this.** If a market ever needed genuinely different _rule
+shapes_ between years — not different numbers, but a construct one year has and
+another does not — the builder-per-market pattern would strain, and that market
+would be split into per-year modules behind the same lookup. Nothing in the five
+current markets needs that.

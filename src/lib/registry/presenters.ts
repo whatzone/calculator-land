@@ -92,6 +92,11 @@ export function presentSalary(
     },
     summaryRows: [
       {
+        label: 'Tax year',
+        value: result.taxPeriodLabel,
+        detail: 'Rates and thresholds change between years, so the answer does too.',
+      },
+      {
         label: 'Gross pay',
         value: formatCurrency(result.grossAnnual, currency, locale),
         emphasis: 'secondary',

@@ -98,9 +98,38 @@ A `selector` on a loan scheme must match the value the form sends:
 Australia; `student-loan` for New Zealand. A selected scheme with no matching
 entry produces a visible unsupported notice, never a silent zero.
 
+### 2b. Understand the year table
+
+Each market is **one file holding a table of tax years**, not one file per year.
+`src/data/jurisdictions/uk/index.ts` declares a `UkYear` shape and a `UK_YEARS`
+array, newest first, and a builder turns each entry into a ruleset. Ireland,
+Australia, New Zealand and Canada follow the same pattern.
+
+This matters for three reasons:
+
+- adding next year is a single reviewed entry at the top of an array, not a new
+  file to keep in sync;
+- a year-on-year diff is readable, so a threshold that moved is obvious and a
+  threshold that did not is visibly deliberate;
+- anything genuinely shared across years — the source register, the assumption
+  list, band structures that have not changed — is written once, so it cannot
+  drift between years.
+
+Each entry also carries a `confidence` of `settled`, `likely` or `uncertain`
+(see `_years.ts`). That is not decoration: the wording it maps to is rendered on
+every page built from that year, so a reader is told how much weight the figures
+carry. Set it honestly. A completed year whose rules can no longer change is
+`settled`; the newest year, whose thresholds may already have been uprated, is
+`uncertain`.
+
+Which year is _current_ is derived from the period dates, never from a flag, so
+a year becomes current and stops being current on its own. Nothing needs
+touching on 6 April.
+
 ### 3. Enter the data
 
-Edit the jurisdiction file under `src/data/jurisdictions/`. For each figure:
+Add or edit an entry in that year table under `src/data/jurisdictions/`. For
+each figure:
 
 - put it in the right structure — `incomeTaxBands`, `allowances`, `credits`,
   `levies`, or `contributions` — rather than inventing a shape;
@@ -188,23 +217,49 @@ field.
 
 ## The annual update
 
-Each ruleset carries an `expiresOn` date. The audit warns 60 days before it and
-errors after it, and the monthly CI job raises an issue.
+This is the job the year table exists for, and it should take an afternoon of
+reading rather than a day of editing.
+
+**What the audit tells you.** It no longer complains that a past year has
+expired — past years are kept deliberately, and a shelf of them is the point.
+What it errors on is **succession**: the _newest_ year held for a market has
+ended and nothing follows it. That is the real staleness risk, and it is the
+only one worth failing a build over. `npm run tax:audit` also prints the years
+each market currently offers, which is the fastest way to see what is missing.
 
 When a new tax year is announced:
 
-1. **Do not edit the current ruleset.** Copy it to a new file for the new
-   period, so the old rules stay available for auditability.
-2. Work through steps 1–8 above for the new period.
-3. Set the previous ruleset's `status` to `'retired'`. Keep the file.
-4. Update the URL-facing period label. **Do not create a new URL.** The tool
-   pages are evergreen: `/uk/salary-calculator/` shows whichever period is
-   current. Creating `/uk/salary-calculator-2027-28/` splits the page's history
-   and its links for no benefit.
+1. **Do not edit last year's entry, and do not delete it.** Add a new entry at
+   the top of the year array. Copy the previous entry as a starting point so the
+   diff shows only what actually moved.
+2. Work through steps 1–8 above for the new period, then set the new entry's
+   `confidence` to `uncertain` and demote the previous one from `uncertain` to
+   `likely`.
+3. Demote any year that has now closed from `likely` to `settled`. A settled
+   year, once verified, never needs verifying again — that is the payoff for
+   keeping them.
+4. **Do not create a new URL.** The tool pages are evergreen:
+   `/uk/salary-calculator/` carries every year we hold and lets the reader pick
+   one. Creating `/uk/salary-calculator-2027-28/` splits the page's history and
+   its links for no benefit, and the year selector already answers the question
+   that URL would.
 5. Add a dated entry to the change log saying what changed and by how much.
 
-Prior-year calculators are added only when they answer a real question and the
-prior engine is retained and tested — not by default.
+**How far back to go.** A year earns its place by answering a question someone
+actually has — checking a payslip, amending a return, comparing an offer against
+last year. It does not earn its place by existing. Three years is the current
+depth; adding a fourth is a decision, not a default, and adding one whose rules
+cannot be modelled honestly (see New Zealand 2024-25 in
+`docs/RATE-AMBIGUITIES.md`) is worse than leaving the gap.
+
+**Retiring a year.** Setting `status: 'retired'` removes it from the selector
+while keeping the file for auditability. Do that when a year is wrong and cannot
+be fixed — not merely because it is old.
+
+**A year that is not held returns nothing.** `findRuleset` does not fall back to
+a neighbouring year when asked for one it does not have, and there is a test
+holding that line. Silent substitution would be the worst possible failure here:
+a confident answer computed from the wrong year's rules.
 
 ---
 
@@ -215,7 +270,22 @@ neither the old nor the new figure is right for the year as a whole.
 
 Do not average them. Either model the split properly, with the effective dates
 in the ruleset and tests for a salary spanning the change, or mark the affected
-calculation unsupported until you can. An averaged figure is wrong for everyone.
+calculation unsupported until you can. An averaged figure is wrong for everyone
+whose income was not spread evenly across the year.
+
+**The current data breaks this rule in two places, knowingly.** Both are in
+unverified data and both must be resolved before the year they sit in can be
+marked `populated`:
+
+- **Canada 2025** uses a blended 14.5% lowest federal rate, because the rate was
+  cut from 15% to 14% part-way through the year. Right for a full-year salary,
+  wrong for anyone whose income fell entirely in one half.
+- **Ireland 2024** uses 4% PRSI for the whole year, when it rose to 4.1%
+  part-way through, so PRSI is understated for the final quarter.
+
+Both say so in the ruleset note, which is rendered on the page, so a reader is
+not misled. That is the minimum bar for shipping a known approximation, and it
+is not a substitute for modelling the split.
 
 ---
 

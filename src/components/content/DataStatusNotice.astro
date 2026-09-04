@@ -45,9 +45,10 @@ const status = ruleset.provenance.dataStatus;
     <div class="notice notice--warning" role="note" data-provenance="unverified">
       <p class="notice__title">These figures have not been checked against the official source</p>
       <p>
-        The {ruleset.taxPeriod.label} rates used on this page were entered from general knowledge,
-        not read from {jurisdictionName === 'the UK' ? 'HMRC' : 'the tax authority'}. No person has
-        compared them against the authority that publishes them.
+        The <span data-provenance-period>{ruleset.taxPeriod.label}</span> rates used on this page
+        were entered from general knowledge, not read from{' '}
+        {jurisdictionName === 'the UK' ? 'HMRC' : 'the tax authority'}. No person has compared them
+        against the authority that publishes them.
       </p>
       <p>
         <strong>
